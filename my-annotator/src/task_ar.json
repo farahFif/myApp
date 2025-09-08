@@ -1,0 +1,362 @@
+[
+  {
+    "data": {
+      "dialogues": [
+        "عبد العزيز: أنا عبد العزيز حسين فنان تشكيلى.",
+        "مختار: وسايب مراتك وبنتك وجاى تعمل ايه هنا؟؟",
+        "عبد العزيز: زهقت من الزحمة والدوشة بتوع القاهرة والشغل اللى الواحد مابيحبوش ده غير خناقاتى الكتير مع رضوى مراتى عشان رافضة ان اسيب الشغل فصحيت من النوم وقررت ان اهرب من كل حاجة واجى اسكندرية قعد فيها كام شهر.. أنفس فيهم وارجع ارسم تانى الحاجات اللى بحبها مش اللى مفروضة عليا.",
+        "مختار: بقى سايب مراتك وبنتك وشغلك وجاى اسكندرية هربان منهم عشان تاخد نفسك وترجع ترسم اللى بتحبه.. عارف يابنى اللى مابيعرفش يواجه وبيفضل انه يهرب ده بيتسمى أيه.. انسان جبان.",
+        "عبد العزيز: بقولك ايه أنا ماسمحلكش تتكلم معايا بالشكل ده أنا لو ساكت لحد دلوقتى.. ساكتلك بس عشان انت راجل كبير.. مش كفاية مستحمل التحقيق اللى انت فاتحهلنا ده وكأنك هتجوزنا بنتك مش هتأجرلنا أوضة.",
+        "مختار: أتفضل أطلع برة.",
+        "عبد العزيز: برة.. برة.. ياراجل يامجنون."
+      ],
+      "memory": "مختار interviews potential tenants for a room in his house. عبد العزيز, a frustrated artist, explains his decision to leave his family and job in Cairo to find solace in Alexandria. مختار criticizes him harshly, calling him selfish and cowardly, leading to a heated argument. عبد العزيز leaves angrily, highlighting مختار's confrontational and judgmental nature.",
+      "profiles": [
+        {
+          "Name": "عبد العزيز",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Artist (Painter)",
+          "Marital status": "Married",
+          "Social position": "Middle",
+          "Religion": "Islam",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Anger",
+            "Resentment"
+          ],
+          "Power status": [
+            "Referent/Charismatic",
+            "Ideological"
+          ]
+        },
+        {
+          "Name": "مختار",
+          "Gender": "Male",
+          "Age Group": "Senior",
+          "Age": "NA",
+          "Occupation": "Landlord",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Islam",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Disgust",
+            "Anger"
+          ],
+          "Power status": [
+            "Legitimate/Legal",
+            "Symbolic"
+          ]
+        }
+      ],
+      "Social Setting": "Landlord-tenant interview",
+      "Speakers": [
+        "عبد العزيز",
+        "مختار"
+      ],
+      "Relationships": [
+        "عبد العزيز",
+        "potential tenant of",
+        "مختار"
+      ],
+      "Gender": {
+        "عبد العزيز": "Male",
+        "مختار": "Male"
+      },
+      "Age difference": {
+        "عبد العزيز and مختار": "Older"
+      },
+      "Power": {
+        "subject": "مختار",
+        "relation": "Superior to",
+        "object": "عبد العزيز"
+      },
+      "Location": "مختار's house",
+      "Familiarity Level": {
+        "عبد العزيز and مختار": "Non familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "dialogues": [
+        "مختار: المكتبة دى فيها كتب من كل لون.. مفيش مشكلة تستعير منها اللى عايزه.. بس أوعى تكون من الناس اللى بتتنى الورق أو بتاكل على الكتب أو يوزك شيطانك وتضرب على حاجة منها.",
+        "خالد: وأيه اللى جاب دى هنا!",
+        "مختار: ماتفهمنيش غلط.. دى اللى قبليك نسيتها وممكن تضرب عليها عادى.",
+        "مختار: مش محتاج أقولك اياك تلمس الجرامفون عشان دى ملكية خاصة مش تبع الايجار ولما تحب تشغل التلفزيون الصوت مايعالش عن حدود ودنك وكمان مابحبش برامج الاخبار والذى منه.",
+        "خالد: ماليش فيها ما تخفش.",
+        "مختار: الأهم من كل ده بقى.. ممنوع منعاً باتاً دخول أى واحدة كدة وال كدة الشقة التدخين والذى منه ممنوع تماماً حتى لو فى أوضتك وطبعاً الصوت العالى أو أى ازعاج فيها طرد علطول حتى لو فى نص الليل.",
+        "خالد: على فكرة انا كل اللى هقعدوا معاك شهر واحد وأوعدك انى مش هعمل أى حاجة تضايقك أنت صحيح ماقولتليش هتاخد منى كام.",
+        "مختار: 8 تالف جنيه.",
+        "خالد: !!.كام.",
+        "مختار: ..ماتخفش كدة ..انا بهزر هما 2222 جنيه بس من غير باسورد النت.. والأقولك بى .. عشان تعرف ان مختار مش حارمك من حاجة.",
+        "خالد: مع انه كتير.. بس أنا موافق ياعم مختار.",
+        "مختار: صحيح أنا مابحبش حد يقوللى ياعم مختار.",
+        "خالد: وأناديك بأيه؟؟",
+        "مختار: مختار.. عادى.",
+        "خالد: حاف كدة.. من غير أى القاب مايصحش يعنى.",
+        "مختار: مايصحش أيه.. هو أنا بقولك أشتمنى.. وال أسمى لوحده فيه حاجة عيب.. مختار.. مختار.. سهل أهو.",
+        "خالد: تمام يا.. مختار.. أوضتى فين بقى؟؟",
+        "مختار: هى الأوضة دى.",
+        "خالد: سؤال بسيط بس يا مختار.. هو فيه حد تانى قاعد معانا فى الأوضة دى.",
+        "مختار: لاء.. الأوضة دى مش للإيجار.. وأوعى تيجى جنبها أو تدخلها فاهم؟؟",
+        "خالد: فاهم!!."
+      ],
+      "memory": "خالد ينتقل للعيش مع مختار في شقته لمدة شهر. مختار يضع قواعد صارمة تشمل عدم التدخين، عدم رفع الصوت، وعدم إدخال أي شخص غريب إلى الشقة. خالد يبدو متفاجئاً من هذه القواعد لكنه يوافق على الإيجار. مختار يظهر جانباً ساخراً في حديثه، ويبدو أن هناك غرفة مغلقة في الشقة تحمل أهمية خاصة لمختار، حيث يمنع خالد من الاقتراب منها. خالد يلاحظ حزن مختار عند النظر إلى الغرفة المغلقة.",
+      "profiles": [
+        {
+          "Name": "مختار",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Landlord",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Sadness",
+            "Frustration",
+            "Anxiety"
+          ],
+          "Power status": [
+            "Coercive",
+            "Legitimate/Legal",
+            "Symbolic"
+          ]
+        },
+        {
+          "Name": "خالد",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Surprise",
+            "Frustration",
+            "Hope"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ],
+      "Social Setting": "Roommate agreement discussion",
+      "Speakers": [
+        "مختار",
+        "خالد"
+      ],
+      "Relationships": [
+        "مختار",
+        "landlord of",
+        "خالد"
+      ],
+      "Gender": {
+        "مختار": "Male",
+        "خالد": "Male"
+      },
+      "Age difference": {
+        "مختار and خالد": "Older"
+      },
+      "Power": {
+        "subject": "مختار",
+        "relation": "Superior to",
+        "object": "خالد"
+      },
+      "Location": "Apartment in Egypt",
+      "Familiarity Level": {
+        "مختار and خالد": "Moderate familiarity"
+      }
+    }
+  },
+  {
+    "data": {
+      "dialogues": [
+        "مختار: أيه اللى كان الزم يحصل من زمان",
+        "ياسين: أنت ازاى أصلاً تدى نفسك الحق انك تدخل فى حياتى وتفتح الجوابات اللى كانت بتجيلك منها",
+        "مختار: وأنا اللى بحسبك كنت هتيجى تشكرنى عشان حافظتلك على الخيط اللى لسه مابينك وبينها",
+        "ياسين: أشكرك على مراتى اللى شافت الرسايل على الموبايل اللى بعتتهالى كاملة وسابتلى البيت ومشيت",
+        "مختار: هو أنت كنت بتحب كاملة فعلاً",
+        "ياسين: كاملة باب فى حياتى وقفلته من زمان",
+        "مختار: بس هى لسه مش قادرة تقفله هى كمان"
+      ],
+      "memory": "ياسين يواجه مختار بغضب بسبب تدخله في حياته وفتح الرسائل التي كانت تأتي من كاملة. ياسين يكشف أن تدخله أدى إلى مشاكل كبيرة في حياته الشخصية، بما في ذلك ترك زوجته له. مختار يبدو أنه كان يحاول الحفاظ على علاقة ياسين بكاملة، لكنه يدرك أن ياسين قد أغلق هذا الباب منذ زمن طويل، بينما كاملة لم تستطع ذلك.",
+      "profiles": [
+        {
+          "Name": "مختار",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Compassion",
+            "Frustration"
+          ],
+          "Power status": [
+            "Informational",
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "ياسين",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Separated",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Anger",
+            "Resentment",
+            "Frustration"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ],
+      "Social Setting": "Personal confrontation",
+      "Speakers": [
+        "مختار",
+        "ياسين"
+      ],
+      "Relationships": [
+        "مختار",
+        "friend of",
+        "ياسين"
+      ],
+      "Gender": {
+        "مختار": "Male",
+        "ياسين": "Male"
+      },
+      "Age difference": {
+        "مختار and ياسين": "Same age"
+      },
+      "Power": {
+        "subject": "مختار",
+        "relation": "Superior to",
+        "object": "ياسين"
+      },
+      "Location": "Private setting",
+      "Familiarity Level": {
+        "مختار and ياسين": "Familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "dialogues": [
+        "خالد: رغم كل اللى شوفته معاك فى الشهر ده.. بس عايز أقولك انك هتوحشنى أوى يا مختار",
+        "مختار: ياسيدى العنوان مايتوهش.. أول ما أوحشك تعالى علطول. صحيح كنت هنسى",
+        "خالد: أيه الفلوس دى يا مختار",
+        "مختار: دول الألفين جنيه اللى أنت دفعتهم فى الإيجار",
+        "خالد: بس دول حقك وأنا مش عايزهم",
+        "مختار: يابنى أنت لسة برضه لحد دلوقتى مافهمتنيش.. أنا يا خالد يابنى اللى بحتاجه من إيجار الأوضة حاجة أهم بكتير من الفلوس"
+      ],
+      "memory": "خالد يودع مختار بعد قضاء شهر معه، معبراً عن مدى تعلقه به. مختار يعيد لخالد مبلغ الإيجار الذي دفعه، موضحاً أن ما يحتاجه من الإيجار ليس المال، بل شيئاً أكثر أهمية، مما يعكس عمق العلاقة الإنسانية بينهما.",
+      "profiles": [
+        {
+          "Name": "خالد",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Nostalgia",
+            "Gratitude",
+            "Love"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "مختار",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Compassion",
+            "Gratitude",
+            "Love"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        }
+      ],
+      "Social Setting": "Farewell conversation",
+      "Speakers": [
+        "خالد",
+        "مختار"
+      ],
+      "Relationships": [
+        "خالد",
+        "friend of",
+        "مختار"
+      ],
+      "Gender": {
+        "خالد": "Male",
+        "مختار": "Male"
+      },
+      "Age difference": {
+        "خالد and مختار": "Older"
+      },
+      "Power": {
+        "subject": "مختار",
+        "relation": "Equal power",
+        "object": "خالد"
+      },
+      "Location": "NA",
+      "Familiarity level": {
+        "خالد and مختار": "Familiar"
+      }
+    }
+  }
+]
