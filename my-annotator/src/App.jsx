@@ -9,7 +9,7 @@ import task_bn from "./task_bn.json";
 const scoringConfig = {
   default: [0, 1, 2],
   dialogues: [0,1,2],
-  memory: [1,2,3],
+  memory: [0,1,2],
   Gender: [0,1],
   Power: [0,1,2],
   Location: [0,1,2],
