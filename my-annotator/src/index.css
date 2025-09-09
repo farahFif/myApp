@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  color-scheme: light !important;
+  forced-color-adjust: none !important; /* For Safari/Chrome forced dark */
+  -webkit-text-fill-color: initial !important; /* Fix font colors */
+}
+.no-dark {
+  color-scheme: light !important;
+  forced-color-adjust: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+button, input, select, textarea {
+  background: #f5f5f5 !important;  /* or your chosen color */
+  color: #000 !important;          /* force text black */
+  border: 1px solid #ccc !important;
+  forced-color-adjust: none !important; /* stop dark mode overrides */
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

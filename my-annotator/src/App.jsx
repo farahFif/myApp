@@ -187,69 +187,72 @@ export default function App() {
         Task {index + 1} / {tasks.length}
       </h2>
 
-      {/* --- Dialogues first --- */}
-      {task.dialogues && (
-        <div
-          style={{
-            border: "2px solid #444",
-            borderRadius: "8px",
-            padding: "10px",
-            marginBottom: "20px",
-            background: "#fafafa"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <h3 style={{ margin: 0 }}>Dialogues</h3>
-            <ScoreSelect
-              field="dialogues_overall"
-              subField={null}
-              value={scores[index]?.dialogues_overall || ""}
-              onChange={handleScoreChange}
-            />
-          </div>
-          <div
-            style={{
-              maxHeight: "250px",
-              overflowY: "auto",
-              padding: "8px",
-              background: "white",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              fontFamily: "monospace",
-              whiteSpace: "pre-wrap",
-              marginTop: "10px"
-            }}
-          >
-            {task.dialogues.map((line, i) => (
-              <div key={i}>{line}</div>
-            ))}
-          </div>
-        </div>
-      )}
+     {/* --- Dialogues first --- */}
+{task.dialogues && (
+  <div
+    style={{
+      border: "2px solid #444",
+      borderRadius: "8px",
+      padding: "10px",
+      marginBottom: "20px",
+      background: "#fafafa",
+      colorScheme: "light", // 👈 Prevents forced dark mode inversion
+    }}
+  >
+    <div className="no-dark" style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <h3 style={{ margin: 0 }}>Dialogues</h3>
+      <ScoreSelect
+        field="dialogues_overall"
+        subField={null}
+        value={scores[index]?.dialogues_overall || ""}
+        onChange={handleScoreChange}
+      />
+    </div>
+    <div className="no-dark"
+      style={{
+        maxHeight: "250px",
+        overflowY: "auto",
+        padding: "8px",
+        background: "white",
+        border: "1px solid #ddd",
+        borderRadius: "6px",
+        fontFamily: "monospace",
+        whiteSpace: "pre-wrap",
+        marginTop: "10px",
+        colorScheme: "light", // 👈 Added here too
+      }}
+    >
+      {task.dialogues.map((line, i) => (
+        <div key={i}>{line}</div>
+      ))}
+    </div>
+  </div>
+)}
 
-      {/* --- Memory second --- */}
-      {task.memory && (
-        <div
-          style={{
-            border: "2px solid #888",
-            borderRadius: "8px",
-            padding: "10px",
-            marginBottom: "20px",
-            background: "#f9f9f9"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <h3 style={{ margin: 0 }}>Memory</h3>
-            <ScoreSelect
-              field="memory"
-              subField={null}
-              value={scores[index]?.memory || ""}
-              onChange={handleScoreChange}
-            />
-          </div>
-          <p style={{ marginTop: 8 }}>{task.memory}</p>
-        </div>
-      )}
+{/* --- Memory second --- */}
+{task.memory && (
+  <div className="no-dark"
+    style={{
+      border: "2px solid #888",
+      borderRadius: "8px",
+      padding: "10px",
+      marginBottom: "20px",
+      background: "#f9f9f9",
+      colorScheme: "light", // 👈 Fix for memory box
+    }}
+  >
+    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <h3 style={{ margin: 0 }}>Memory</h3>
+      <ScoreSelect
+        field="memory"
+        subField={null}
+        value={scores[index]?.memory || ""}
+        onChange={handleScoreChange}
+      />
+    </div>
+    <p style={{ marginTop: 8 }}>{task.memory}</p>
+  </div>
+)}
 
       {/* --- Profiles and other fields --- */}
       {Object.entries(task).map(([key, value]) => {
