@@ -1,0 +1,891 @@
+[
+  {
+    "data": {
+      "profiles": [
+        {
+          "Name": "Trina",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Hope",
+            "Anxiety",
+            "Worry",
+            "Frustration"
+          ],
+          "Power status": [
+            "Referent/Charismatic",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Joji",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Anxiety",
+            "Worry",
+            "Frustration"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Sanju",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Anxiety",
+            "Worry",
+            "Frustration"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Taxi-Driver",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Taxi Driver",
+          "Marital status": "NA",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Fear",
+            "Anxiety"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ],
+      "dialogues": [
+        "TRINA: Oi barita……Osit Rakkhit….khub taka.. sob black.. knari knari taka barite rekhe dei.. ekbar bagane pnute rekhechilo bole..",
+        "JOJI: takar gach beriyechilo…",
+        "TRINA: na.. notegulo poche gechilo.. cellophin bag-e futo chilo…..tai jol dhuke…..shono… amai ora chene… amar sathe jabe.. tarpor dhuke emon babh korbe jeno jor kore dhore enecho.. taka niye jabar shomoy amar hatpa bedhe okhane rekhe chole gelei hobe….. beshi taka nebe na…. Bagan-e pnute rakhle ki hobe oder sob taka gona thake…….pore jodi jante pari…",
+        "SANJU: Na khali dosh lakh-i nobo…",
+        "JOJI: ar dhoro ektu adhtu commission….. ese to gelam.. jontorgulo bar kori……",
+        "TAXI-DRIVER: Babago……….",
+        "JOJI: eta ki holo….",
+        "SANJU: sorbonash hoye gelo….tor pistolgulo dekhte peyeche...ebar pulish dakbe… chaw palai….",
+        "TRINA: na….baba boleche kolkkata pulisher average reaction time chollish minit…. totokhone amader kaj hoye jabe…. Lets go.. quick….",
+        "TRINA: ar dos ghonta baki ache….ar dos lakh taka……garir modhdhe boshe thakle ghontai ek lakh kore taka hobe to?",
+        "SANJU: chaw…tarpor ja kopale thake…."
+      ],
+      "memory": "Joji, Trina, and Sanju are in a taxi planning a heist involving a wealthy man, Osit Rakkhit, who allegedly hides large sums of black money in his house and garden. Trina appears to be the leader, giving detailed instructions on how to stage the robbery and escape. The group discusses taking only ten lakh rupees and leaving quickly. However, their plan is disrupted when the taxi driver overhears their conversation, sees their toy pistols, and flees, threatening to call the police. Despite the setback, Trina remains confident, citing the police's average reaction time, and urges the group to proceed with the plan.",
+      "Formality": "Informal",
+      "TRINA-Honorifics": "No",
+      "TRINA-Politeness": "No",
+      "JOJI-Honorifics": "No",
+      "JOJI-Politeness": "No",
+      "SANJU-Honorifics": "No",
+      "SANJU-Politeness": "No",
+      "TAXI-DRIVER-Honorifics": "No",
+      "TAXI-DRIVER-Politeness": "No",
+      "Social Setting": "Heist planning in a taxi",
+      "Speakers": [
+        "Trina",
+        "Joji",
+        "Sanju",
+        "Taxi-Driver"
+      ],
+      "Relationships": [
+        {
+          "Trina": "Accomplice of",
+          "Joji": "Accomplice of",
+          "Sanju": "Accomplice of",
+          "Taxi-Driver": "Stranger to"
+        },
+        {
+          "Joji": "Accomplice of",
+          "Trina": "Accomplice of",
+          "Sanju": "Accomplice of",
+          "Taxi-Driver": "Stranger to"
+        },
+        {
+          "Sanju": "Accomplice of",
+          "Trina": "Accomplice of",
+          "Joji": "Accomplice of",
+          "Taxi-Driver": "Stranger to"
+        },
+        {
+          "Taxi-Driver": "Stranger to",
+          "Trina": "Stranger to",
+          "Joji": "Stranger to",
+          "Sanju": "Stranger to"
+        }
+      ],
+      "Gender": {
+        "Trina": "Female",
+        "Joji": "Male",
+        "Sanju": "Male",
+        "Taxi-Driver": "Male"
+      },
+      "Age difference": {
+        "Trina and Joji": "Same age",
+        "Trina and Sanju": "Same age",
+        "Joji and Sanju": "Same age",
+        "Trina and Taxi-Driver": "NA",
+        "Joji and Taxi-Driver": "NA",
+        "Sanju and Taxi-Driver": "NA"
+      },
+      "Power": [
+        {
+          "subject": "Trina",
+          "relation": "Superior to",
+          "object": "Joji"
+        },
+        {
+          "subject": "Trina",
+          "relation": "Superior to",
+          "object": "Sanju"
+        },
+        {
+          "subject": "Joji",
+          "relation": "Equal power",
+          "object": "Sanju"
+        },
+        {
+          "subject": "Taxi-Driver",
+          "relation": "Subordinate to",
+          "object": "Trina"
+        },
+        {
+          "subject": "Taxi-Driver",
+          "relation": "Subordinate to",
+          "object": "Joji"
+        },
+        {
+          "subject": "Taxi-Driver",
+          "relation": "Subordinate to",
+          "object": "Sanju"
+        }
+      ],
+      "Location": "Inside a taxi",
+      "Familiarity Level": {
+        "Trina and Joji": "Familiar",
+        "Trina and Sanju": "Familiar",
+        "Joji and Sanju": "Familiar",
+        "Trina and Taxi-Driver": "Non familiar",
+        "Joji and Taxi-Driver": "Non familiar",
+        "Sanju and Taxi-Driver": "Non familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "profiles": [
+        {
+          "Name": "Trina",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Happiness",
+            "Pride",
+            "Frustration"
+          ],
+          "Power status": [
+            "Expert",
+            "Referent/Charismatic",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Sanju",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Surprise"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Joji",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Happiness",
+            "Surprise"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ],
+      "dialogues": [
+        "JOJI: eta ki credit card?",
+        "TRINA: hnaa…",
+        "SANJU: ete dos lakh taka tola jai na?",
+        "TRINA: na.. eteo nam lekha chilo…..budhdhi kore dekhle tomader dudin nosto hoto na….. boys… Ei holo ekta Polaroid camera… amader next steper ekta oporiharjjo ongo….ekhon theke mone rakhbe eta camera noy… eta ekta nostro…",
+        "SANJU: ostro-ta test kore dekhte pari…. konta tipbo.. ei ta?",
+        "TRINA: ek minit…. right…go ahead",
+        "JOJI: hahahaha……",
+        "TRINA: hmmmm…mone hoy camerar lensta kharap chilo……. Kintu amader kajer jonno chole jabe…hyahyhahyhahyha…..",
+        "JOJI: mairi…eto dekhchi ainar cheyeo kharap!!!"
+      ],
+      "memory": "Trina, Sanju, and Joji purchase a Polaroid camera, which Trina describes as an essential tool for their next step, referring to it as a 'weapon.' The group tests the camera humorously, with Joji and Trina laughing at the poor quality of the photos. Trina continues to assert her leadership and resourcefulness, keeping the group focused on their plan.",
+      "Formality": "Informal",
+      "JOJI-Honorifics": "No",
+      "JOJI-Politeness": "No",
+      "TRINA-Honorifics": "No",
+      "TRINA-Politeness": "No",
+      "SANJU-Honorifics": "No",
+      "SANJU-Politeness": "No",
+      "Social Setting": "Group testing a camera",
+      "Speakers": [
+        "Joji",
+        "Trina",
+        "Sanju"
+      ],
+      "Relationships": [
+        {
+          "Joji": "Friend of",
+          "Trina": "Friend of",
+          "Sanju": "Friend of"
+        }
+      ],
+      "Gender": {
+        "Joji": "Male",
+        "Trina": "Female",
+        "Sanju": "Male"
+      },
+      "Age difference": {
+        "Joji and Trina": "Same age",
+        "Joji and Sanju": "Same age",
+        "Trina and Sanju": "Same age"
+      },
+      "Power": [
+        {
+          "subject": "Trina",
+          "relation": "Superior to",
+          "object": "Joji"
+        },
+        {
+          "subject": "Trina",
+          "relation": "Superior to",
+          "object": "Sanju"
+        },
+        {
+          "subject": "Joji",
+          "relation": "Equal power",
+          "object": "Sanju"
+        }
+      ],
+      "Location": "Indoors, possibly a private space",
+      "Familiarity level": {
+        "Joji and Trina": "Familiar",
+        "Joji and Sanju": "Familiar",
+        "Trina and Sanju": "Familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "profiles": [
+        {
+          "Name": "TANIMA",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Love",
+            "Happiness",
+            "Disgust"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "CHOBI-DA",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Fear",
+            "Anxiety",
+            "Love",
+            "Frustration"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "PHUCHKAOLA",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Phuchka seller (undercover commando)",
+          "Marital status": "NA",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "NA"
+          ],
+          "Power status": [
+            "Legitimate/Legal",
+            "Coercive"
+          ]
+        }
+      ],
+      "dialogues": [
+        "TANIMA: Chobi-da amra ki ekkhuni bari chole jabo….???? Tumi arektukhon thako na amar sathe pleeeease…..",
+        "CHOBI-DA: Na mane….abar..boudi jodi boke.. mane.. thik ache…",
+        "TANIMA: Oooff.. ki bhiison bhalo lagche… sotti tumi na etto bhalo… oma.. chobi-da phucka khaoabe go… amar na bhiiiison phuchka khete ichche korche….",
+        "CHOBI-DA: Phuchka.. hna hna.. nischoy.. nischoy….ei phuchkaola… duto phuchka lagao dekhi….",
+        "PHUCHKAOLA: E phuchka bikkirir nei…..",
+        "TANIMA: She ki.. bikkirir nei ki.. eito koto ache…",
+        "PHUCHKAOLA: Bollam na.. bikkirir nei… mela jhamela korben na.. bari chole jan…",
+        "TANIMA: Oma.. dekhecho Chobhida.. ekta Phuchkaola amai sasachche….",
+        "CHOBI-DA: Ei.. beyadob…. Boro bar berocho na.. ek chore mukh chnire felbo.. bhoddoghorer meyer sathe kibhabe kota bolte hoy jano na……",
+        "CHOBI-DA: Mago.. mere felle…..mere felle…",
+        "TANIMA: Dekhecho.. ekebare joriye dhorle……oma.. buke hat dichche…bodmash.. gaye hat dichcho….tai roj bhulie bhulie cinemai niye jaoa……tai na?…othocho biyer kottha tullei aj na tanima.. kal na tanima…..ar neoachchi tomai cinemai…. Chotolok…",
+        "CHOBI-DA: Tanima… shono.. tanima…."
+      ],
+      "memory": "TANIMA and CHOBI-DA, a close pair, are seen at a phuchka stall. Their lighthearted banter turns tense when the phuchka seller refuses service and acts suspiciously. CHOBI-DA's fear and TANIMA's frustration lead to a humorous yet strained interaction. Meanwhile, the phuchka seller is revealed to be part of the commando operation, preparing for the kidnappers' arrival.",
+      "Formality": "Informal",
+      "TANIMA-Honorifics": "No",
+      "TANIMA-Politeness": "No",
+      "CHOBI-DA-Honorifics": "No",
+      "CHOBI-DA-Politeness": "No",
+      "PHUCHKAOLA-Honorifics": "No",
+      "PHUCHKAOLA-Politeness": "No",
+      "Social Setting": "Street food stall interaction",
+      "Speakers": [
+        "TANIMA",
+        "CHOBI-DA",
+        "PHUCHKAOLA"
+      ],
+      "Relationships": [
+        "TANIMA",
+        "friend of",
+        "CHOBI-DA",
+        "PHUCHKAOLA",
+        "stranger to",
+        "TANIMA",
+        "PHUCHKAOLA",
+        "stranger to",
+        "CHOBI-DA"
+      ],
+      "Gender": {
+        "TANIMA": "Female",
+        "CHOBI-DA": "Male",
+        "PHUCHKAOLA": "Male"
+      },
+      "Age difference": {
+        "TANIMA and CHOBI-DA": "Same age",
+        "TANIMA and PHUCHKAOLA": "NA",
+        "CHOBI-DA and PHUCHKAOLA": "NA"
+      },
+      "Power": [
+        {
+          "subject": "TANIMA",
+          "relation": "Equal power",
+          "object": "CHOBI-DA"
+        },
+        {
+          "subject": "PHUCHKAOLA",
+          "relation": "Superior to",
+          "object": "TANIMA"
+        },
+        {
+          "subject": "PHUCHKAOLA",
+          "relation": "Superior to",
+          "object": "CHOBI-DA"
+        }
+      ],
+      "Location": "Phuchka stall",
+      "Familiarity Level": {
+        "TANIMA and CHOBI-DA": "Familiar",
+        "TANIMA and PHUCHKAOLA": "Non familiar",
+        "CHOBI-DA and PHUCHKAOLA": "Non familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "profiles": [
+        {
+          "Name": "Joji",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Criminal",
+          "Marital status": "Single",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Guilt",
+            "Anxiety",
+            "Fear"
+          ],
+          "Power status": [
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Commissioner",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Police Commissioner",
+          "Marital status": "Married",
+          "Social position": "High",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "Graduate",
+          "Emotional status": [
+            "Surprise",
+            "Anxiety",
+            "Worry"
+          ],
+          "Power status": [
+            "Legitimate/Legal",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Sanju",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Fear",
+            "Anxiety",
+            "Compassion"
+          ],
+          "Power status": [
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Radioman",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Radio Operator",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "NA",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "High school",
+          "Emotional status": [
+            "Frustration",
+            "Anxiety"
+          ],
+          "Power status": [
+            "Informational"
+          ]
+        }
+      ],
+      "dialogues": [
+        "JOJI: e.. e apnar meye??",
+        "COMMISSIONER: hnaa.. tumi..tumi jano kothai??",
+        "JOJI: ami jantam na .. jodi jodi chobita tokhon miliye dekhte partam tahole ora emon bipode porto na……kintu o amar hat theke kagojta kere nilo…. Amader janate dite chai ni o kar meye….",
+        "COMMISSIONER: ki bolcho.. o..o tomader sathe chilo….o ekhon kothai…..tahole ei kidnapping…",
+        "JOJI: O shokal obdhi amader sathe chilo…. Amrai Kidnap korechilam seth Gokaldaser meye bhebe….",
+        "COMMISSIONER: WHAT??",
+        "JOJI: amake pore dhorben.. ami palachchi na… oke Badebhai tule niye geche…..gokaldas tin koti taka na dile oke mere felbe….",
+        "COMMISSIONER: o my god.. tumi..tumi jano o kothai…",
+        "JOJI: ami.. ami garir nombor jani….AKA 4402",
+        "COMMISSIONER: ekhuni broadcast koro…..bolo shomosto patrol van jeno ei garike track kore…",
+        "RADIOMAN: Sir.. radio-te golmal hochche.. ekta lok kotheke dhuke altufaltu chnechachche…ei dekhun na…..",
+        "SANJU’S VOICE OVER RADIO: Please..please amar kotha shunun…. BADEBHAI ekta meyeke kidnap kore niye geche.. or bhison bipod…",
+        "JOJI: SANJU..SANJU….. sir.. o think kotha bolche sir.. o jane.. o jane….SANJU!!!!"
+      ],
+      "memory": "Joji confesses to the Commissioner that they mistakenly kidnapped the wrong girl, believing her to be Gokaldas' daughter. He reveals that Badebhai has taken the girl and threatens to kill her if the ransom is not paid. Joji provides the car's license plate number (AKA 4402) to help track them. Meanwhile, Sanju's voice is heard over the radio, desperately trying to alert the police about the kidnapping, which catches Joji's attention. The Commissioner orders an immediate broadcast to locate the car, intensifying the search.",
+      "Formality": "Semi-formal",
+      "JOJI-Honorifics": "No",
+      "JOJI-Politeness": "No",
+      "COMMISSIONER-Honorifics": "No",
+      "COMMISSIONER-Politeness": "No",
+      "RADIOMAN-Honorifics": "No",
+      "RADIOMAN-Politeness": "No",
+      "SANJU’S VOICE OVER RADIO-Honorifics": "No",
+      "SANJU’S VOICE OVER RADIO-Politeness": "No",
+      "Social Setting": "Police station",
+      "Speakers": [
+        "Joji",
+        "Commissioner",
+        "Radioman",
+        "Sanju"
+      ],
+      "Relationships": [
+        {
+          "Joji": "Informant of",
+          "Commissioner": "Authority"
+        },
+        {
+          "Joji": "Acquaintance of",
+          "Sanju": "Acquaintance"
+        },
+        {
+          "Commissioner": "Superior of",
+          "Radioman": "Subordinate"
+        }
+      ],
+      "Gender": {
+        "Joji": "Male",
+        "Commissioner": "Male",
+        "Radioman": "Male",
+        "Sanju": "Male"
+      },
+      "Age difference": {
+        "Joji and Commissioner": "Younger",
+        "Joji and Radioman": "Younger",
+        "Joji and Sanju": "Same age",
+        "Commissioner and Radioman": "Older",
+        "Commissioner and Sanju": "Older",
+        "Radioman and Sanju": "Older"
+      },
+      "Power": [
+        {
+          "subject": "Commissioner",
+          "relation": "Superior to",
+          "object": "Joji"
+        },
+        {
+          "subject": "Commissioner",
+          "relation": "Superior to",
+          "object": "Radioman"
+        },
+        {
+          "subject": "Joji",
+          "relation": "Equal power",
+          "object": "Sanju"
+        },
+        {
+          "subject": "Radioman",
+          "relation": "Subordinate to",
+          "object": "Commissioner"
+        }
+      ],
+      "Location": "Police station",
+      "Familiarity Level": {
+        "Joji and Commissioner": "Moderate familiarity",
+        "Joji and Sanju": "Familiar",
+        "Joji and Radioman": "Non familiar",
+        "Commissioner and Radioman": "Familiar",
+        "Commissioner and Sanju": "Non familiar",
+        "Radioman and Sanju": "Non familiar"
+      }
+    }
+  },
+  {
+    "data": {
+      "profiles": [
+        {
+          "Name": "Badebhai",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Powerful figure / Gang leader",
+          "Marital status": "NA",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Anger",
+            "Frustration",
+            "Despair"
+          ],
+          "Power status": [
+            "Coercive",
+            "Ideological",
+            "Symbolic"
+          ]
+        },
+        {
+          "Name": "Trina Mukherjee",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Student",
+          "Marital status": "Single",
+          "Social position": "High",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "Undergraduate",
+          "Emotional status": [
+            "Fear",
+            "Hope",
+            "Compassion",
+            "Nostalgia"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "Nityananda Mukherjee",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Commissioner of Police",
+          "Marital status": "NA",
+          "Social position": "High",
+          "Religion": "Hindu",
+          "Ethnicity": "Bengali",
+          "Country": "India",
+          "Fame": "Yes",
+          "Education": "NA",
+          "Emotional status": [
+            "NA"
+          ],
+          "Power status": [
+            "Legitimate/Legal",
+            "Symbolic"
+          ]
+        },
+        {
+          "Name": "Sanju",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Compassion",
+            "Hope"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Joji",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Criminal",
+          "Marital status": "Single",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "NA"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ],
+      "dialogues": [
+        "BADEBHAI: Mu khol de….",
+        "TRINA: Na.",
+        "BADEBHAI: oi haramjadake dhor… ar tui.. tui tokhon miththe bolli keno..",
+        "TRINA: noile.. noile tomra SANJU mere felte…",
+        "BADEBHAI: o…o ta ekhon toke ke bnachabe… anyaa….. ta GOKALDASer meye nosh to ke tui….tor baba ke??",
+        "TRINA: amar nam TRINA MUKHERRJEE… amar babar nam NITYANANDA MUKHERJEE, IPS…Commissioner of Police Kolkata….",
+        "BADEBHAI: khottom.. sob khottom.. saala sob khotom.. haha haha haha … oshim bishes.. badebhai.. sob finish.. hahahahaha….itna bara satta ka bolbala. ek dine sob choupat…. Saala….kya khel takdir ka…..… kaa bhai….hahaha ekdom khallas…….",
+        "BADEBHAI: ar ei shala haramir jonne ek dine sob sesh hoye gelo….saala brain dekhachche… brain….dekhi sala tor mogoje koto ghilu ache dekhi…",
+        "VOICE: POLICE…JE JAR OSTRO FELE HAT TULE DNARAO..NOILRE GULI CHOLBE…..",
+        "BADEBHAI: albida badebhai.. fer shei oshim bishesh… care of bidhoba boropishi ….gughudanga…postapis salke…",
+        "COMMISIONER: TRINA…",
+        "TRINA: BAPI….",
+        "TRINA: legeche khub..",
+        "SANJU: thik hoye jabe….kichu na",
+        "TRINA: jodi tomader kokhono…",
+        "SANJU: <ILLICIT>",
+        "TRINA: Jani…jekhane kokhono duso moja ar kokhono kanna….ar jekhane protiti muhurter nam jibon….shei Jiboner nam Line… tai na???",
+        "JOJI: tata TRINA…",
+        "TRINA: bye boys……it was fun……"
+      ],
+      "memory": "Inside the godown, Badebhai interrogates Trina, suspecting her to be Gokaldas' daughter. Trina reveals her true identity as Trina Mukherjee, the daughter of Nityananda Mukherjee, the Commissioner of Police Kolkata. Badebhai reacts with disbelief and despair, realizing his plans have unraveled. The police raid the godown, forcing Badebhai to surrender. Trina reunites with her father, the Commissioner, while Sanju and Joji are released. In an emotional farewell, Trina bids goodbye to Sanju and Joji, expressing the bittersweet nature of life and their shared experiences. The scene ends with Trina leaving in a car, and Sanju and Joji watching her disappear into the night.",
+      "Formality": "Informal",
+      "BADEBHAI-Honorifics": "No",
+      "BADEBHAI-Politeness": "No",
+      "TRINA-Honorifics": "No",
+      "TRINA-Politeness": "Yes",
+      "SANJU-Honorifics": "No",
+      "SANJU-Politeness": "Yes",
+      "COMMISIONER-Honorifics": "No",
+      "COMMISIONER-Politeness": "Yes",
+      "JOJI-Honorifics": "No",
+      "JOJI-Politeness": "Yes",
+      "Social Setting": "Gang interrogation and police raid",
+      "Speakers": [
+        "Badebhai",
+        "Trina Mukherjee",
+        "Nityananda Mukherjee",
+        "Sanju",
+        "Joji"
+      ],
+      "Relationships": [
+        {
+          "Badebhai": "interrogator of",
+          "Trina Mukherjee": "suspect"
+        },
+        {
+          "Trina Mukherjee": "daughter of",
+          "Nityananda Mukherjee": "father"
+        },
+        {
+          "Trina Mukherjee": "friend of",
+          "Sanju": "friend"
+        },
+        {
+          "Trina Mukherjee": "friend of",
+          "Joji": "friend"
+        }
+      ],
+      "Gender": {
+        "Badebhai": "Male",
+        "Trina Mukherjee": "Female",
+        "Nityananda Mukherjee": "Male",
+        "Sanju": "Male",
+        "Joji": "Male"
+      },
+      "Age difference": {
+        "Badebhai and Trina Mukherjee": "Older",
+        "Trina Mukherjee and Nityananda Mukherjee": "Older",
+        "Trina Mukherjee and Sanju": "Same age",
+        "Trina Mukherjee and Joji": "Same age"
+      },
+      "Power": [
+        {
+          "subject": "Badebhai",
+          "relation": "Superior to",
+          "object": "Trina Mukherjee"
+        },
+        {
+          "subject": "Nityananda Mukherjee",
+          "relation": "Superior to",
+          "object": "Badebhai"
+        },
+        {
+          "subject": "Trina Mukherjee",
+          "relation": "Equal power",
+          "object": "Sanju"
+        },
+        {
+          "subject": "Trina Mukherjee",
+          "relation": "Equal power",
+          "object": "Joji"
+        }
+      ],
+      "Location": "Inside the godown",
+      "Familiarity Level": {
+        "Badebhai and Trina Mukherjee": "Non familiar",
+        "Trina Mukherjee and Nityananda Mukherjee": "Familiar",
+        "Trina Mukherjee and Sanju": "Familiar",
+        "Trina Mukherjee and Joji": "Familiar"
+      }
+    }
+  }
+]

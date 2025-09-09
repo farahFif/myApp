@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import "./index.css"; // <-- must import Tailwind here
 import task_fr from "./task_fr.json";
 import task_ar from "./task_ar.json";
+import task_hi from "./task_hi.json";
+import task_bn from "./task_bn.json";
 
 const scoringConfig = {
   default: [0, 1, 2],
@@ -64,7 +66,9 @@ export default function App() {
   //   const task = tasks[index].data;
   const tasksByLang = {
     French: task_fr,
-    Arabic: task_ar
+    Arabic: task_ar,
+    Hindi: task_hi,
+    Bengali: task_bn
   };
   const tasks = language ? tasksByLang[language] || [] : [];
   const task = tasks[index]?.data;
