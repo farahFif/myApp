@@ -6,7 +6,6 @@ import task_ar from "./task_ar.json";
 import task_hi from "./task_hi.json";
 import task_bn from "./task_bn.json";
 
-
 const scoringConfig = {
   default: [0, 1, 2],
   dialogues: [0,1,2],
@@ -26,57 +25,68 @@ const scoringConfig = {
   Education: [0,1]
 };
 const renderRelationships = (relationships) => {
-  return relationships.map((rel, i) => {
-    const entries = Object.entries(rel);
-    if (entries.length === 2) {
-      const [[subj, relation], [obj, inverse]] = entries;
-      return (
-        <div key={i} style={{ marginBottom: "6px" }}>
-          {subj} <strong>{relation}</strong> {obj}
-        </div>
-      );
-    } else {
-      // fallback if the object isn’t exactly two entries
-      return (
-        <div key={i}>
-          {entries.map(([k, v]) => (
-            <div key={k}>
-              {k} <strong>{v}</strong>
+  if (!relationships) return null;
+
+  // Case 1: Flat array of 3 elements
+  if (
+    Array.isArray(relationships) &&
+    relationships.length === 3 &&
+    relationships.every((r) => typeof r === "string")
+  ) {
+    const [subject, relation, object] = relationships;
+    return (
+      <div>
+        {subject} <strong>{relation}</strong> {object}
+      </div>
+    );
+  }
+
+  // Case 2: Array of objects
+  if (Array.isArray(relationships)) {
+    return relationships.map((rel, i) => {
+      if (typeof rel === "object" && rel !== null) {
+        const entries = Object.entries(rel);
+        // Pair them in subject -> relation -> object form
+        if (entries.length === 2) {
+          const [subj, rel1] = entries[0];
+          const [obj, rel2] = entries[1];
+          return (
+            <div key={i}>
+              {subj} <strong>{rel1}</strong> {obj}
             </div>
-          ))}
-        </div>
-      );
-    }
-  });
+          );
+        }
+        return (
+          <div key={i}>
+            {JSON.stringify(rel)}
+          </div>
+        );
+      }
+      return <div key={i}>{String(rel)}</div>;
+    });
+  }
+
+  // Fallback for unexpected shapes
+  return <div>{JSON.stringify(relationships)}</div>;
 };
 
-const renderValue = (val) => {
-  if (Array.isArray(val)) {
-    return val.map((item, i) =>
-      typeof item === "object" ? (
-        <div key={i} style={{ marginLeft: "15px" }}>
-          {Object.entries(item).map(([k, v]) => (
-            <div key={k}>
-              <strong>{k}:</strong> {v}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div key={i}>{item}</div>
-      )
-    );
-  } else if (typeof val === "object" && val !== null) {
+const renderPower = (power) => {
+  if (Array.isArray(power)) {
+    // if it's a list of power relations
+    return power.map((p, i) => (
+      <div key={i} style={{ marginBottom: "6px" }}>
+        {p.subject} <strong>{p.relation}</strong> {p.object}
+      </div>
+    ));
+  } else if (typeof power === "object" && power !== null) {
+    // single relation object
     return (
-      <div style={{ marginLeft: "15px" }}>
-        {Object.entries(val).map(([k, v]) => (
-          <div key={k}>
-            <strong>{k}:</strong> {v}
-          </div>
-        ))}
+      <div>
+        {power.subject} <strong>{power.relation}</strong> {power.object}
       </div>
     );
   } else {
-    return val;
+    return String(power);
   }
 };
 
@@ -333,12 +343,9 @@ export default function App() {
                     return (
                       <div key={attrKey} style={{ marginBottom: "10px" }}>
                         <strong>{attrKey}:</strong>{" "}
-                       {Array.isArray(value)
-                          ? value.join(", ")
-                          : typeof value === "object"
-                          ? JSON.stringify(value)
-                          : value}
-
+                        {Array.isArray(attrValue)
+                          ? attrValue.join(", ")
+                          : attrValue}
                         <div style={{ marginLeft: "10px", marginTop: "10px" }}>
                           <ScoreSelect
                             taskIndex={index}
@@ -371,7 +378,17 @@ export default function App() {
             }}
           >
             <strong>{key}:</strong>{" "}
-            {key === "Relationships" ? renderRelationships(value) : renderValue(value)}
+            {key === "Relationships" ? (
+              renderRelationships(value)
+            )  : key === "Power" ? (
+                renderPower(value)
+            ): Array.isArray(value) ? (
+              value.join(", ")
+            ) : typeof value === "object" ? (
+              JSON.stringify(value)
+            ) : (
+              value
+            )}
             <div style={{ marginLeft: "10px", marginTop: "10px" }}>
               <ScoreSelect
                 taskIndex={index}
