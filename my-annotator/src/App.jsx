@@ -6,6 +6,7 @@ import task_ar from "./task_ar.json";
 import task_hi from "./task_hi.json";
 import task_bn from "./task_bn.json";
 
+
 const scoringConfig = {
   default: [0, 1, 2],
   dialogues: [0,1,2],
@@ -23,6 +24,60 @@ const scoringConfig = {
   Country: [0,1],
   Fame: [0,1],
   Education: [0,1]
+};
+const renderRelationships = (relationships) => {
+  return relationships.map((rel, i) => {
+    const entries = Object.entries(rel);
+    if (entries.length === 2) {
+      const [[subj, relation], [obj, inverse]] = entries;
+      return (
+        <div key={i} style={{ marginBottom: "6px" }}>
+          {subj} <strong>{relation}</strong> {obj}
+        </div>
+      );
+    } else {
+      // fallback if the object isn’t exactly two entries
+      return (
+        <div key={i}>
+          {entries.map(([k, v]) => (
+            <div key={k}>
+              {k} <strong>{v}</strong>
+            </div>
+          ))}
+        </div>
+      );
+    }
+  });
+};
+
+const renderValue = (val) => {
+  if (Array.isArray(val)) {
+    return val.map((item, i) =>
+      typeof item === "object" ? (
+        <div key={i} style={{ marginLeft: "15px" }}>
+          {Object.entries(item).map(([k, v]) => (
+            <div key={k}>
+              <strong>{k}:</strong> {v}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div key={i}>{item}</div>
+      )
+    );
+  } else if (typeof val === "object" && val !== null) {
+    return (
+      <div style={{ marginLeft: "15px" }}>
+        {Object.entries(val).map(([k, v]) => (
+          <div key={k}>
+            <strong>{k}:</strong> {v}
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    return val;
+  }
 };
 
 function ScoreSelect({ taskIndex, field, subField, value, onChange }) {
@@ -278,9 +333,12 @@ export default function App() {
                     return (
                       <div key={attrKey} style={{ marginBottom: "10px" }}>
                         <strong>{attrKey}:</strong>{" "}
-                        {Array.isArray(attrValue)
-                          ? attrValue.join(", ")
-                          : attrValue}
+                       {Array.isArray(value)
+                          ? value.join(", ")
+                          : typeof value === "object"
+                          ? JSON.stringify(value)
+                          : value}
+
                         <div style={{ marginLeft: "10px", marginTop: "10px" }}>
                           <ScoreSelect
                             taskIndex={index}
@@ -313,11 +371,7 @@ export default function App() {
             }}
           >
             <strong>{key}:</strong>{" "}
-            {Array.isArray(value)
-              ? value.join(", ")
-              : typeof value === "object"
-              ? JSON.stringify(value)
-              : value}
+            {key === "Relationships" ? renderRelationships(value) : renderValue(value)}
             <div style={{ marginLeft: "10px", marginTop: "10px" }}>
               <ScoreSelect
                 taskIndex={index}
