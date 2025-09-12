@@ -307,7 +307,7 @@ export default function App() {
     }}
   >
     <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-      <h3 style={{ margin: 0 }}>Memory</h3>
+      <h3 style={{ margin: 0 }}>Summary</h3>
       <ScoreSelect
         field="memory"
         subField={null}
