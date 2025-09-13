@@ -412,7 +412,7 @@ export default function App() {
         </button>
         <button
           onClick={() => setIndex(Math.min(tasks.length - 1, index + 1))}
-          disabled={isTaskComplete() || index === tasks.length - 1}
+          disabled={!isTaskComplete() || index === tasks.length - 1}
           style={{ marginLeft: "10px", opacity: !isTaskComplete() ? 0.5 : 1 }}
         >
           Next
