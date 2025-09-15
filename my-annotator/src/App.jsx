@@ -156,7 +156,15 @@ export default function App() {
       }
     }));
   };
-
+  const handleRemarkChange = (value) => {
+      setScores((prev) => ({
+        ...prev,
+        [index]: {
+          ...prev[index],
+          remark: value
+        }
+      }));
+    };
   // --- NEW FUNCTION: check if all scores are filled for current task
   const isTaskComplete = () => {
     const taskScores = scores[index] || {};
@@ -348,13 +356,13 @@ export default function App() {
                           : attrValue}
                         <div style={{ marginLeft: "10px", marginTop: "10px" }}>
                           <ScoreSelect
-                            taskIndex={index}
-                            field={`profiles_${i}`}
-                            subField={attrKey}
-                            value={
-                              scores[index]?.[`profiles_${i}`]?.[attrKey] || ""
-                            }
-                            onChange={handleScoreChange}
+                              taskIndex={index}
+                              field={profile.Name}   // use name instead of profiles_0
+                              subField={attrKey}
+                              value={
+                                scores[index]?.[profile.Name]?.[attrKey] || ""
+                              }
+                              onChange={handleScoreChange}
                           />
                         </div>
                       </div>
@@ -401,6 +409,22 @@ export default function App() {
           </div>
         );
       })}
+    <div style={{ marginTop: "20px" }}>
+      <h3>Remark / Feedback</h3>
+      <textarea
+        value={scores[index]?.remark || ""}
+        onChange={(e) => handleRemarkChange(e.target.value)}
+        placeholder="Write your feedback here..."
+        style={{
+          width: "100%",
+          minHeight: "80px",
+          padding: "8px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          resize: "vertical"
+        }}
+      />
+    </div>
 
       {/* --- Navigation --- */}
       <div style={{ marginTop: "20px" }}>
