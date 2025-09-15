@@ -166,43 +166,46 @@ export default function App() {
       }));
     };
   // --- NEW FUNCTION: check if all scores are filled for current task
-  const isTaskComplete = () => {
-    const taskScores = scores[index] || {};
+    const isTaskComplete = () => {
+      const taskScores = scores[index] || {};
 
-    // 1. Dialogues overall score
-    if (task.dialogues && !taskScores.dialogues_overall) return false;
+      // 1. Dialogues overall score
+      if (task.dialogues && !taskScores.dialogues_overall) return false;
 
-    // 2. Memory score
-    if (task.memory && !taskScores.memory) return false;
+      // 2. Memory score
+      if (task.memory && !taskScores.memory) return false;
 
-    // 3. Profiles
-    if (task.profiles) {
-      for (let i = 0; i < task.profiles.length; i++) {
-        const profile = task.profiles[i];
-        const profileScores = taskScores[`profiles_${i}`] || {};
-        for (let key of Object.keys(profile)) {
-          if (key === "Name") continue;
-          if (
-            profileScores[key] === undefined ||
-            profileScores[key] === ""
-          )
-            return false;
+      // 3. Profiles
+      if (task.profiles) {
+        for (let i = 0; i < task.profiles.length; i++) {
+          const profile = task.profiles[i];
+          const profileScores = taskScores[profile.Name] || {};
+          for (let key of Object.keys(profile)) {
+            if (key === "Name") continue;
+            if (
+              profileScores[key] === undefined ||
+              profileScores[key] === ""
+            ) {
+              return false;
+            }
+          }
         }
       }
-    }
 
-    // 4. Other scored fields (everything else except dialogues, memory, profiles)
-    for (let key of Object.keys(task)) {
-      if (["dialogues", "memory", "profiles"].includes(key)) continue;
-      if (
-        taskScores[key] === undefined ||
-        taskScores[key] === ""
-      )
-        return false;
-    }
+      // 4. Other scored fields (everything else except dialogues, memory, profiles, remark)
+      for (let key of Object.keys(task)) {
+        if (["dialogues", "memory", "profiles", "remark"].includes(key)) continue;
+        if (
+          taskScores[key] === undefined ||
+          taskScores[key] === ""
+        ) {
+          return false;
+        }
+      }
 
-    return true;
-  };
+      return true;
+    };
+
 
   const handleExport = () => {
     const blob = new Blob([JSON.stringify(scores, null, 2)], {
