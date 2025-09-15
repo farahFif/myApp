@@ -191,6 +191,164 @@
   {
     "data": {
       "dialogues": [
+        "مختار: يال اللى بعده",
+        "عوض: أنا مش عارف انت مشغل معاك عفاريت يجيبولك الزهر اللى انت عايزه ولا أيه",
+        "مختار: ابتدينا بقى فى الوصلة اللى مابتشبعش منها",
+        "توفيق: أهو اللى بيعرف يروقك وصل",
+        "خالد: معلش أنا مش جاى ألعب",
+        "توفيق: ده كلام بابشمهندس.. والله ما هتمشى من هنا غير لما تروقه",
+        "مختار: ماتقعد ألعب ولا خايف",
+        "خالد: أنا جاى أخد منك المفتاح عشان نسيته فى الشغل",
+        "مختار: سالمة عقلك يا بني.. طب أقعد نلعب عشرة وبعدين نتحرك مع بعض",
+        "خالد: ياسيدي أنا مش عايز ألعب.. اديني المفتاح وقعد العب انت براحتك",
+        "توفيق: ماهو مش هنسيبك تمشى يا بشمهندس غير لما تقعد وتروقه",
+        "مختار: قعد بقى.. عشان خاطر الناس العشمانين فيك دول.. عشان أوريهم انها جات معاك حظ وانك مالكش فيها زيهم بالظبط",
+        "خالد: طب أنا كنت عايز أخلي شكلك حلو قدام الناس بدل ما أبهدلك تاني قدامهم",
+        "مختار: قعد ألعب من غير كلام كتير بس",
+        "توفيق: يا جمعة تعالي نزل هنا مشاريب ع الخسران",
+        "توفيق: أيه يابشمهندس اللى جرالك.. وأحنا اللى قولنا خالص فى حد عرف يوقفه",
+        "خالد: حظه عالي.. لولا الدبش اللى جاله كنت زماني مبهدله",
+        "مختار: حتى انت هتعمل زيهم وتجيبها فى الحظ عشان تعرف بس ان مرضيتش أتك عليك واكسفك فى أول زيارة ليك",
+        "خالد: ممكن المفتاح عشان عايز أروح",
+        "مختار: أنا قايم مروح معاك"
+      ],
+      "memory": "خالد يذهب لاستعادة مفتاحه من مختار، لكنه يجد نفسه مضطراً للعب الطاولة معه وسط أجواء مرحة على المقهى. مختار يظهر مهارته في اللعبة، مما يثير إعجاب الحاضرين. خالد يشعر بالضيق من الخسارة، لكن العلاقة بينهما تتطور بشكل غير مباشر من خلال هذا التفاعل.",
+      "profiles": [
+        {
+          "Name": "مختار",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Islam",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Pride",
+            "Happiness"
+          ],
+          "Power status": [
+            "Expert",
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "عوض",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Islam",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Surprise",
+            "Frustration"
+          ],
+          "Power status": "NA"
+        },
+        {
+          "Name": "توفيق",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Widowed",
+          "Social position": "Middle",
+          "Religion": "Muslim",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Happiness",
+            "Pride"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "خالد",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Engineer",
+          "Marital status": "NA",
+          "Social position": "High",
+          "Religion": "Islam",
+          "Ethnicity": "Arab",
+          "Country": "Egypt",
+          "Fame": "No",
+          "Education": "Bachelor",
+          "Emotional status": [
+            "Frustration",
+            "Resentment"
+          ],
+          "Power status": [
+            "Legitimate/Legal",
+            "Expert"
+          ]
+        }
+      ],
+      "Social Setting": "Cafe gathering",
+      "Speakers": [
+        "مختار",
+        "عوض",
+        "توفيق",
+        "خالد"
+      ],
+      "Relationships": {
+        "مختار and عوض": "Friend",
+        "مختار and توفيق": "Friend",
+        "مختار and خالد": "Acquaintance",
+        "عوض and توفيق": "Friend",
+        "عوض and خالد": "Acquaintance",
+        "توفيق and خالد": "Acquaintance"
+      },
+      "Gender": {
+        "مختار": "Male",
+        "عوض": "Male",
+        "توفيق": "Male",
+        "خالد": "Male"
+      },
+      "Age difference": {
+        "مختار and عوض": "Same age",
+        "مختار and توفيق": "Same age",
+        "مختار and خالد": "Older",
+        "عوض and توفيق": "Same age",
+        "عوض and خالد": "Older",
+        "توفيق and خالد": "Older"
+      },
+      "Power": {
+        "مختار and خالد": "Superior to",
+        "مختار and عوض": "Equal power",
+        "مختار and توفيق": "Equal power",
+        "توفيق and خالد": "Superior to",
+        "عوض and خالد": "Neutral"
+      },
+      "Location": "Cafe",
+      "Familiarity Level": {
+        "مختار and عوض": "Familiar",
+        "مختار and توفيق": "Familiar",
+        "مختار and خالد": "Moderate familiarity",
+        "عوض and توفيق": "Familiar",
+        "عوض and خالد": "Moderate familiarity",
+        "توفيق and خالد": "Moderate familiarity"
+      }
+    }
+  },
+  {
+    "data": {
+      "dialogues": [
         "مختار: أيه اللى كان الزم يحصل من زمان",
         "ياسين: أنت ازاى أصلاً تدى نفسك الحق انك تدخل فى حياتى وتفتح الجوابات اللى كانت بتجيلك منها",
         "مختار: وأنا اللى بحسبك كنت هتيجى تشكرنى عشان حافظتلك على الخيط اللى لسه مابينك وبينها",
