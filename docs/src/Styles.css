@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --bg:#f4f5f7;           /* light background */
   --card:#ffffff;         /* white cards */
