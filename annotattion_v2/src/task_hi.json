@@ -1,0 +1,699 @@
+[
+  {
+    "data": {
+      "Formality": "Informal",
+      "SUNITA-Honorifics": "No",
+      "SUNITA-Politeness": "No",
+      "HARISH-Honorifics": "No",
+      "HARISH-Politeness": "No",
+      "dialogues": [
+        "SUNITA: Dharmendar, khana utha lo!",
+        "SUNITA: Aur suno.. aloo ubal gaye honge toh yahaan le aana. Bathroom saaf kiya?",
+        "SUNITA: Phenyl daala?",
+        "SUNITA: Paper chhod kar inpe thoda dhyan doge? Ek hafte se bus marne ki rehearsal kar rahe hain.",
+        "HARISH: Ab is umar mein kya samjhaun? Aur ye bhindi account papers pe.. Hatao yaar, saara masala lag raha hai!",
+        "SUNITA: Bus Account papers hi hain, paise kab aaenge bhagavan jaane.",
+        "HARISH: Jab tum taane marna band karogi na toh apne aap aa jayeinge..",
+        "HARISH: Din mein hazaar baar bolta hun tv ko main switch se band karo..",
+        "SUNITA: Haan, ghar se light pankhe niklva dete hain, bijli ka bill aayega hi nahin!",
+        "SUNITA: Plumber ko bulaya?",
+        "SUNITA: Teen din se bathroom leek kara raha hai.. Magar jab tak ghar swimming pool nahin ban jata tumhein kya farak padta hai..",
+        "SUNITA: Phir se.. Dharmendar! Jaake dekho!",
+        "SUNITA: Parson chaati par tumator ka sauce laga ke lawn mein so gaye thhe."
+      ],
+      "memory": "The scene introduces the Kapoor family dynamics, focusing on Grand Dad, Harish, Sunita, and their servant Dharmendar. Grand Dad humorously reflects on his mortality and rehearses for his death, while Sunita and Harish display a casual and indifferent attitude toward his antics. The family appears to be dealing with financial struggles, evident from their discussions about bills and household repairs. Sunita and Harish's interactions reveal a strained relationship, with Sunita's sarcastic remarks and Harish's frustration over finances. The family's dog, Geishu, adds a lighthearted touch to the scene.",
+      "Social Setting": "Family household discussion",
+      "Speakers": [
+        "Sunita",
+        "Harish",
+        "Dharmendar"
+      ],
+      "Relationships": [
+        {
+          "Sunita": "wife of",
+          "Harish": "husband of"
+        },
+        {
+          "Sunita": "employer of",
+          "Dharmendar": "employee of"
+        },
+        {
+          "Harish": "employer of",
+          "Dharmendar": "employee of"
+        }
+      ],
+      "Gender": {
+        "Sunita": "Female",
+        "Harish": "Male",
+        "Dharmendar": "Male"
+      },
+      "Age difference": {
+        "Sunita and Harish": "Same age",
+        "Sunita and Dharmendar": "Older",
+        "Harish and Dharmendar": "Older"
+      },
+      "Power": [
+        {
+          "subject": "Sunita",
+          "relation": "Equal power",
+          "object": "Harish"
+        },
+        {
+          "subject": "Sunita",
+          "relation": "Superior to",
+          "object": "Dharmendar"
+        },
+        {
+          "subject": "Harish",
+          "relation": "Superior to",
+          "object": "Dharmendar"
+        }
+      ],
+      "Location": "Kapoor family home",
+      "Familiarity Level": {
+        "Sunita and Harish": "Familiar",
+        "Sunita and Dharmendar": "Familiar",
+        "Harish and Dharmendar": "Familiar"
+      },
+      "profiles": [
+        {
+          "Name": "Sunita",
+          "Gender": "Female",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Homemaker",
+          "Marital status": "Married",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Resentment",
+            "Worry",
+            "Disgust"
+          ],
+          "Power status": [
+            "Referent/Charismatic",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Harish",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Married",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Resentment",
+            "Worry"
+          ],
+          "Power status": [
+            "Referent/Charismatic",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Dharmendar",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Servant",
+          "Marital status": "NA",
+          "Social position": "Low",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "NA"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "data": {
+      "Formality": "Semi-formal",
+      "RAHUL-Honorifics": "Yes",
+      "RAHUL-Politeness": "Yes",
+      "FATHER-Honorifics": "Yes",
+      "FATHER-Politeness": "Yes",
+      "MOTHER-Honorifics": "Yes",
+      "MOTHER-Politeness": "Yes",
+      "ARJUN-Honorifics": "No",
+      "ARJUN-Politeness": "Yes",
+      "dialogues": [
+        "RAHUL: Kahaan ho aap log? Haan, hum toh pahunch gaye... Kahaan?",
+        "RAHUL: How’s dadu?",
+        "FATHER: Better hain par do-teen din aur observation mein rahenge...",
+        "MOTHER: Ab umar ho gayi hai beta..",
+        "ARJUN: Abhi mil sakte hain?",
+        "FATHER: Nahin, visting hours khatam ho gaye hain--",
+        "MOTHER: Tum dono subeh chale jaana.",
+        "FATHER: --Aaj raat main wahaan reh loonga.",
+        "ARJUN: Chachu kab aa rahe hain?",
+        "MOTHER: Unse contact hi nahi kar pa rahe..",
+        "FATHER: Arrey woh do hafte ki chutti pe cruise pe gaya hai aur ab contact nahin ho pa raha..",
+        "MOTHER: Pata nahin kb netwrok lagega.. Tum dono ko bhookh lagi hai? Dinner is ready.",
+        "MOTHER: Oh god! Kisne floor mat par joote saaf nahin kiye?",
+        "RAHUL: Not me maa.",
+        "ARJUN: Geishu, kya kar raha hai, sab kuch ganda kar diya.",
+        "MOTHER: Very funny Arjun, rules nahin badle.",
+        "FATHER: Welcome back home!",
+        "ARJUN: Bhindi?",
+        "MOTHER: Sorry, hadbadi mein rajma bhigona bhool gayi. Par tumhara favorite nimbu achaar hai na!",
+        "RAHUL: Love it!! Thanks Ma."
+      ],
+      "memory": "Rahul and Arjun arrive at their family home, where they reunite with their parents. The family discusses Grand Dad's condition, revealing that he is stable but still in the ICU. The parents share updates about other relatives, including an uncle who is unreachable due to being on a cruise. The brothers settle into their childhood home, with Rahul expressing gratitude for the food and Arjun showing mild frustration over the unchanged environment. The family dynamics continue to reflect a mix of casual affection and underlying tensions.",
+      "Social Setting": "Family reunion",
+      "Speakers": [
+        "Rahul",
+        "Arjun",
+        "Father",
+        "Mother"
+      ],
+      "Relationships": [
+        {
+          "Rahul": "son of",
+          "Mother": "Mother"
+        },
+        {
+          "Rahul": "son of",
+          "Father": "Father"
+        },
+        {
+          "Arjun": "son of",
+          "Mother": "Mother"
+        },
+        {
+          "Arjun": "son of",
+          "Father": "Father"
+        },
+        {
+          "Rahul": "brother of",
+          "Arjun": "Arjun"
+        },
+        {
+          "Mother": "wife of",
+          "Father": "Father"
+        }
+      ],
+      "Gender": {
+        "Rahul": "Male",
+        "Arjun": "Male",
+        "Father": "Male",
+        "Mother": "Female"
+      },
+      "Age difference": {
+        "Rahul and Arjun": "Same age",
+        "Rahul and Father": "Younger",
+        "Rahul and Mother": "Younger",
+        "Arjun and Father": "Younger",
+        "Arjun and Mother": "Younger",
+        "Father and Mother": "NA"
+      },
+      "Power": [
+        {
+          "subject": "Father",
+          "relation": "Superior to",
+          "object": "Rahul"
+        },
+        {
+          "subject": "Father",
+          "relation": "Superior to",
+          "object": "Arjun"
+        },
+        {
+          "subject": "Mother",
+          "relation": "Superior to",
+          "object": "Rahul"
+        },
+        {
+          "subject": "Mother",
+          "relation": "Superior to",
+          "object": "Arjun"
+        },
+        {
+          "subject": "Rahul",
+          "relation": "Equal power",
+          "object": "Arjun"
+        },
+        {
+          "subject": "Father",
+          "relation": "Equal power",
+          "object": "Mother"
+        }
+      ],
+      "Location": "Family home",
+      "Familiarity Level": {
+        "Rahul and Arjun": "Familiar",
+        "Rahul and Father": "Familiar",
+        "Rahul and Mother": "Familiar",
+        "Arjun and Father": "Familiar",
+        "Arjun and Mother": "Familiar",
+        "Father and Mother": "Familiar"
+      },
+      "profiles": [
+        {
+          "Name": "Rahul",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Writer",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "Graduate",
+          "Emotional status": [
+            "Gratitude",
+            "Love"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Arjun",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Father",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Married",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Worry",
+            "Compassion"
+          ],
+          "Power status": [
+            "Legitimate/Legal"
+          ]
+        },
+        {
+          "Name": "Mother",
+          "Gender": "Female",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "Homemaker",
+          "Marital status": "Married",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Love",
+            "Compassion"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "data": {
+      "Formality": "Informal",
+      "RAHUL-Honorifics": "No",
+      "RAHUL-Politeness": "No",
+      "ARJUN-Honorifics": "No",
+      "ARJUN-Politeness": "No",
+      "dialogues": [
+        "RAHUL: I guess I’m good at other stuff.. Chahe toh tujhe kuch techniques sikha doon..",
+        "ARJUN: Chhod, aaj main tujhe kuch sikhata hoon.",
+        "RAHUL: Music kum kar.. you’re distracting me--",
+        "ARJUN: Yeh khataara bees ke upar chalti hai. Chinta chhod accelerator daba.",
+        "RAHUL: Shut up Arjun.",
+        "ARJUN: What the-- C’mon, uss gaadi ko overtake kar.",
+        "RAHUL: Arjun! Rehne de.",
+        "ARJUN: C’mon, accelerator daba, daba, daba!",
+        "RAHUL: Yeh kya hai?",
+        "ARJUN: --shhh, aaram se overtake kar...",
+        "RAHUL: Oh my God.. Oh my God... Uski shakal dekhi tuney!!"
+      ],
+      "memory": "Rahul and Arjun share a playful yet reckless moment in the car, showcasing their brotherly bond and Arjun's carefree attitude. The scene escalates as they engage in risky driving, overtaking another car and laughing uncontrollably, but it ends in a crash into a tree, highlighting the consequences of their impulsive behavior.",
+      "Social Setting": "Car ride",
+      "Speakers": [
+        "Rahul",
+        "Arjun"
+      ],
+      "Relationships": [
+        "Rahul",
+        "brother of",
+        "Arjun"
+      ],
+      "Gender": {
+        "Rahul": "Male",
+        "Arjun": "Male"
+      },
+      "Age difference": {
+        "Rahul and Arjun": "Same age"
+      },
+      "Power": [
+        {
+          "subject": "Rahul",
+          "relation": "Equal power",
+          "object": "Arjun"
+        },
+        {
+          "subject": "Arjun",
+          "relation": "Equal power",
+          "object": "Rahul"
+        }
+      ],
+      "Location": "Inside a car",
+      "Familiarity level": {
+        "Rahul and Arjun": "Familiar"
+      },
+      "profiles": [
+        {
+          "Name": "Rahul",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Author",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "Bachelor",
+          "Emotional status": [
+            "Frustration",
+            "Surprise",
+            "Happiness"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Arjun",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Happiness",
+            "Excitement",
+            "Carelessness"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "data": {
+      "Formality": "Informal",
+      "RAHUL-Honorifics": "No",
+      "RAHUL-Politeness": "No",
+      "ARJUN-Honorifics": "No",
+      "ARJUN-Politeness": "No",
+      "DHARAMENDRA-Honorifics": "No",
+      "DHARAMENDRA-Politeness": "Yes",
+      "dialogues": [
+        "RAHUL: Aise hi chala jayega.. Bina kisi se baat kiye.",
+        "RAHUL: Mom ko humari zaroorat hai Arjun.",
+        "ARJUN: Mom ko humari nahin tumhari zaroorat hai.",
+        "RAHUL: Mujh se toh woh baat bhi nahin kar rahi.. Aur shaayad kabhi nahin karengi.",
+        "ARJUN: Nothing you can do will ever disappoint her.",
+        "RAHUL: What if I told you I have lied to her my whole life, and I’ve no interest in Tia or any other girl for that matter?",
+        "RAHUL: You don’t have to say anything.. Just stay back a little longer.",
+        "ARJUN: I can’t. I need sometime.",
+        "DHARAMENDRA: Taxi aa gayi hai."
+      ],
+      "memory": "Rahul pleads with Arjun to stay, revealing his lifelong secret about his true identity and lack of interest in Tia or any other girl. Arjun, overwhelmed, acknowledges Rahul's struggles but decides he needs time away, leaving the family once again fractured. Rahul is left alone, grappling with his emotions and the weight of his revelations.",
+      "Social Setting": "Family discussion",
+      "Speakers": [
+        "Rahul",
+        "Arjun",
+        "Dharamendra"
+      ],
+      "Relationships": [
+        {
+          "Rahul": "Brother of",
+          "Arjun": "Brother"
+        },
+        {
+          "Dharamendra": "Taxi driver for",
+          "Rahul": "NA"
+        },
+        {
+          "Dharamendra": "Taxi driver for",
+          "Arjun": "NA"
+        }
+      ],
+      "Gender": {
+        "Rahul": "Male",
+        "Arjun": "Male",
+        "Dharamendra": "Male"
+      },
+      "Age difference": {
+        "Rahul and Arjun": "Same age",
+        "Rahul and Dharamendra": "Older",
+        "Arjun and Dharamendra": "Older"
+      },
+      "Power": [
+        {
+          "subject": "Rahul",
+          "relation": "Equal power",
+          "object": "Arjun"
+        },
+        {
+          "subject": "Dharamendra",
+          "relation": "Subordinate to",
+          "object": "Rahul"
+        },
+        {
+          "subject": "Dharamendra",
+          "relation": "Subordinate to",
+          "object": "Arjun"
+        }
+      ],
+      "Location": "Family home",
+      "Familiarity Level": {
+        "Rahul and Arjun": "Familiar",
+        "Rahul and Dharamendra": "Moderate familiarity",
+        "Arjun and Dharamendra": "Moderate familiarity"
+      },
+      "profiles": [
+        {
+          "Name": "Rahul",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Author",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "Bachelor",
+          "Emotional status": [
+            "Sadness",
+            "Guilt",
+            "Anxiety",
+            "Frustration"
+          ],
+          "Power status": [
+            "Referent/Charismatic",
+            "Informational"
+          ]
+        },
+        {
+          "Name": "Arjun",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Compassion",
+            "Sadness",
+            "Anxiety"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "Dharamendra",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "NA",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "Indian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "NA"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "data": {
+      "Formality": "Informal",
+      "ARJUN-Honorifics": "No",
+      "ARJUN-Politeness": "Yes",
+      "TIA-Honorifics": "No",
+      "TIA-Politeness": "Yes",
+      "dialogues": [
+        "ARJUN: Mujhe laga tum aaogi nahin.",
+        "TIA: Mujhe laga tum phone nahin karoge.",
+        "ARJUN: T you know, dad ki death se pehle main tumhara dard samjh to gaya tha, magar aaj mehsoos bhi kar paa raha hun...",
+        "TIA: Hey.. I know how you feel..",
+        "ARJUN: Apnon se door bhaagte bhaagte thak gaya hun main..",
+        "TIA: Toh laut aao na.. Sab yahin hain.. Jahan the..",
+        "ARJUN: I missed you."
+      ],
+      "memory": "Arjun meets Tia at her bungalow, and they share an emotional conversation. Arjun opens up about his exhaustion from running away from his loved ones and expresses his understanding of Tia's pain. Tia encourages him to return to his family, and the moment culminates in a kiss, signifying a rekindling of their bond.",
+      "Social Setting": "Emotional conversation",
+      "Speakers": [
+        "Arjun",
+        "Tia"
+      ],
+      "Relationships": [
+        "Arjun",
+        "friend of",
+        "Tia"
+      ],
+      "Gender": {
+        "Arjun": "Male",
+        "Tia": "Female"
+      },
+      "Age difference": {
+        "Arjun and Tia": "Same age"
+      },
+      "Power": [
+        {
+          "subject": "Arjun",
+          "relation": "Equal power",
+          "object": "Tia"
+        }
+      ],
+      "Location": "Tia's bungalow",
+      "Familiarity Level": {
+        "Arjun and Tia": "Familiar"
+      },
+      "profiles": [
+        {
+          "Name": "Arjun",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Sadness",
+            "Compassion",
+            "Love",
+            "Nostalgia",
+            "Hope"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "Tia",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "Property owner",
+          "Marital status": "Single",
+          "Social position": "High",
+          "Religion": "Hindu",
+          "Ethnicity": "South Asian",
+          "Country": "India",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Compassion",
+            "Love",
+            "Hope"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        }
+      ]
+    }
+  }
+]
