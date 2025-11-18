@@ -1,0 +1,215 @@
+[
+  {
+    "data": {
+      "Social Setting": "Private interaction in a bedroom",
+      "Speakers": [
+        "Irène",
+        "Jacques"
+      ],
+      "Relationships": [
+        "Irène",
+        "partner of",
+        "Jacques"
+      ],
+      "Gender": {
+        "Irène": "Female",
+        "Jacques": "Male"
+      },
+      "Age difference": {
+        "Irène and Jacques": "Older"
+      },
+      "Power": {
+        "subject": "Jacques",
+        "relation": "Superior to",
+        "object": "Irène"
+      },
+      "Location": "Bedroom",
+      "Familiarity Level": {
+        "Irène and Jacques": "Familiar"
+      },
+      "Formality": "Informal",
+      "IRENE-Honorifics": "No",
+      "IRENE-Politeness": "Yes",
+      "LA JEUNE FEMME-Honorifics": "No",
+      "LA JEUNE FEMME-Politeness": "No",
+      "JACQUES-Honorifics": "No",
+      "JACQUES-Politeness": "Yes",
+      "profiles": [
+        {
+          "Name": "Irène",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Middle",
+          "Religion": "NA",
+          "Ethnicity": "NA",
+          "Country": "France",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Frustration",
+            "Compassion",
+            "Love",
+            "Disappointment"
+          ],
+          "Power status": [
+            "NA"
+          ]
+        },
+        {
+          "Name": "Jacques",
+          "Gender": "Male",
+          "Age Group": "Middle-aged adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "High",
+          "Religion": "Christianity",
+          "Ethnicity": "White",
+          "Country": "France",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Disgust",
+            "Embarrassment",
+            "Love",
+            "Guilt"
+          ],
+          "Power status": [
+            "Reward-based",
+            "Symbolic"
+          ]
+        }
+      ],
+      "dialogues": [
+        "IRENE: Jacques? …Chéri?",
+        "LA JEUNE FEMME: C’est pas vrai!",
+        "JACQUES: Irène?",
+        "IRENE: Lève toi, allez, viens sur le lit. Allez!",
+        "IRENE: Ca va?",
+        "JACQUES: Très bien mon ange, et toi?",
+        "IRENE: Mais t’es ivre mort!",
+        "JACQUES: Tu as mis trois heures à te préparer aussi.",
+        "IRENE: T’as vu tout ce que t’as bu!",
+        "JACQUES: T’inquiètes pas... C’est des toutes petites bouteilles…",
+        "IRENE: T’aurais pu faire un effort aujourd’hui.",
+        "JACQUES: Ne m’engueule pas ma chérie… Je ne supporte pas la sévérité.",
+        "IRENE: Bien sûr…",
+        "IRENE: Bouge pas, j’en mets un deuxième.",
+        "JACQUES: Merci… Deux minutes et je suis à toi... Tu vas voir, mon cœur, j’ai réservé dans un très bon restaurant.",
+        "IRENE: Où ça?",
+        "JACQUES: Ah… Merde… J’ai oublié.",
+        "JACQUES: C’est drôle, j’avais pas remarqué!",
+        "IRENE: Quoi?",
+        "JACQUES: T’as des cheveux blancs, là… Ca alors, ma petite poupée, je les avais même pas vu pousser!",
+        "JACQUES: Mon cœur?",
+        "IRENE: Oui?",
+        "JACQUES: Mon ange?",
+        "IRENE: Oui?",
+        "JACQUES: Bon anniversaire."
+      ],
+      "memory": "Irène, a young woman, is revealed to be in a relationship with Jacques, an older man who is wealthy but heavily intoxicated. Jacques fails to make an effort for Irène’s birthday, leaving her disappointed and alone. Despite her frustration, Irène shows moments of care and patience, hinting at a complex dynamic between them. Jacques’s comment about her hair and his drunken birthday wish further highlight the emotional disconnect in their relationship."
+    }
+  },
+  {
+    "data": {
+      "Social Setting": "Terrace conversation",
+      "Speakers": [
+        "Madeleine",
+        "Jean"
+      ],
+      "Relationships": [
+        "Jean",
+        "romantic interest of",
+        "Madeleine"
+      ],
+      "Gender": {
+        "Madeleine": "Female",
+        "Jean": "Male"
+      },
+      "Age difference": {
+        "Jean and Madeleine": "NA"
+      },
+      "Power": {
+        "subject": "Madeleine",
+        "relation": "Equal power",
+        "object": "Jean"
+      },
+      "Location": "Terrace",
+      "Familiarity Level": {
+        "Jean and Madeleine": "Familiar"
+      },
+      "Formality": "Informal",
+      "MADELEINE-Honorifics": "No",
+      "MADELEINE-Politeness": "No",
+      "JEAN-Honorifics": "No",
+      "JEAN-Politeness": "No",
+      "profiles": [
+        {
+          "Name": "Madeleine",
+          "Gender": "Female",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Unclear",
+          "Religion": "NA",
+          "Ethnicity": "NA",
+          "Country": "France",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Surprise",
+            "Disappointment",
+            "Gratitude",
+            "Love"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        },
+        {
+          "Name": "Jean",
+          "Gender": "Male",
+          "Age Group": "Young adult",
+          "Age": "NA",
+          "Occupation": "NA",
+          "Marital status": "Single",
+          "Social position": "Low",
+          "Religion": "NA",
+          "Ethnicity": "NA",
+          "Country": "France",
+          "Fame": "No",
+          "Education": "NA",
+          "Emotional status": [
+            "Love",
+            "Pride",
+            "Compassion"
+          ],
+          "Power status": [
+            "Referent/Charismatic"
+          ]
+        }
+      ],
+      "dialogues": [
+        "MADELEINE: Qu’est ce que vous buvez ?",
+        "JEAN: Une vodka et un porto s’il vous plaît.",
+        "MADELEINE: Ta montre ! Où est-elle ?",
+        "JEAN: Je l’ai revendue…",
+        "MADELEINE: C’est pas vrai ! Elle est dans la chambre ?",
+        "JEAN: Non, je l’ai vendue, dans la même boutique.",
+        "MADELEINE: Mais…",
+        "JEAN: Elle était à moi non ?",
+        "MADELEINE: Si…",
+        "MADELEINE: Je voulais croire que tu étais un peu différent. Pas comme les autres. En fait tu es juste plus malin qu’eux. Je sais pas ce qui m’a pris…",
+        "JEAN: Je voulais te faire un cadeau, mais j’avais pas d’argent. Alors voilà.",
+        "MADELEINE: Il est magnifique.",
+        "MADELEINE: C’est adorable, Jean ! Cette montre, c’est la seule chose que tu avais."
+      ],
+      "memory": "Jean arrives at the terrace with Madeleine, who questions him about his missing watch. Jean reveals he sold it to buy a gift for her, surprising Madeleine with a silver box containing a beautiful necklace. This exchange shifts Madeleine's perception of Jean, initially leaving her shocked and disappointed but ultimately touched by his gesture. Their relationship deepens as Jean's actions reveal his resourcefulness and affection for Madeleine."
+    }
+  }
+
+]
