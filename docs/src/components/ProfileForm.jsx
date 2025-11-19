@@ -11,7 +11,7 @@ const ETHNICITIES = [
   'East Asian (e.g., Chinese, Japanese, Korean)',
   'Southeast Asian (e.g., Filipino, Vietnamese, Thai)',
   'Pacific Islander / Oceanian',
-  'European / White',
+  'European / Caucasian',
   'Latino / Hispanic',
   'Indigenous / Native Peoples',
   'Mixed / Multi-ethnic',
