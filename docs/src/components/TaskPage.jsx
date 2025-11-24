@@ -19,6 +19,7 @@ import {
   loadRemarks,
 } from '../utils/storage.js'
 
+// Utility helpers
 function toTurnsFromStrings(lines = []) {
   return lines.map((line) => {
     if (typeof line !== 'string') return { speaker: 'Speaker', text: String(line ?? '') }
@@ -31,6 +32,7 @@ function toTurnsFromStrings(lines = []) {
     return { speaker: 'Speaker', text: line.trim() }
   })
 }
+
 function normalizeTask(raw, i) {
   if (raw?.data) {
     const d = raw.data
@@ -43,23 +45,9 @@ function normalizeTask(raw, i) {
     const summary = d.memory ?? d.summary ?? d.summ ?? d.overview ?? ''
     return { id: raw.id ?? d.id ?? i, dialogue, summary }
   }
-  if (Array.isArray(raw?.dialogues)) {
-    return { id: raw.id ?? i, dialogue: toTurnsFromStrings(raw.dialogues), summary: raw.memory ?? raw.summary ?? '' }
-  }
-  if (Array.isArray(raw?.dialogue)) {
-    const turns = typeof raw.dialogue[0] === 'string' ? toTurnsFromStrings(raw.dialogue) : (raw.dialogue ?? [])
-    return { id: raw.id ?? i, dialogue: turns, summary: raw.summary ?? raw.summ ?? raw.overview ?? '' }
-  }
-  return { id: raw?.id ?? i, dialogue: Array.isArray(raw?.dialogue) ? raw.dialogue : [], summary: raw?.summary ?? '' }
+  return { id: raw?.id ?? i, dialogue: [], summary: raw?.summary ?? '' }
 }
-function formatEmotions(emotions = []) {
-  if (!Array.isArray(emotions) || emotions.length === 0) return '—'
-  const pretty = emotions.map(s => {
-    const [p, sec] = s.split('|')
-    return sec ? `${p}–${sec}` : p
-  })
-  return pretty.join(', ')
-}
+
 function uniqueSpeakers(turns = []) {
   const set = new Set()
   for (const t of turns) {
@@ -78,6 +66,7 @@ export default function TaskPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formDefault, setFormDefault] = useState(undefined)
+  const [isValid, setIsValid] = useState(false)
 
   const base = import.meta.env.BASE_URL || '/'
 
@@ -103,10 +92,13 @@ export default function TaskPage() {
   const i = Number.isFinite(Number(index)) ? Number(index) : 0
   const task = tasks[i]
   const taskId = task?.id ?? i
+  const speakers = useMemo(() => uniqueSpeakers(task?.dialogue || []), [task])
 
+  // Navigation
   const next = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.min(i + 1, Math.max(tasks.length - 1, 0))}`)
   const prev = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.max(i - 1, 0)}`)
 
+  // Profile CRUD
   const openAddForm = () => {
     setEditingId(null)
     setFormDefault(loadDraft(lang, taskId) || undefined)
@@ -127,18 +119,57 @@ export default function TaskPage() {
   }
   const onDeleteProfile = (id) => {
     if (!id) return
-    if (!window.confirm('Delete this profile? This cannot be undone.')) return
+    if (!window.confirm('Delete this profile?')) return
     setProfiles(prev => prev.filter(p => p.id !== id))
     const fresh = deleteProfile(id)
     setProfiles(fresh)
   }
 
-  const relatedProfiles = useMemo(
-    () => profiles.filter(p => p.lang === lang && p.taskId === taskId),
-    [profiles, lang, taskId]
-  )
-  const speakers = useMemo(() => uniqueSpeakers(task?.dialogue || []), [task])
+  const relatedProfiles = useMemo(() =>
+    profiles.filter(p => p.lang === lang && p.taskId === taskId), [profiles, lang, taskId])
 
+  // Validation: run on every render
+  useEffect(() => {
+    const validate = () => {
+      // Must have at least one profile
+      if (relatedProfiles.length === 0) return false
+
+      for (const p of relatedProfiles) {
+        const requiredFields = ['name', 'ageGroup', 'gender', 'ethnicity', 'maritalStatus', 'education', 'religion', 'occupationTier', 'occupationDetail', 'socioEconomicClass', 'socialClass', 'country']
+        for (const field of requiredFields) {
+          if (!p[field] || p[field].trim() === '') return false
+        }
+      }
+
+      const dynamics = loadDynamics(lang, taskId)
+      if (!dynamics || !dynamics.edges || Object.keys(dynamics.edges).length === 0) return false
+      for (const e of Object.values(dynamics.edges)) {
+        const required = ['category', 'relation', 'familiarity']
+        for (const f of required) if (!e[f]) return false
+      }
+
+      const dialogContext = loadDialogContext(lang, taskId)
+      if (!dialogContext) return false
+      if (!dialogContext.formality || dialogContext.formality === '') return false
+      if (
+        !dialogContext.socialSetting &&
+        (!dialogContext.locationDomain?.length && !dialogContext.locationPrivacy?.length)
+      ) return false
+
+      const perspective = loadPerspective(lang, taskId)
+      if (!perspective || !perspective.pairs || Object.keys(perspective.pairs).length === 0) return false
+      for (const v of Object.values(perspective.pairs)) {
+        if (!v.powerDiff || !v.socialDiff || !v.intentAlign) return false
+      }
+
+      // If all checks pass
+      return true
+    }
+
+    setIsValid(validate())
+  }, [relatedProfiles, lang, taskId])
+
+  // Export function
   const onExport = () => {
     const dynamics = loadDynamics(lang, taskId) || {}
     const dialogContext = loadDialogContext(lang, taskId) || {}
@@ -151,14 +182,13 @@ export default function TaskPage() {
       speakersDynamics: dynamics,
       dialogContext,
       annotatorPerspective: perspective,
-      remarks
+      remarks,
     }
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
-    const fname = `annotation_${lang}_task-${taskId}.json`
     const a = document.createElement('a')
     a.href = url
-    a.download = fname
+    a.download = `annotation_${lang}_task-${taskId}.json`
     document.body.appendChild(a)
     a.click()
     a.remove()
@@ -166,47 +196,28 @@ export default function TaskPage() {
   }
 
   if (!task) {
-    return (
-      <section className="card">
-        <h2>No task at index {i}</h2>
-        <button className="btn" onClick={() => navigate('/')}>Back to languages</button>
-      </section>
-    )
+    return <section className="card"><h2>No task at index {i}</h2></section>
   }
 
   return (
-    <section
-      className="grid"
-      style={{ display:'grid', gap:12, gridTemplateColumns:'1fr 1fr' }}
-    >
-      <div className="card">
-        <h2>Dialogue</h2>
-        <Dialogue turns={task.dialogue} />
-      </div>
-
-      <div className="card">
-        <h2>Summary</h2>
-        <Summary text={task.summary} />
-      </div>
+    <section className="grid" style={{ display:'grid', gap:12, gridTemplateColumns:'1fr 1fr' }}>
+      <div className="card"><h2>Dialogue</h2><Dialogue turns={task.dialogue} /></div>
+      <div className="card"><h2>Summary</h2><Summary text={task.summary} /></div>
 
       <div style={{ gridColumn:'1 / -1' }}>
         <div className="card">
-          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:8}}>
-            <h3 style={{margin:0}}>Profiles for this task</h3>
+          <div style={{display:'flex', justifyContent:'space-between'}}>
+            <h3>Profiles for this task</h3>
             <button className="btn" onClick={openAddForm}>Add profile</button>
           </div>
-
-          {relatedProfiles.length === 0 ? (
-            <p style={{marginTop:12}}>No profiles yet.</p>
-          ) : (
-            <ul className="profiles" style={{marginTop:12}}>
-              {relatedProfiles.map((p) => (
+          {relatedProfiles.length === 0 ? <p>No profiles yet.</p> : (
+            <ul className="profiles">
+              {relatedProfiles.map(p => (
                 <li key={p.id}>
-                  <strong>{p.name || 'Unnamed'}</strong>
+                  <strong>{p.name}</strong>
                   <div className="muted">{p.gender} · {p.ageGroup} · {p.ethnicity}</div>
-                  <div className="muted">{p.socioEconomicClass || '—'} / {p.socialClass || '—'} · {p.country || '—'}</div>
-                  <div className="muted">{formatEmotions(p.emotions)}</div>
-                  <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                  <div className="muted">{p.country} · {p.socialClass}/{p.socioEconomicClass}</div>
+                  <div style={{ marginTop:8 }}>
                     <button className="btn ghost" onClick={() => openEditForm(p)}>Edit</button>
                     <button className="btn ghost" onClick={() => onDeleteProfile(p.id)}>Delete</button>
                   </div>
@@ -217,34 +228,25 @@ export default function TaskPage() {
         </div>
       </div>
 
-      <div style={{ gridColumn:'1 / -1' }}>
-        <SpeakersDynamics lang={lang} taskId={taskId} turns={task.dialogue} />
-      </div>
-
-      <div style={{ gridColumn:'1 / -1' }}>
-        <DialogContext lang={lang} taskId={taskId} />
-      </div>
-
-      <div style={{ gridColumn:'1 / -1' }}>
-        <AnnotatorPerspective lang={lang} taskId={taskId} turns={task.dialogue} />
-      </div>
-
-      {/* 🆕 Remarks Box */}
-      <div style={{ gridColumn:'1 / -1' }}>
-        <RemarksBox lang={lang} taskId={taskId} />
-      </div>
+      <div style={{ gridColumn:'1 / -1' }}><SpeakersDynamics lang={lang} taskId={taskId} turns={task.dialogue} /></div>
+      <div style={{ gridColumn:'1 / -1' }}><DialogContext lang={lang} taskId={taskId} /></div>
+      <div style={{ gridColumn:'1 / -1' }}><AnnotatorPerspective lang={lang} taskId={taskId} turns={task.dialogue} /></div>
+      <div style={{ gridColumn:'1 / -1' }}><RemarksBox lang={lang} taskId={taskId} /></div>
 
       {/* Footer */}
       <div style={{ gridColumn:'1 / -1' }}>
-        <div className="card" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+        <div className="card" style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <button className="btn ghost" onClick={prev} disabled={i === 0}>Previous</button>
           <div style={{ display:'flex', gap:8 }}>
-            <button className="btn ghost" onClick={prev} disabled={i === 0}>Previous</button>
-          </div>
-          <div>
             <button className="btn ghost" onClick={onExport}>Export JSON</button>
-          </div>
-          <div style={{ display:'flex', gap:8 }}>
-            <button className="btn" onClick={next} disabled={i >= tasks.length - 1}>Next</button>
+            <button
+              className="btn"
+              onClick={next}
+              disabled={!isValid || i >= tasks.length - 1}
+              title={!isValid ? 'Please complete all required fields before continuing' : 'Next'}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
