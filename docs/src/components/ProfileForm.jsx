@@ -43,7 +43,8 @@ const OCCUPATION = {
     'Armed forces occupations',
     'Military service'
   ],
-  'No or unpaid employment': ['Retired','Student','Housewife','Unemployed']
+  'No or unpaid employment': ['Retired','Student','Housewife','Unemployed'],
+  NA: ['NA']
 }
 
 const SOCIO_ECON_CLASSES = ['Upper','Middle','Lower','Other','NA']
@@ -56,10 +57,11 @@ const EMOTIONS = {
   Sadness: ['Grief','Despair','Disappointment','Remorse'],
   Fear: ['Anxiety','Terror','Worry','Panic'],
   Surprise: ['Astonishment','Confusion','Realization'],
+  NA: ['No clear emotion']
 }
 
 const COUNTRIES = [
-  'Fictional','Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan',
+    'NA', 'Fictional','Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan',
   'Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin','Bhutan','Bolivia',
   'Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi',
   'Cambodia','Cameroon','Canada','Cape Verde','Central African Republic','Chad','Chile','China','Colombia','Comoros',

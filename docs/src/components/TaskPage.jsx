@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Dialogue from './Dialogue.jsx'
 import Summary from './Summary.jsx'
@@ -19,7 +19,6 @@ import {
   loadRemarks,
 } from '../utils/storage.js'
 
-// Utility helpers
 function toTurnsFromStrings(lines = []) {
   return lines.map((line) => {
     if (typeof line !== 'string') return { speaker: 'Speaker', text: String(line ?? '') }
@@ -32,7 +31,6 @@ function toTurnsFromStrings(lines = []) {
     return { speaker: 'Speaker', text: line.trim() }
   })
 }
-
 function normalizeTask(raw, i) {
   if (raw?.data) {
     const d = raw.data
@@ -47,7 +45,6 @@ function normalizeTask(raw, i) {
   }
   return { id: raw?.id ?? i, dialogue: [], summary: raw?.summary ?? '' }
 }
-
 function uniqueSpeakers(turns = []) {
   const set = new Set()
   for (const t of turns) {
@@ -66,7 +63,14 @@ export default function TaskPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formDefault, setFormDefault] = useState(undefined)
-  const [isValid, setIsValid] = useState(false)
+
+  // Validation + UI error highlight
+  const [valid, setValid] = useState({ all:false, profiles:false, dynamics:false, context:false, perspective:false })
+  const [showErrors, setShowErrors] = useState(false)
+  const profilesRef = useRef(null)
+  const dynamicsRef = useRef(null)
+  const contextRef = useRef(null)
+  const perspectiveRef = useRef(null)
 
   const base = import.meta.env.BASE_URL || '/'
 
@@ -92,13 +96,11 @@ export default function TaskPage() {
   const i = Number.isFinite(Number(index)) ? Number(index) : 0
   const task = tasks[i]
   const taskId = task?.id ?? i
-  const speakers = useMemo(() => uniqueSpeakers(task?.dialogue || []), [task])
 
-  // Navigation
   const next = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.min(i + 1, Math.max(tasks.length - 1, 0))}`)
   const prev = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.max(i - 1, 0)}`)
 
-  // Profile CRUD
+  // Profiles CRUD
   const openAddForm = () => {
     setEditingId(null)
     setFormDefault(loadDraft(lang, taskId) || undefined)
@@ -125,51 +127,98 @@ export default function TaskPage() {
     setProfiles(fresh)
   }
 
-  const relatedProfiles = useMemo(() =>
-    profiles.filter(p => p.lang === lang && p.taskId === taskId), [profiles, lang, taskId])
+  const relatedProfiles = useMemo(
+    () => profiles.filter(p => p.lang === lang && p.taskId === taskId),
+    [profiles, lang, taskId]
+  )
 
-  // Validation: run on every render
+  // SPEAKERS from profiles (not dialogue)
+  const speakersFromProfiles = useMemo(() => {
+    const set = new Set()
+    for (const p of relatedProfiles) {
+      const name = (p.name || '').trim()
+      if (name) set.add(name)
+    }
+    return Array.from(set)
+  }, [relatedProfiles])
+
+  // Validation
   useEffect(() => {
-    const validate = () => {
-      // Must have at least one profile
-      if (relatedProfiles.length === 0) return false
+    const result = { profiles: false, dynamics: false, context: false, perspective: false, all: false }
 
+    // Profiles
+    if (relatedProfiles.length > 0) {
+      let good = true
       for (const p of relatedProfiles) {
-        const requiredFields = ['name', 'ageGroup', 'gender', 'ethnicity', 'maritalStatus', 'education', 'religion', 'occupationTier', 'occupationDetail', 'socioEconomicClass', 'socialClass', 'country']
-        for (const field of requiredFields) {
-          if (!p[field] || p[field].trim() === '') return false
+        const req = ['name','ageGroup','gender','ethnicity','maritalStatus','education','religion','occupationTier','occupationDetail','socioEconomicClass','socialClass','country']
+        for (const f of req) {
+          if (!p[f] || String(p[f]).trim() === '') { good = false; break }
         }
+        if (!good) break
       }
-
-      const dynamics = loadDynamics(lang, taskId)
-      if (!dynamics || !dynamics.edges || Object.keys(dynamics.edges).length === 0) return false
-      for (const e of Object.values(dynamics.edges)) {
-        const required = ['category', 'relation', 'familiarity']
-        for (const f of required) if (!e[f]) return false
-      }
-
-      const dialogContext = loadDialogContext(lang, taskId)
-      if (!dialogContext) return false
-      if (!dialogContext.formality || dialogContext.formality === '') return false
-      if (
-        !dialogContext.socialSetting &&
-        (!dialogContext.locationDomain?.length && !dialogContext.locationPrivacy?.length)
-      ) return false
-
-      const perspective = loadPerspective(lang, taskId)
-      if (!perspective || !perspective.pairs || Object.keys(perspective.pairs).length === 0) return false
-      for (const v of Object.values(perspective.pairs)) {
-        if (!v.powerDiff || !v.socialDiff || !v.intentAlign) return false
-      }
-
-      // If all checks pass
-      return true
+      result.profiles = good
     }
 
-    setIsValid(validate())
+    // Dynamics
+    const dynamics = loadDynamics(lang, taskId)
+    if (dynamics && dynamics.edges && Object.keys(dynamics.edges).length > 0) {
+      let ok = true
+      for (const e of Object.values(dynamics.edges)) {
+        for (const f of ['category','relation','familiarity']) {
+          if (!e[f]) { ok = false; break }
+        }
+        if (!ok) break
+      }
+      result.dynamics = ok
+    }
+
+    // Dialog Context
+    const ctx = loadDialogContext(lang, taskId)
+    if (ctx) {
+      const ok =
+        !!ctx.formality &&
+        (
+          (ctx.socialSetting && ctx.socialSetting.trim() !== '') ||
+          (Array.isArray(ctx.locationDomain) && ctx.locationDomain.length > 0) ||
+          (Array.isArray(ctx.locationPrivacy) && ctx.locationPrivacy.length > 0)
+        )
+      result.context = !!ok
+    }
+
+    // Annotator Perspective
+    const ap = loadPerspective(lang, taskId)
+    if (ap && ap.pairs && Object.keys(ap.pairs).length > 0) {
+      let ok = true
+      for (const v of Object.values(ap.pairs)) {
+        if (!v.powerDiff || !v.socialDiff || !v.intentAlign) { ok = false; break }
+      }
+      result.perspective = ok
+    }
+
+    result.all = result.profiles && result.dynamics && result.context && result.perspective
+    setValid(result)
   }, [relatedProfiles, lang, taskId])
 
-  // Export function
+  const handleNext = () => {
+    if (valid.all && i < (tasks.length - 1)) {
+      next()
+      return
+    }
+    // show errors + scroll to first invalid section
+    setShowErrors(true)
+    const order = [
+      { ok: valid.profiles, ref: profilesRef },
+      { ok: valid.dynamics, ref: dynamicsRef },
+      { ok: valid.context, ref: contextRef },
+      { ok: valid.perspective, ref: perspectiveRef },
+    ]
+    const firstBad = order.find(s => !s.ok)?.ref
+    if (firstBad?.current) {
+      firstBad.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  // Export
   const onExport = () => {
     const dynamics = loadDynamics(lang, taskId) || {}
     const dialogContext = loadDialogContext(lang, taskId) || {}
@@ -199,13 +248,25 @@ export default function TaskPage() {
     return <section className="card"><h2>No task at index {i}</h2></section>
   }
 
+  const errorCardStyle = (flag) => (showErrors && !flag ? { border: '2px solid #d9534f' } : {})
+
   return (
     <section className="grid" style={{ display:'grid', gap:12, gridTemplateColumns:'1fr 1fr' }}>
+      {/* Banner for missing fields */}
+      {showErrors && !valid.all && (
+        <div style={{ gridColumn:'1 / -1' }}>
+          <div className="card" style={{ border: '2px solid #d9534f', background: '#fff5f5' }}>
+            <strong>Some required fields are missing.</strong> Please complete the highlighted sections below.
+          </div>
+        </div>
+      )}
+
       <div className="card"><h2>Dialogue</h2><Dialogue turns={task.dialogue} /></div>
       <div className="card"><h2>Summary</h2><Summary text={task.summary} /></div>
 
+      {/* Profiles */}
       <div style={{ gridColumn:'1 / -1' }}>
-        <div className="card">
+        <div ref={profilesRef} className="card" style={errorCardStyle(valid.profiles)}>
           <div style={{display:'flex', justifyContent:'space-between'}}>
             <h3>Profiles for this task</h3>
             <button className="btn" onClick={openAddForm}>Add profile</button>
@@ -228,9 +289,28 @@ export default function TaskPage() {
         </div>
       </div>
 
-      <div style={{ gridColumn:'1 / -1' }}><SpeakersDynamics lang={lang} taskId={taskId} turns={task.dialogue} /></div>
-      <div style={{ gridColumn:'1 / -1' }}><DialogContext lang={lang} taskId={taskId} /></div>
-      <div style={{ gridColumn:'1 / -1' }}><AnnotatorPerspective lang={lang} taskId={taskId} turns={task.dialogue} /></div>
+      {/* Speakers Dynamics — uses speakers from profiles */}
+      <div style={{ gridColumn:'1 / -1' }}>
+        <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
+          <SpeakersDynamics lang={lang} taskId={taskId} speakers={speakersFromProfiles} />
+        </div>
+      </div>
+
+      {/* Dialog Context */}
+      <div style={{ gridColumn:'1 / -1' }}>
+        <div ref={contextRef} style={errorCardStyle(valid.context)}>
+          <DialogContext lang={lang} taskId={taskId} />
+        </div>
+      </div>
+
+      {/* Annotator Perspective (unchanged source of speakers; you can switch it to profiles if you prefer) */}
+      <div style={{ gridColumn:'1 / -1' }}>
+        <div ref={perspectiveRef} style={errorCardStyle(valid.perspective)}>
+          <AnnotatorPerspective lang={lang} taskId={taskId} turns={task.dialogue} />
+        </div>
+      </div>
+
+      {/* Remarks */}
       <div style={{ gridColumn:'1 / -1' }}><RemarksBox lang={lang} taskId={taskId} /></div>
 
       {/* Footer */}
@@ -241,9 +321,10 @@ export default function TaskPage() {
             <button className="btn ghost" onClick={onExport}>Export JSON</button>
             <button
               className="btn"
-              onClick={next}
-              disabled={!isValid || i >= tasks.length - 1}
-              title={!isValid ? 'Please complete all required fields before continuing' : 'Next'}
+              onClick={handleNext}
+              disabled={i >= tasks.length - 1 && valid.all} // last task stays enabled/disabled logically
+              style={!valid.all ? { opacity: 0.65 } : {}}
+              title={!valid.all ? 'Please complete all required fields before continuing' : 'Next'}
             >
               Next
             </button>
@@ -256,7 +337,7 @@ export default function TaskPage() {
           onClose={() => { setShowForm(false); setEditingId(null); setFormDefault(undefined) }}
           onSave={onSaveProfile}
           defaultValue={formDefault}
-          speakers={speakers}
+          speakers={Array.from(new Set(task?.dialogue?.map(t=>t.speaker).filter(Boolean)))}
           {...(editingId == null ? { draftLang: lang, draftTaskId: taskId } : {})}
         />
       )}

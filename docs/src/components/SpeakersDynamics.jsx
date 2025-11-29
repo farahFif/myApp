@@ -44,48 +44,68 @@ function pairKey(a, b) {
 }
 function isLegacySymmetricKey(k) { return k.includes('|') && !k.includes('→') }
 
-function uniqueSpeakersFromTurns(turns = []) {
-  const set = new Set()
-  for (const t of turns) if (t?.speaker && t.speaker !== 'Speaker') set.add(String(t.speaker))
-  return Array.from(set)
-}
-
-export default function SpeakersDynamics({ lang, taskId, turns }) {
-  const initialSpeakers = uniqueSpeakersFromTurns(turns)
+export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
+  // speakers now comes from Profiles (TaskPage computes it)
   const [state, setState] = useState(() => ({
-    speakers: initialSpeakers,
+    speakers: speakers,
     edges: {},   // directed A→B data
     powers: {},  // per-speaker selected power types
-    intents: {}, // symmetric intentions
+    intents: {}, // symmetric intentions alignment
   }))
 
+  // Load and migrate saved state
   useEffect(() => {
     const saved = loadDynamics(lang, taskId)
     if (saved) {
-      const speakers = saved.speakers?.length ? saved.speakers : initialSpeakers
       let edges = saved.edges || saved.pairs || {}
       const migratedEdges = {}
       const intents = saved.intents ? { ...saved.intents } : {}
-
       for (const [k, v] of Object.entries(edges)) {
         if (isLegacySymmetricKey(k)) {
           const [A, B] = k.split('|')
-          const payload = { category: v.category || '', relation: v.relation || '', familiarity: v.familiarity || '' }
+          const payload = {
+            category: v.category || '',
+            relation: v.relation || '',
+            familiarity: v.familiarity || ''
+          }
           migratedEdges[edgeKey(A, B)] = { ...payload }
           migratedEdges[edgeKey(B, A)] = { ...payload }
         } else migratedEdges[k] = v
       }
-
       const powers = saved.powers || {}
-      const newState = { speakers, edges: migratedEdges, powers, intents }
-      setState(newState)
-      saveDynamics(lang, taskId, newState)
+      setState({ speakers, edges: migratedEdges, powers, intents })
+      // save back migrated shape
+      saveDynamics(lang, taskId, { speakers, edges: migratedEdges, powers, intents })
     } else {
-      setState({ speakers: initialSpeakers, edges: {}, powers: {}, intents: {} })
+      setState({ speakers, edges: {}, powers: {}, intents: {} })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, taskId])
 
+  // Keep state.speakers synced with prop speakers (from Profiles)
+  useEffect(() => {
+    setState(s => {
+      // prune edges/powers/intents referencing removed speakers
+      const setNames = new Set(speakers)
+      const prunedEdges = {}
+      for (const [k, v] of Object.entries(s.edges)) {
+        const [A, B] = k.split('→')
+        if (setNames.has(A) && setNames.has(B)) prunedEdges[k] = v
+      }
+      const prunedPowers = {}
+      for (const name of Object.keys(s.powers || {})) {
+        if (setNames.has(name)) prunedPowers[name] = s.powers[name]
+      }
+      const prunedIntents = {}
+      for (const [pk, val] of Object.entries(s.intents || {})) {
+        const [A, B] = pk.split(' | ')
+        if (setNames.has(A) && setNames.has(B)) prunedIntents[pk] = val
+      }
+      return { speakers, edges: prunedEdges, powers: prunedPowers, intents: prunedIntents }
+    })
+  }, [speakers])
+
+  // Autosave
   useEffect(() => { saveDynamics(lang, taskId, state) }, [state, lang, taskId])
 
   const directedPairs = useMemo(() => {
@@ -130,7 +150,7 @@ export default function SpeakersDynamics({ lang, taskId, turns }) {
 
   const resetAll = () => {
     clearDynamics(lang, taskId)
-    setState({ speakers: uniqueSpeakersFromTurns(turns), edges: {}, powers: {}, intents: {} })
+    setState({ speakers, edges: {}, powers: {}, intents: {} })
   }
 
   return (
@@ -140,11 +160,11 @@ export default function SpeakersDynamics({ lang, taskId, turns }) {
         <button className="btn ghost" onClick={resetAll}>Reset</button>
       </div>
 
-      {/* Speaker Powers — horizontal grid */}
+      {/* Speaker Powers */}
       <div className="card" style={{ marginTop: 12 }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}><strong>Speaker Powers (select types per speaker)</strong></h4>
         {state.speakers.length === 0 ? (
-          <p className="muted">Add speakers to annotate powers.</p>
+          <p className="muted">Create profiles to annotate powers.</p>
         ) : (
           <div style={{ display:'grid', gap:12, gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))' }}>
             {state.speakers.map((sp) => {
@@ -178,9 +198,9 @@ export default function SpeakersDynamics({ lang, taskId, turns }) {
         )}
       </div>
 
-      {/* Directed relationships */}
+      {/* Directed relationships/cards */}
       {directedPairs.length === 0 ? (
-        <p style={{ marginTop: 12 }}>Add at least two speakers to annotate relationships.</p>
+        <p style={{ marginTop: 12 }}>Create at least two profiles to annotate relationships.</p>
       ) : (
         <div style={{ marginTop: 12, display:'grid', gap:12, gridTemplateColumns:'repeat(auto-fit, minmax(400px, 1fr))' }}>
           {directedPairs.map(({ A, B, k }) => {
@@ -191,7 +211,6 @@ export default function SpeakersDynamics({ lang, taskId, turns }) {
             const powerDiff = e.powerDiff || ''
             const socialDiff = e.socialDiff || ''
             const accommodation = e.accommodation || ''
-            const perType = e.powerTypes || {}
             const powersToCompare = sourcePowers(A)
 
             return (
