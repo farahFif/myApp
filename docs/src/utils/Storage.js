@@ -206,3 +206,45 @@ export function clearRemarks(lang, taskId) {
   delete s[rmId(lang, taskId)]
   writeRmStore(s)
 }
+
+// ========================================================
+// Time tracking per task (active time in ms)
+// ========================================================
+// ========================================================
+// Time tracking per task (active time in ms)
+// ========================================================
+// ========================================================
+// Time tracking per task (active time in ms)
+// ========================================================
+const TIME_KEY = 'annotation_time_v1'
+
+function readTimeStore() {
+  try {
+    const raw = localStorage.getItem(TIME_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeTimeStore(obj) {
+  localStorage.setItem(TIME_KEY, JSON.stringify(obj))
+}
+
+function timeId(lang, taskId) {
+  return `${lang}:${taskId}`
+}
+
+// Get total time (ms) spent on a specific task
+export function loadTime(lang, taskId) {
+  const store = readTimeStore()
+  return store[timeId(lang, taskId)] || 0
+}
+
+// Overwrite stored time for a specific task
+export function saveTime(lang, taskId, ms) {
+  const store = readTimeStore()
+  store[timeId(lang, taskId)] = ms
+  writeTimeStore(store)
+  return ms
+}

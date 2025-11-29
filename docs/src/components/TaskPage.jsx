@@ -17,6 +17,8 @@ import {
   loadDialogContext,
   loadPerspective,
   loadRemarks,
+  loadTime,
+  saveTime,
 } from '../utils/storage.js'
 
 function toTurnsFromStrings(lines = []) {
@@ -31,6 +33,7 @@ function toTurnsFromStrings(lines = []) {
     return { speaker: 'Speaker', text: line.trim() }
   })
 }
+
 function normalizeTask(raw, i) {
   if (raw?.data) {
     const d = raw.data
@@ -45,6 +48,7 @@ function normalizeTask(raw, i) {
   }
   return { id: raw?.id ?? i, dialogue: [], summary: raw?.summary ?? '' }
 }
+
 function uniqueSpeakers(turns = []) {
   const set = new Set()
   for (const t of turns) {
@@ -65,7 +69,13 @@ export default function TaskPage() {
   const [formDefault, setFormDefault] = useState(undefined)
 
   // Validation + UI error highlight
-  const [valid, setValid] = useState({ all:false, profiles:false, dynamics:false, context:false, perspective:false })
+  const [valid, setValid] = useState({
+    all: false,
+    profiles: false,
+    dynamics: false,
+    context: false,
+    perspective: false,
+  })
   const [showErrors, setShowErrors] = useState(false)
   const profilesRef = useRef(null)
   const dynamicsRef = useRef(null)
@@ -74,6 +84,7 @@ export default function TaskPage() {
 
   const base = import.meta.env.BASE_URL || '/'
 
+  // Load tasks for this language
   useEffect(() => {
     let cancelled = false
     async function load() {
@@ -90,14 +101,49 @@ export default function TaskPage() {
       }
     }
     load()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [lang, base])
 
   const i = Number.isFinite(Number(index)) ? Number(index) : 0
   const task = tasks[i]
   const taskId = task?.id ?? i
 
-  const next = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.min(i + 1, Math.max(tasks.length - 1, 0))}`)
+  // 🔒 silent time tracking per (lang, taskId)
+  useEffect(() => {
+    let current = loadTime(lang, taskId) || 0
+    let last = Date.now()
+
+    function tick() {
+      const now = Date.now()
+      if (document.visibilityState === 'visible') {
+        const delta = now - last
+        current += delta
+        saveTime(lang, taskId, current)
+      }
+      last = now
+    }
+
+    const intervalId = setInterval(tick, 1000)
+
+    function handleVisibilityChange() {
+      // Reset last when visibility changes so we don't count hidden time incorrectly
+      last = Date.now()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      clearInterval(intervalId)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [lang, taskId])
+
+  const next = () =>
+    navigate(
+      `/task/${encodeURIComponent(lang)}/${Math.min(i + 1, Math.max(tasks.length - 1, 0))}`,
+    )
   const prev = () => navigate(`/task/${encodeURIComponent(lang)}/${Math.max(i - 1, 0)}`)
 
   // Profiles CRUD
@@ -106,30 +152,35 @@ export default function TaskPage() {
     setFormDefault(loadDraft(lang, taskId) || undefined)
     setShowForm(true)
   }
+
   const openEditForm = (profile) => {
     setEditingId(profile.id)
     setFormDefault(profile)
     setShowForm(true)
   }
+
   const onSaveProfile = (form) => {
-    const payload = editingId ? { ...form, id: editingId } : { ...form, lang, taskId, savedAt: new Date().toISOString() }
+    const payload = editingId
+      ? { ...form, id: editingId }
+      : { ...form, lang, taskId, savedAt: new Date().toISOString() }
     const updated = editingId ? updateProfile(editingId, payload) : saveProfile(payload)
     setProfiles(updated)
     setShowForm(false)
     setEditingId(null)
     setFormDefault(undefined)
   }
+
   const onDeleteProfile = (id) => {
     if (!id) return
     if (!window.confirm('Delete this profile?')) return
-    setProfiles(prev => prev.filter(p => p.id !== id))
+    setProfiles((prev) => prev.filter((p) => p.id !== id))
     const fresh = deleteProfile(id)
     setProfiles(fresh)
   }
 
   const relatedProfiles = useMemo(
-    () => profiles.filter(p => p.lang === lang && p.taskId === taskId),
-    [profiles, lang, taskId]
+    () => profiles.filter((p) => p.lang === lang && p.taskId === taskId),
+    [profiles, lang, taskId],
   )
 
   // SPEAKERS from profiles (not dialogue)
@@ -144,15 +195,37 @@ export default function TaskPage() {
 
   // Validation
   useEffect(() => {
-    const result = { profiles: false, dynamics: false, context: false, perspective: false, all: false }
+    const result = {
+      profiles: false,
+      dynamics: false,
+      context: false,
+      perspective: false,
+      all: false,
+    }
 
     // Profiles
     if (relatedProfiles.length > 0) {
       let good = true
       for (const p of relatedProfiles) {
-        const req = ['name','ageGroup','gender','ethnicity','maritalStatus','education','religion','occupationTier','occupationDetail','socioEconomicClass','socialClass','country']
+        const req = [
+          'name',
+          'ageGroup',
+          'gender',
+          'ethnicity',
+          'maritalStatus',
+          'education',
+          'religion',
+          'occupationTier',
+          'occupationDetail',
+          'socioEconomicClass',
+          'socialClass',
+          'country',
+        ]
         for (const f of req) {
-          if (!p[f] || String(p[f]).trim() === '') { good = false; break }
+          if (!p[f] || String(p[f]).trim() === '') {
+            good = false
+            break
+          }
         }
         if (!good) break
       }
@@ -164,8 +237,11 @@ export default function TaskPage() {
     if (dynamics && dynamics.edges && Object.keys(dynamics.edges).length > 0) {
       let ok = true
       for (const e of Object.values(dynamics.edges)) {
-        for (const f of ['category','relation','familiarity']) {
-          if (!e[f]) { ok = false; break }
+        for (const f of ['category', 'relation', 'familiarity']) {
+          if (!e[f]) {
+            ok = false
+            break
+          }
         }
         if (!ok) break
       }
@@ -177,11 +253,9 @@ export default function TaskPage() {
     if (ctx) {
       const ok =
         !!ctx.formality &&
-        (
-          (ctx.socialSetting && ctx.socialSetting.trim() !== '') ||
+        ((ctx.socialSetting && ctx.socialSetting.trim() !== '') ||
           (Array.isArray(ctx.locationDomain) && ctx.locationDomain.length > 0) ||
-          (Array.isArray(ctx.locationPrivacy) && ctx.locationPrivacy.length > 0)
-        )
+          (Array.isArray(ctx.locationPrivacy) && ctx.locationPrivacy.length > 0))
       result.context = !!ok
     }
 
@@ -190,7 +264,10 @@ export default function TaskPage() {
     if (ap && ap.pairs && Object.keys(ap.pairs).length > 0) {
       let ok = true
       for (const v of Object.values(ap.pairs)) {
-        if (!v.powerDiff || !v.socialDiff || !v.intentAlign) { ok = false; break }
+        if (!v.powerDiff || !v.socialDiff || !v.intentAlign) {
+          ok = false
+          break
+        }
       }
       result.perspective = ok
     }
@@ -200,7 +277,7 @@ export default function TaskPage() {
   }, [relatedProfiles, lang, taskId])
 
   const handleNext = () => {
-    if (valid.all && i < (tasks.length - 1)) {
+    if (valid.all && i < tasks.length - 1) {
       next()
       return
     }
@@ -212,32 +289,68 @@ export default function TaskPage() {
       { ok: valid.context, ref: contextRef },
       { ok: valid.perspective, ref: perspectiveRef },
     ]
-    const firstBad = order.find(s => !s.ok)?.ref
+    const firstBad = order.find((s) => !s.ok)?.ref
     if (firstBad?.current) {
       firstBad.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
-  // Export
+  // 🔄 Export ALL tasks for this language, including timeSpentMs
   const onExport = () => {
-    const dynamics = loadDynamics(lang, taskId) || {}
-    const dialogContext = loadDialogContext(lang, taskId) || {}
-    const perspective = loadPerspective(lang, taskId) || {}
-    const remarks = loadRemarks(lang, taskId) || ''
-    const payload = {
-      meta: { lang, taskIndex: i, taskId, exportedAt: new Date().toISOString() },
-      task: { dialogue: task?.dialogue ?? [], summary: task?.summary ?? '' },
-      profiles: relatedProfiles,
-      speakersDynamics: dynamics,
-      dialogContext,
-      annotatorPerspective: perspective,
-      remarks,
+    const allData = []
+
+    tasks.forEach((t, taskIndex) => {
+      const thisTaskId = t.id ?? taskIndex
+
+      const dynamics = loadDynamics(lang, thisTaskId) || {}
+      const dialogContext = loadDialogContext(lang, thisTaskId) || {}
+      const perspective = loadPerspective(lang, thisTaskId) || {}
+      const remarks = loadRemarks(lang, thisTaskId) || ''
+
+      const taskProfiles = profiles.filter(
+        (p) => p.lang === lang && p.taskId === thisTaskId,
+      )
+
+      // ⏱ time per task
+      const timeSpentMs = loadTime(lang, thisTaskId) || 0
+
+      allData.push({
+        meta: {
+          lang,
+          taskIndex,
+          taskId: thisTaskId,
+          exportedAt: new Date().toISOString(),
+          timeSpentMs, // 👈 now included in export
+        },
+        task: {
+          dialogue: t.dialogue ?? [],
+          summary: t.summary ?? '',
+        },
+        profiles: taskProfiles,
+        speakersDynamics: dynamics,
+        dialogContext,
+        annotatorPerspective: perspective,
+        remarks,
+      })
+    })
+
+    const exportPayload = {
+      language: lang,
+      totalTasks: allData.length,
+      exportedAt: new Date().toISOString(),
+      annotations: allData,
     }
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+      type: 'application/json',
+    })
+
     const url = URL.createObjectURL(blob)
+    const fname = `all_annotations_${lang}.json`
+
     const a = document.createElement('a')
     a.href = url
-    a.download = `annotation_${lang}_task-${taskId}.json`
+    a.download = fname
     document.body.appendChild(a)
     a.click()
     a.remove()
@@ -245,42 +358,87 @@ export default function TaskPage() {
   }
 
   if (!task) {
-    return <section className="card"><h2>No task at index {i}</h2></section>
+    return (
+      <section className="card">
+        <h2>No task at index {i}</h2>
+      </section>
+    )
   }
 
-  const errorCardStyle = (flag) => (showErrors && !flag ? { border: '2px solid #d9534f' } : {})
+  const errorCardStyle = (flag) =>
+    showErrors && !flag ? { border: '2px solid #d9534f' } : {}
 
   return (
-    <section className="grid" style={{ display:'grid', gap:12, gridTemplateColumns:'1fr 1fr' }}>
+    <section
+      className="grid"
+      style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}
+    >
       {/* Banner for missing fields */}
       {showErrors && !valid.all && (
-        <div style={{ gridColumn:'1 / -1' }}>
-          <div className="card" style={{ border: '2px solid #d9534f', background: '#fff5f5' }}>
-            <strong>Some required fields are missing.</strong> Please complete the highlighted sections below.
+        <div style={{ gridColumn: '1 / -1' }}>
+          <div
+            className="card"
+            style={{ border: '2px solid #d9534f', background: '#fff5f5' }}
+          >
+            <strong>Some required fields are missing.</strong> Please complete
+            the highlighted sections below.
           </div>
         </div>
       )}
 
-      <div className="card"><h2>Dialogue</h2><Dialogue turns={task.dialogue} /></div>
-      <div className="card"><h2>Summary</h2><Summary text={task.summary} /></div>
+      <div className="card">
+        <h2>Dialogue</h2>
+        <Dialogue turns={task.dialogue} />
+      </div>
+      <div className="card">
+        <h2>Summary</h2>
+        <Summary text={task.summary} />
+      </div>
 
       {/* Profiles */}
-      <div style={{ gridColumn:'1 / -1' }}>
-        <div ref={profilesRef} className="card" style={errorCardStyle(valid.profiles)}>
-          <div style={{display:'flex', justifyContent:'space-between'}}>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div
+          ref={profilesRef}
+          className="card"
+          style={errorCardStyle(valid.profiles)}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <h3>Profiles for this task</h3>
-            <button className="btn" onClick={openAddForm}>Add profile</button>
+            <button className="btn" onClick={openAddForm}>
+              Add profile
+            </button>
           </div>
-          {relatedProfiles.length === 0 ? <p>No profiles yet.</p> : (
+          {relatedProfiles.length === 0 ? (
+            <p>No profiles yet.</p>
+          ) : (
             <ul className="profiles">
-              {relatedProfiles.map(p => (
+              {relatedProfiles.map((p) => (
                 <li key={p.id}>
                   <strong>{p.name}</strong>
-                  <div className="muted">{p.gender} · {p.ageGroup} · {p.ethnicity}</div>
-                  <div className="muted">{p.country} · {p.socialClass}/{p.socioEconomicClass}</div>
-                  <div style={{ marginTop:8 }}>
-                    <button className="btn ghost" onClick={() => openEditForm(p)}>Edit</button>
-                    <button className="btn ghost" onClick={() => onDeleteProfile(p.id)}>Delete</button>
+                  <div className="muted">
+                    {p.gender} · {p.ageGroup} · {p.ethnicity}
+                  </div>
+                  <div className="muted">
+                    {p.country} · {p.socialClass}/{p.socioEconomicClass}
+                  </div>
+                  <div style={{ marginTop: 8 }}>
+                    <button
+                      className="btn ghost"
+                      onClick={() => openEditForm(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn ghost"
+                      onClick={() => onDeleteProfile(p.id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </li>
               ))}
@@ -290,41 +448,66 @@ export default function TaskPage() {
       </div>
 
       {/* Speakers Dynamics — uses speakers from profiles */}
-      <div style={{ gridColumn:'1 / -1' }}>
+      <div style={{ gridColumn: '1 / -1' }}>
         <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
-          <SpeakersDynamics lang={lang} taskId={taskId} speakers={speakersFromProfiles} />
+          <SpeakersDynamics
+            lang={lang}
+            taskId={taskId}
+            speakers={speakersFromProfiles}
+          />
         </div>
       </div>
 
       {/* Dialog Context */}
-      <div style={{ gridColumn:'1 / -1' }}>
+      <div style={{ gridColumn: '1 / -1' }}>
         <div ref={contextRef} style={errorCardStyle(valid.context)}>
           <DialogContext lang={lang} taskId={taskId} />
         </div>
       </div>
 
-      {/* Annotator Perspective (unchanged source of speakers; you can switch it to profiles if you prefer) */}
-      <div style={{ gridColumn:'1 / -1' }}>
+      {/* Annotator Perspective */}
+      <div style={{ gridColumn: '1 / -1' }}>
         <div ref={perspectiveRef} style={errorCardStyle(valid.perspective)}>
-          <AnnotatorPerspective lang={lang} taskId={taskId} turns={task.dialogue} />
+          <AnnotatorPerspective
+            lang={lang}
+            taskId={taskId}
+            turns={task.dialogue}
+          />
         </div>
       </div>
 
       {/* Remarks */}
-      <div style={{ gridColumn:'1 / -1' }}><RemarksBox lang={lang} taskId={taskId} /></div>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <RemarksBox lang={lang} taskId={taskId} />
+      </div>
 
       {/* Footer */}
-      <div style={{ gridColumn:'1 / -1' }}>
-        <div className="card" style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <button className="btn ghost" onClick={prev} disabled={i === 0}>Previous</button>
-          <div style={{ display:'flex', gap:8 }}>
-            <button className="btn ghost" onClick={onExport}>Export JSON</button>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div
+          className="card"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <button className="btn ghost" onClick={prev} disabled={i === 0}>
+            Previous
+          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn ghost" onClick={onExport}>
+              Export JSON
+            </button>
             <button
               className="btn"
               onClick={handleNext}
-              disabled={i >= tasks.length - 1 && valid.all} // last task stays enabled/disabled logically
+              disabled={i >= tasks.length - 1 && valid.all}
               style={!valid.all ? { opacity: 0.65 } : {}}
-              title={!valid.all ? 'Please complete all required fields before continuing' : 'Next'}
+              title={
+                !valid.all
+                  ? 'Please complete all required fields before continuing'
+                  : 'Next'
+              }
             >
               Next
             </button>
@@ -334,10 +517,16 @@ export default function TaskPage() {
 
       {showForm && (
         <ProfileForm
-          onClose={() => { setShowForm(false); setEditingId(null); setFormDefault(undefined) }}
+          onClose={() => {
+            setShowForm(false)
+            setEditingId(null)
+            setFormDefault(undefined)
+          }}
           onSave={onSaveProfile}
           defaultValue={formDefault}
-          speakers={Array.from(new Set(task?.dialogue?.map(t=>t.speaker).filter(Boolean)))}
+          speakers={Array.from(
+            new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)),
+          )}
           {...(editingId == null ? { draftLang: lang, draftTaskId: taskId } : {})}
         />
       )}

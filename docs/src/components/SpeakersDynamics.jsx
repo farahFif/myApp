@@ -230,18 +230,28 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                   </label>
 
                   <label>
-                    <strong>Relationship</strong>
-                    <select
-                      value={relation}
-                      onChange={(ev) => setEdge(k, { relation: ev.target.value })}
-                      disabled={!category}
-                    >
-                      <option value="" disabled>{category ? 'Select…' : 'Choose category first'}</option>
-                      {category && CATEGORIES[category].map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                  </label>
-
-                  <label>
+                      <strong>Relationship</strong>
+                      {category === 'Other' ? (
+                        <input
+                          type="text"
+                          placeholder="Specify relationship"
+                          value={relation}
+                          onChange={(ev) => setEdge(k, { relation: ev.target.value })}
+                        />
+                      ) : (
+                        <select
+                          value={relation}
+                          onChange={(ev) => setEdge(k, { relation: ev.target.value })}
+                          disabled={!category}
+                        >
+                          <option value="" disabled>{category ? 'Select…' : 'Choose category first'}</option>
+                          {category && CATEGORIES[category].map(r => (
+                            <option key={r} value={r}>{r}</option>
+                          ))}
+                        </select>
+                      )}
+                    </label>
+                                      <label>
                     <strong>Familiarity (A → B)</strong>
                     <select
                       value={familiarity}
