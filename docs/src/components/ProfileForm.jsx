@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { saveDraft, clearDraft } from '../utils/storage.js'
+import { useEffect, useState } from 'react'
 
-const AGE_GROUPS = ['child','teenage','adult','middle age','elderly']
-const GENDERS = ['male','female','other','NA']
+// --- constants ---
+
+const AGE_GROUPS = ['Child', 'Teenage', 'Adult', 'Middle age', 'Elderly']
+
+const GENDERS = ['Male', 'Female', 'Other', 'NA']
+
 const ETHNICITIES = [
   'African / African Descent',
   'Arab / Middle Eastern / North African',
@@ -11,362 +14,611 @@ const ETHNICITIES = [
   'East Asian (e.g., Chinese, Japanese, Korean)',
   'Southeast Asian (e.g., Filipino, Vietnamese, Thai)',
   'Pacific Islander / Oceanian',
-  'European / Caucasian',
+  'European / White',
   'Latino / Hispanic',
   'Indigenous / Native Peoples',
   'Mixed / Multi-ethnic',
   'Other',
-  'NA'
+  'NA',
 ]
-const MARITAL = [
-  'Married','Single','Divorced','Separated','Widowed',
-  'Living together as married','In a relationship/engaged','NA'
+
+const MARITAL_STATUSES = [
+  'Married',
+  'Single',
+  'Divorced',
+  'Separated',
+  'Widowed',
+  'Living together as married',
+  'In a relationship/engaged',
+  'NA',
 ]
-const EDUCATION = [
-  'Elementary','Secondary','High school','Diplomas',
-  'Bachelor’s','Master’s','Doctoral','NA','Other'
+
+const EDUCATION_LEVELS = [
+  'Elementary',
+  'Secondary',
+  'High school',
+  'Diplomas',
+  'Bachelor’s',
+  'Master’s',
+  'Doctoral',
+  'NA',
+  'Other',
 ]
-const RELIGION = ['Buddhist','Christian','Hindu','Muslim','Jew','Other religion','Atheist','NA']
 
-const OCCUPATION = {
-  Employed: [
-    'self-employed',
-    'Manager',
-    'Professional',
-    'Technicians and associate professionals',
-    'Clerical support workers',
-    'Service and sales workers',
-    'Skilled agricultural, forestry and fishery workers',
-    'Craft and related trades workers',
-    'Plant and machine operators and assemblers',
-    'Elementary occupations',
-    'Armed forces occupations',
-    'Military service'
-  ],
-  'No or unpaid employment': ['Retired','Student','Housewife','Unemployed'],
-  NA: ['NA']
-}
+const RELIGIONS = [
+  'Buddhist',
+  'Christian',
+  'Hindu',
+  'Muslim',
+  'Jew',
+  'Other religion',
+  'Atheist',
+  'NA',
+]
 
-const SOCIO_ECON_CLASSES = ['Upper','Middle','Lower','Other','NA']
-const SOCIAL_CLASSES = ['Upper','Middle','Lower','Other','NA']
+const SOCIO_CLASSES = ['Upper', 'Middle', 'Lower', 'Other', 'NA']
+const SOCIAL_CLASSES = ['Upper', 'Middle', 'Lower', 'Other', 'NA']
 
-const EMOTIONS = {
-  Love: ['Affection','Lust','Longing','Caring','Tenderness'],
-  Joy: ['Amusement','Bliss','Glee','Exhilaration','Satisfaction'],
-  Anger: ['Hostility','Rage','Frustration','Resentment'],
-  Sadness: ['Grief','Despair','Disappointment','Remorse'],
-  Fear: ['Anxiety','Terror','Worry','Panic'],
-  Surprise: ['Astonishment','Confusion','Realization'],
-  NA: ['No clear emotion']
-}
+const OCCUPATION_TIER = [
+  'Employed/self-employed',
+  'No or unpaid employment',
+  'NA',
+]
 
+const OCCUPATION_DETAILS_EMPLOYED = [
+  'Manager',
+  'Professional',
+  'Technicians and associate professionals',
+  'Clerical support workers',
+  'Service and sales workers',
+  'Skilled agricultural, forestry and fishery workers',
+  'Craft and related trades workers',
+  'Plant and machine operators and assemblers',
+  'Elementary occupations',
+  'Armed forces occupations',
+  'Military service',
+  'Other',
+]
+
+const OCCUPATION_DETAILS_NONEMP = [
+  'Retired',
+  'Student',
+  'Housewife',
+  'Unemployed',
+  'Other',
+]
+
+// simple country list (extend if you want)
 const COUNTRIES = [
-    'NA', 'Fictional','Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan',
-  'Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin','Bhutan','Bolivia',
-  'Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi',
-  'Cambodia','Cameroon','Canada','Cape Verde','Central African Republic','Chad','Chile','China','Colombia','Comoros',
-  'Congo (Congo-Brazzaville)','Costa Rica','Côte d’Ivoire','Croatia','Cuba','Cyprus','Czechia',
-  'Denmark','Djibouti','Dominica','Dominican Republic',
-  'Ecuador','Egypt','El Salvador','Equatorial Guinea','Eritrea','Estonia','Eswatini','Ethiopia',
-  'Fiji','Finland','France','Gabon','Gambia','Georgia','Germany','Ghana','Greece','Guatemala',
-  'Guinea','Guinea-Bissau','Guyana','Haiti','Honduras','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy',
-  'Jamaica','Japan','Jordan','Kazakhstan','Kenya','Kiribati','Kuwait','Kyrgyzstan',
-  'Laos','Latvia','Lebanon','Lesotho','Liberia','Libya','Liechtenstein','Lithuania','Luxembourg',
-  'Madagascar','Malawi','Malaysia','Maldives','Mali','Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Morocco','Mozambique','Myanmar',
-  'Namibia','Nauru','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria','North Macedonia','Norway','Oman',
-  'Pakistan','Palau','Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar',
-  'Romania','Russia','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino','Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands','Somalia','South Africa','South Korea','South Sudan','Spain','Sri Lanka','Sudan','Suriname','Sweden','Switzerland','Syria',
-  'Taiwan','Tajikistan','Tanzania','Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu',
-  'Uganda','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan',
-  'Vanuatu','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'
+  'NA',
+    'Fictional',
+  'Afghanistan',
+  'Algeria',
+  'Argentina',
+  'Australia',
+  'Bangladesh',
+  'Belgium',
+  'Brazil',
+  'Canada',
+  'China',
+  'Egypt',
+  'France',
+  'Germany',
+  'India',
+  'Indonesia',
+  'Iraq',
+  'Italy',
+  'Japan',
+  'Jordan',
+  'Kenya',
+  'Lebanon',
+  'Mexico',
+  'Morocco',
+  'Netherlands',
+  'Nigeria',
+  'Pakistan',
+  'Philippines',
+  'Qatar',
+  'Russia',
+  'Saudi Arabia',
+  'South Africa',
+  'South Korea',
+  'Spain',
+  'Sudan',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tunisia',
+  'Türkiye',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States',
+  'Other',
 ]
 
-export default function ProfileForm({ onClose, onSave, defaultValue, draftLang, draftTaskId, speakers = [] }) {
+// Emotions as hierarchical checkboxes, stored as flat strings like "Love: Affection"
+const EMOTIONS_TREE = {
+  Love: ['Affection', 'Lust', 'Longing'],
+  Joy: ['Cheerfulness', 'Zest', 'Contentment', 'Pride', 'Optimism','Enthrallment','Relief'],
+  Anger: ['Irritability','Disgust', 'Rage', 'Frustration', 'Envy','Torment'],
+  Sadness: ['Suffering', 'Sadness', 'Disappointment', 'Shame','Neglect','Sympathy'],
+  Fear: ['Horror', 'Nervousness'],
+  Surprise: ['Astonishment', 'Amazement'],
+}
+
+// --- component ---
+
+export default function ProfileForm({
+  onClose,
+  onSave,
+  defaultValue,
+  speakers = [],
+  draftLang,
+  draftTaskId,
+}) {
   const [form, setForm] = useState(() => ({
     name: '',
     ageGroup: '',
     gender: '',
     genderOther: '',
     ethnicity: '',
-    ethnicityOther: '',
     maritalStatus: '',
     education: '',
     educationOther: '',
     religion: '',
-    religionOther: '',
-    occupationTier: 'Employed',
+    occupationTier: '',
     occupationDetail: '',
-    occupationDetailOther: '',
+    occupationOther: '',
     socioEconomicClass: '',
-    socioEconomicOther: '',   // NEW
+    socioEconomicOther: '',
     socialClass: '',
-    socialClassOther: '',     // NEW
+    socialClassOther: '',
+    emotions: [], // array of strings "Love: Affection", etc. plus maybe "NA"
     country: '',
-    emotions: [],
+    // if you had more fields before, add them here
+    ...(defaultValue || {}),
   }))
-  const isEditing = Boolean(defaultValue?.id)
 
+  // keep in sync when editing a profile
   useEffect(() => {
-    if (defaultValue) setForm(prev => ({ ...prev, ...defaultValue }))
+    if (defaultValue) {
+      setForm((prev) => ({
+        ...prev,
+        ...defaultValue,
+      }))
+    }
   }, [defaultValue])
 
-  useEffect(() => {
-    if (draftLang && draftTaskId != null && !isEditing) {
-      saveDraft(draftLang, draftTaskId, form)
-    }
-  }, [form, draftLang, draftTaskId, isEditing])
-
-  const details = useMemo(() => OCCUPATION[form.occupationTier] || [], [form.occupationTier])
-
-  const update = (e) => {
-    const { name, value } = e.target
-    setForm(f => ({ ...f, [name]: value }))
+  // basic helpers
+  const updateField = (field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
   }
 
-  const toggleEmotion = (primary, secondary, checked) => {
-    const key = `${primary}|${secondary}`
-    setForm(f => {
-      const set = new Set(f.emotions || [])
-      if (checked) set.add(key); else set.delete(key)
-      return { ...f, emotions: Array.from(set) }
+  const toggleEmotion = (key) => {
+    setForm((prev) => {
+      const set = new Set(prev.emotions || [])
+      if (set.has(key)) set.delete(key)
+      else set.add(key)
+      // if NA is selected, remove all others, or if any non-NA is added, remove NA
+      if (set.has('NA') && set.size > 1) {
+        set.delete('NA')
+      }
+      return {
+        ...prev,
+        emotions: Array.from(set),
+      }
     })
   }
-  const clearEmotions = () => setForm(f => ({ ...f, emotions: [] }))
-  const isEmotionChecked = (p, s) => (form.emotions || []).includes(`${p}|${s}`)
 
-  const submit = (e) => {
+  // simple frontend required-check to avoid empty submits
+  const handleSubmit = (e) => {
     e.preventDefault()
-    const payload = {
-      ...form,
-      gender: form.gender === 'other' && form.genderOther ? form.genderOther : form.gender,
-      ethnicity: form.ethnicity === 'Other' && form.ethnicityOther ? form.ethnicityOther : form.ethnicity,
-      education: form.education === 'Other' && form.educationOther ? form.educationOther : form.education,
-      religion: form.religion?.startsWith('Other') && form.religionOther ? form.religionOther : form.religion,
-      occupationDetail: form.occupationDetail === 'Other' && form.occupationDetailOther ? form.occupationDetailOther : form.occupationDetail,
-      // NEW: write "Other" custom values if provided
-      socioEconomicClass:
-        form.socioEconomicClass === 'Other' && form.socioEconomicOther
-          ? form.socioEconomicOther
-          : form.socioEconomicClass,
-      socialClass:
-        form.socialClass === 'Other' && form.socialClassOther
-          ? form.socialClassOther
-          : form.socialClass,
+
+    const requiredFields = [
+      'name',
+      'ageGroup',
+      'gender',
+      'ethnicity',
+      'maritalStatus',
+      'education',
+      'religion',
+      'occupationTier',
+      'occupationDetail',
+      'socioEconomicClass',
+      'socialClass',
+      'country',
+    ]
+
+    for (const f of requiredFields) {
+      if (!form[f] || String(form[f]).trim() === '') {
+        alert('Please fill in all required fields before saving the profile.')
+        return
+      }
     }
-    onSave?.(payload)
-    if (!isEditing && draftLang && draftTaskId != null) clearDraft(draftLang, draftTaskId)
-    onClose?.()
+
+    onSave(form)
   }
 
-  const show = {
-    genderOther: form.gender === 'other',
-    ethnicityOther: form.ethnicity === 'Other',
-    educationOther: form.education === 'Other',
-    religionOther: form.religion?.startsWith('Other'),
-    occupationDetailOther: form.occupationDetail === 'Other',
-    // NEW:
-    socioEconomicOther: form.socioEconomicClass === 'Other',
-    socialClassOther: form.socialClass === 'Other',
-  }
+  // occupation detail options based on tier
+  const occupationDetailsOptions =
+    form.occupationTier === 'Employed/self-employed'
+      ? OCCUPATION_DETAILS_EMPLOYED
+      : form.occupationTier === 'No or unpaid employment'
+      ? OCCUPATION_DETAILS_NONEMP
+      : []
 
-  const hasSpeakers = Array.isArray(speakers) && speakers.length > 0
+  // render helpers
+  const renderEmotionCheckboxes = () => {
+    return (
+      <div style={{ display: 'grid', gap: 8 }}>
+        {Object.entries(EMOTIONS_TREE).map(([cat, subs]) => (
+          <div key={cat} style={{ padding: 6, borderRadius: 6, background: '#f5f5f5' }}>
+            <strong>{cat}</strong>
+            <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {subs.map((sub) => {
+                const key = `${cat}: ${sub}`
+                const checked = (form.emotions || []).includes(key)
+                return (
+                  <label key={key} className="radio">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleEmotion(key)}
+                    />
+                    {sub}
+                  </label>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+        <div>
+          <strong>NA</strong>
+          <div style={{ marginTop: 4 }}>
+            <label className="radio">
+              <input
+                type="checkbox"
+                checked={(form.emotions || []).includes('NA')}
+                onChange={() => toggleEmotion('NA')}
+              />
+              Not applicable / cannot be inferred
+            </label>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <h3>{isEditing ? 'Edit profile' : 'Add profile'}</h3>
-        <form onSubmit={submit} className="form-grid">
-          <label>
-            <strong>Name</strong>
-            {hasSpeakers ? (
-              <select name="name" value={form.name} onChange={update}>
-                <option value="" disabled>Select speaker…</option>
-                {speakers.map(s => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            ) : (
-              <input name="name" value={form.name} onChange={update} placeholder="Full name" />
-            )}
-          </label>
-
-          <label>
-            <strong>Age group</strong>
-            <select name="ageGroup" value={form.ageGroup} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {AGE_GROUPS.map(a => <option key={a} value={a}>{a}</option>)}
-            </select>
-          </label>
-
-          <fieldset className="fieldset">
-            <legend><strong>Gender</strong></legend>
-            <div className="row">
-              {GENDERS.map(g => (
-                <label key={g} className="radio">
-                  <input type="radio" name="gender" value={g} checked={form.gender === g} onChange={update} /> {g}
-                </label>
-              ))}
-              {show.genderOther && (
-                <span className="inline-other">
-                  <input name="genderOther" value={form.genderOther} onChange={update} placeholder="Specify other…" />
-                </span>
-              )}
-            </div>
-          </fieldset>
-
-          <label>
-            <strong>Ethnicity</strong>
-            <select name="ethnicity" value={form.ethnicity} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {ETHNICITIES.map(e => <option key={e} value={e}>{e}</option>)}
-            </select>
-          </label>
-          {show.ethnicityOther && (
-            <label>
-              <strong>Specify other ethnicity</strong>
-              <input name="ethnicityOther" value={form.ethnicityOther} onChange={update} placeholder="Enter ethnicity" />
-            </label>
-          )}
-
-          <label>
-            <strong>Marital status</strong>
-            <select name="maritalStatus" value={form.maritalStatus} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </label>
-
-          <label>
-            <strong>Education level</strong>
-            <select name="education" value={form.education} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {EDUCATION.map(ed => <option key={ed} value={ed}>{ed}</option>)}
-            </select>
-          </label>
-          {show.educationOther && (
-            <label>
-              <strong>Specify other education</strong>
-              <input name="educationOther" value={form.educationOther} onChange={update} placeholder="Enter education" />
-            </label>
-          )}
-
-          <label>
-            <strong>Religion</strong>
-            <select name="religion" value={form.religion} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {RELIGION.map(r => <option key={r} value={r}>{r}</option>)}
-              <option value="Other religion">Other religion</option>
-            </select>
-          </label>
-          {show.religionOther && (
-            <label>
-              <strong>Specify other religion</strong>
-              <input name="religionOther" value={form.religionOther} onChange={update} placeholder="Enter religion" />
-            </label>
-          )}
-
-          <label>
-            <strong>Occupation tier</strong>
-            <select name="occupationTier" value={form.occupationTier} onChange={update}>
-              {Object.keys(OCCUPATION).map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-          </label>
-
-          <label>
-            <strong>Occupation detail</strong>
-            <select name="occupationDetail" value={form.occupationDetail} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {details.map(d => <option key={d} value={d}>{d}</option>)}
-              <option value="Other">Other</option>
-            </select>
-          </label>
-          {show.occupationDetailOther && (
-            <label>
-              <strong>Specify other occupation</strong>
-              <input name="occupationDetailOther" value={form.occupationDetailOther} onChange={update} placeholder="Enter occupation" />
-            </label>
-          )}
-
-          <label>
-            <strong>Socio-economic class</strong>
-            <select name="socioEconomicClass" value={form.socioEconomicClass} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {SOCIO_ECON_CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-          {show.socioEconomicOther && (
-            <label>
-              <strong>Specify other socio-economic class</strong>
-              <input
-                name="socioEconomicOther"
-                value={form.socioEconomicOther}
-                onChange={update}
-                placeholder="Enter socio-economic class"
-              />
-            </label>
-          )}
-
-          <label>
-            <strong>Social class</strong>
-            <select name="socialClass" value={form.socialClass} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {SOCIAL_CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-          {show.socialClassOther && (
-            <label>
-              <strong>Specify other social class</strong>
-              <input
-                name="socialClassOther"
-                value={form.socialClassOther}
-                onChange={update}
-                placeholder="Enter social class"
-              />
-            </label>
-          )}
-
-          <label>
-            <strong>Country</strong>
-            <select name="country" value={form.country} onChange={update}>
-              <option value="" disabled>Select…</option>
-              {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-
-          {/* Emotions: hierarchical checkboxes */}
-          <fieldset className="fieldset" style={{ gridColumn: 'span 2' }}>
-            <legend><strong>Emotions (select multiple)</strong></legend>
-            {Object.entries(EMOTIONS).map(([primary, secondaries]) => (
-              <div key={primary} style={{ marginBottom: 8 }}>
-                <strong style={{ display: 'inline-block', minWidth: 110 }}>{primary}</strong>
-                <div className="row" style={{ marginTop: 6 }}>
-                  {secondaries.map((sec) => {
-                    const id = `${primary}-${sec}`
-                    const checked = isEmotionChecked(primary, sec)
-                    return (
-                      <label key={id} className="radio">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => toggleEmotion(primary, sec, e.target.checked)}
-                        /> {sec}
-                      </label>
-                    )
-                  })}
-                </div>
-              </div>
+    <div className="card" style={{ maxWidth: 720 }}>
+      <form onSubmit={handleSubmit} className="form-grid">
+        {/* Name (from speakers dropdown) */}
+        <label>
+          <strong>Name *</strong>
+          <select
+            value={form.name || ''}
+            onChange={(e) => updateField('name', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select speaker…
+            </option>
+            {speakers.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
-            <div className="actions" style={{ justifyContent: 'flex-start', gridColumn: '1 / -1' }}>
-              <button type="button" className="btn ghost" onClick={clearEmotions}>Clear emotions</button>
-            </div>
-          </fieldset>
+          </select>
+        </label>
 
-          <div className="actions">
-            <button type="button" className="btn ghost" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn">{isEditing ? 'Save changes' : 'Save profile'}</button>
+        {/* Age group */}
+        <label>
+          <strong>Age group *</strong>
+          <select
+            value={form.ageGroup || ''}
+            onChange={(e) => updateField('ageGroup', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {AGE_GROUPS.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Gender */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <strong>Gender *</strong>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12,
+              marginTop: 4,
+            }}
+          >
+            {GENDERS.map((g) => (
+              <label key={g} className="radio">
+                <input
+                  type="radio"
+                  name="gender"
+                  value={g}
+                  checked={form.gender === g}
+                  onChange={(e) => updateField('gender', e.target.value)}
+                  required
+                />
+                {g}
+              </label>
+            ))}
           </div>
-        </form>
-      </div>
+          {form.gender === 'Other' && (
+            <div style={{ marginTop: 6 }}>
+              <input
+                type="text"
+                placeholder="Specify gender"
+                value={form.genderOther || ''}
+                onChange={(e) => updateField('genderOther', e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Ethnicity */}
+        <label>
+          <strong>Ethnicity *</strong>
+          <select
+            value={form.ethnicity || ''}
+            onChange={(e) => updateField('ethnicity', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {ETHNICITIES.map((eth) => (
+              <option key={eth} value={eth}>
+                {eth}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Marital status */}
+        <label>
+          <strong>Marital status *</strong>
+          <select
+            value={form.maritalStatus || ''}
+            onChange={(e) => updateField('maritalStatus', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {MARITAL_STATUSES.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Education */}
+        <label>
+          <strong>Education level *</strong>
+          <select
+            value={form.education || ''}
+            onChange={(e) => updateField('education', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {EDUCATION_LEVELS.map((ed) => (
+              <option key={ed} value={ed}>
+                {ed}
+              </option>
+            ))}
+          </select>
+          {form.education === 'Other' && (
+            <div style={{ marginTop: 6 }}>
+              <input
+                type="text"
+                placeholder="Specify education"
+                value={form.educationOther || ''}
+                onChange={(e) => updateField('educationOther', e.target.value)}
+              />
+            </div>
+          )}
+        </label>
+
+        {/* Religion */}
+        <label>
+          <strong>Religion *</strong>
+          <select
+            value={form.religion || ''}
+            onChange={(e) => updateField('religion', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {RELIGIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Socio-economic class */}
+        <label>
+          <strong>Socio-economic class *</strong>
+          <select
+            value={form.socioEconomicClass || ''}
+            onChange={(e) => updateField('socioEconomicClass', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {SOCIO_CLASSES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          {form.socioEconomicClass === 'Other' && (
+            <div style={{ marginTop: 6 }}>
+              <input
+                type="text"
+                placeholder="Specify socio-economic class"
+                value={form.socioEconomicOther || ''}
+                onChange={(e) => updateField('socioEconomicOther', e.target.value)}
+              />
+            </div>
+          )}
+        </label>
+
+        {/* Social class */}
+        <label>
+          <strong>Social class *</strong>
+          <select
+            value={form.socialClass || ''}
+            onChange={(e) => updateField('socialClass', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {SOCIAL_CLASSES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          {form.socialClass === 'Other' && (
+            <div style={{ marginTop: 6 }}>
+              <input
+                type="text"
+                placeholder="Specify social class"
+                value={form.socialClassOther || ''}
+                onChange={(e) => updateField('socialClassOther', e.target.value)}
+              />
+            </div>
+          )}
+        </label>
+
+        {/* Occupation */}
+        <label>
+          <strong>Occupation (tier) *</strong>
+          <select
+            value={form.occupationTier || ''}
+            onChange={(e) => {
+              const newTier = e.target.value
+              setForm((prev) => ({
+                ...prev,
+                occupationTier: newTier,
+                occupationDetail: '', // reset detail when tier changes
+              }))
+            }}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {OCCUPATION_TIER.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <strong>Occupation (detail) *</strong>
+          <select
+            value={form.occupationDetail || ''}
+            onChange={(e) => updateField('occupationDetail', e.target.value)}
+            required
+            disabled={occupationDetailsOptions.length === 0}
+          >
+            <option value="" disabled>
+              {occupationDetailsOptions.length === 0
+                ? 'Select tier first'
+                : 'Select…'}
+            </option>
+            {occupationDetailsOptions.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+            <option value="NA">NA</option>
+          </select>
+          {form.occupationDetail === 'Other' && (
+            <div style={{ marginTop: 6 }}>
+              <input
+                type="text"
+                placeholder="Specify occupation"
+                value={form.occupationOther || ''}
+                onChange={(e) => updateField('occupationOther', e.target.value)}
+              />
+            </div>
+          )}
+        </label>
+
+        {/* Country */}
+        <label>
+          <strong>Country *</strong>
+          <select
+            value={form.country || ''}
+            onChange={(e) => updateField('country', e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {COUNTRIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Emotions */}
+        <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+          <strong>Emotional status (multiple) </strong>
+          <div style={{ marginTop: 6 }}>{renderEmotionCheckboxes()}</div>
+        </div>
+
+        {/* Buttons */}
+        <div
+          style={{
+            gridColumn: '1 / -1',
+            marginTop: 12,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            className="btn ghost"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn">
+            Save profile
+          </button>
+        </div>
+      </form>
     </div>
   )
 }

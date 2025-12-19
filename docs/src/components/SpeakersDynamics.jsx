@@ -44,8 +44,7 @@ function pairKey(a, b) {
 }
 function isLegacySymmetricKey(k) { return k.includes('|') && !k.includes('→') }
 
-export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
-  // speakers now comes from Profiles (TaskPage computes it)
+export default function SpeakersDynamics({ lang, taskId, speakers = [], onDirty }) {
   const [state, setState] = useState(() => ({
     speakers: speakers,
     edges: {},   // directed A→B data
@@ -53,7 +52,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
     intents: {}, // symmetric intentions alignment
   }))
 
-  // Load and migrate saved state
+  // Load + migrate
   useEffect(() => {
     const saved = loadDynamics(lang, taskId)
     if (saved) {
@@ -73,19 +72,18 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
         } else migratedEdges[k] = v
       }
       const powers = saved.powers || {}
-      setState({ speakers, edges: migratedEdges, powers, intents })
-      // save back migrated shape
-      saveDynamics(lang, taskId, { speakers, edges: migratedEdges, powers, intents })
+      const next = { speakers, edges: migratedEdges, powers, intents }
+      setState(next)
+      saveDynamics(lang, taskId, next)
     } else {
       setState({ speakers, edges: {}, powers: {}, intents: {} })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, taskId])
 
-  // Keep state.speakers synced with prop speakers (from Profiles)
+  // Keep speakers in sync with profiles
   useEffect(() => {
     setState(s => {
-      // prune edges/powers/intents referencing removed speakers
       const setNames = new Set(speakers)
       const prunedEdges = {}
       for (const [k, v] of Object.entries(s.edges)) {
@@ -105,8 +103,12 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
     })
   }, [speakers])
 
-  // Autosave
-  useEffect(() => { saveDynamics(lang, taskId, state) }, [state, lang, taskId])
+  // Autosave + notify parent
+  useEffect(() => {
+    saveDynamics(lang, taskId, state)
+    if (onDirty) onDirty()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, lang, taskId])
 
   const directedPairs = useMemo(() => {
     const s = state.speakers.map(v => v.trim()).filter(Boolean)
@@ -135,17 +137,23 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
 
   const ensurePowerObj = (speaker) => {
     if (!state.powers[speaker]) {
-      setState(s => ({ ...s, powers: { ...s.powers, [speaker]: { selected: [] } } }))
+      const next = { ...state, powers: { ...state.powers, [speaker]: { selected: [] } } }
+      setState(next)
       return { selected: [] }
     }
     return state.powers[speaker]
   }
+
   const toggleSpeakerPower = (speaker, power, checked) => {
     const cur = ensurePowerObj(speaker)
     const selected = new Set(cur.selected || [])
     if (checked) selected.add(power); else selected.delete(power)
-    setState(s => ({ ...s, powers: { ...s.powers, [speaker]: { selected: Array.from(selected) } } }))
+    setState(s => ({
+      ...s,
+      powers: { ...s.powers, [speaker]: { selected: Array.from(selected) } }
+    }))
   }
+
   const sourcePowers = (A) => state.powers[A]?.selected || []
 
   const resetAll = () => {
@@ -159,10 +167,15 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
         <h3 style={{ margin: 0 }}>Speakers Dynamics</h3>
         <button className="btn ghost" onClick={resetAll}>Reset</button>
       </div>
+      <p className="muted" style={{ margin: '0 12px 4px' }}>
+        For each pair of speakers, indicate how they are related, how familiar they are,
+        and how power, status and intentions are distributed between them.
+      </p>
 
       {/* Speaker Powers */}
       <div className="card" style={{ marginTop: 12 }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}><strong>Speaker Powers (select types per speaker)</strong></h4>
+        <p className="muted">For each speaker determine their type of power(s).</p>
         {state.speakers.length === 0 ? (
           <p className="muted">Create profiles to annotate powers.</p>
         ) : (
@@ -208,18 +221,24 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
             const category = e.category || ''
             const relation = e.relation || ''
             const familiarity = e.familiarity || ''
+
             const powerDiff = e.powerDiff || ''
+            const powerDiffPersp = e.powerDiffPersp || ''
             const socialDiff = e.socialDiff || ''
+            const socialDiffPersp = e.socialDiffPersp || ''
+
             const accommodation = e.accommodation || ''
+            const intentAlignment = e.intentAlignment || ''
+
             const powersToCompare = sourcePowers(A)
 
             return (
               <div key={k} className="card" style={{ borderRadius: 12 }}>
                 <strong>{A} → {B}</strong>
-
+                <p className="muted">Annotate from the perspective of {A}</p>
                 <div className="form-grid" style={{ marginTop: 10 }}>
                   <label>
-                    <strong>Category</strong>
+                    <strong>Relationship Category</strong>
                     <select
                       value={category}
                       onChange={(ev) => setEdge(k, { category: ev.target.value, relation: '' })}
@@ -230,28 +249,29 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                   </label>
 
                   <label>
-                      <strong>Relationship</strong>
-                      {category === 'Other' ? (
-                        <input
-                          type="text"
-                          placeholder="Specify relationship"
-                          value={relation}
-                          onChange={(ev) => setEdge(k, { relation: ev.target.value })}
-                        />
-                      ) : (
-                        <select
-                          value={relation}
-                          onChange={(ev) => setEdge(k, { relation: ev.target.value })}
-                          disabled={!category}
-                        >
-                          <option value="" disabled>{category ? 'Select…' : 'Choose category first'}</option>
-                          {category && CATEGORIES[category].map(r => (
-                            <option key={r} value={r}>{r}</option>
-                          ))}
-                        </select>
-                      )}
-                    </label>
-                                      <label>
+                    <strong>Relationship</strong>
+                    {category === 'Other' ? (
+                      <input
+                        type="text"
+                        placeholder="Specify relationship"
+                        value={relation}
+                        onChange={(ev) => setEdge(k, { relation: ev.target.value })}
+                      />
+                    ) : (
+                      <select
+                        value={relation}
+                        onChange={(ev) => setEdge(k, { relation: ev.target.value })}
+                        disabled={!category}
+                      >
+                        <option value="" disabled>{category ? 'Select…' : 'Choose category first'}</option>
+                        {category && CATEGORIES[category].map(r => (
+                          <option key={r} value={r}>{r}</option>
+                        ))}
+                      </select>
+                    )}
+                  </label>
+
+                  <label>
                     <strong>Familiarity (A → B)</strong>
                     <select
                       value={familiarity}
@@ -262,17 +282,37 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                     </select>
                   </label>
 
+                  {/* 1. Intentions alignment (from A's perspective) */}
                   <div style={{ gridColumn:'span 2' }}>
-                    <strong>Overall power difference ({A} vs {B})</strong>
-                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center' }}>
-                      {POWER_DIFF.map(opt => (
-                        <label key={`${k}-pd-${opt}`} className="radio">
+                    <strong>Intentions alignment (from {A}'s perspective)</strong>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center', marginTop:4 }}>
+                      {['Aligned','Complementary','Conflicting','NA'].map(level => (
+                        <label key={`${k}-intent-${level}`} className="radio">
                           <input
                             type="radio"
-                            name={`powdiff-${k}`}
+                            name={`intent-dir-${k}`}
+                            value={level}
+                            checked={intentAlignment === level}
+                            onChange={(e2) => setEdge(k, { intentAlignment: e2.target.value })}
+                          />
+                          {level}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 2. Overall power difference (dialogue-based) */}
+                  <div style={{ gridColumn:'span 2' }}>
+                    <strong>Overall power difference. Does {A} compared to {B} have:</strong>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center', marginTop:4 }}>
+                      {POWER_DIFF.map(opt => (
+                        <label key={`${k}-pd-dialogue-${opt}`} className="radio">
+                          <input
+                            type="radio"
+                            name={`powdiff-dialogue-${k}`}
                             value={opt}
                             checked={powerDiff === opt}
-                            onChange={(e) => setEdge(k, { powerDiff: e.target.value })}
+                            onChange={(e2) => setEdge(k, { powerDiff: e2.target.value })}
                           />
                           {opt}
                         </label>
@@ -280,17 +320,18 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                     </div>
                   </div>
 
+                  {/* 3. Overall power difference (from your perspective) */}
                   <div style={{ gridColumn:'span 2' }}>
-                    <strong>Overall social status difference ({A} vs {B})</strong>
-                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center' }}>
-                      {SOCIAL_DIFF.map(opt => (
-                        <label key={`${k}-sd-${opt}`} className="radio">
+                    <strong>Overall power difference (from your perspective). Does {A} compared to {B} have:</strong>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center', marginTop:4 }}>
+                      {POWER_DIFF.map(opt => (
+                        <label key={`${k}-pd-persp-${opt}`} className="radio">
                           <input
                             type="radio"
-                            name={`socialdiff-${k}`}
+                            name={`powdiff-persp-${k}`}
                             value={opt}
-                            checked={socialDiff === opt}
-                            onChange={(e) => setEdge(k, { socialDiff: e.target.value })}
+                            checked={powerDiffPersp === opt}
+                            onChange={(e2) => setEdge(k, { powerDiffPersp: e2.target.value })}
                           />
                           {opt}
                         </label>
@@ -298,6 +339,45 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                     </div>
                   </div>
 
+                  {/* 4. Overall social status difference (dialogue-based) */}
+                  <div style={{ gridColumn:'span 2' }}>
+                    <strong>Overall social status difference. Does {A} compared to {B} have:</strong>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center', marginTop:4 }}>
+                      {SOCIAL_DIFF.map(opt => (
+                        <label key={`${k}-sd-dialogue-${opt}`} className="radio">
+                          <input
+                            type="radio"
+                            name={`socialdiff-dialogue-${k}`}
+                            value={opt}
+                            checked={socialDiff === opt}
+                            onChange={(e2) => setEdge(k, { socialDiff: e2.target.value })}
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 5. Overall social status difference (from your perspective) */}
+                  <div style={{ gridColumn:'span 2' }}>
+                    <strong>Overall social status difference (from your perspective). Does {A} compared to {B} have:</strong>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center', marginTop:4 }}>
+                      {SOCIAL_DIFF.map(opt => (
+                        <label key={`${k}-sd-persp-${opt}`} className="radio">
+                          <input
+                            type="radio"
+                            name={`socialdiff-persp-${k}`}
+                            value={opt}
+                            checked={socialDiffPersp === opt}
+                            onChange={(e2) => setEdge(k, { socialDiffPersp: e2.target.value })}
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 6. Communication accommodation (A → B) */}
                   <div style={{ gridColumn:'span 2' }}>
                     <strong>Communication accommodation ({A} → {B})</strong>
                     <div style={{ display:'flex', flexWrap:'wrap', gap:10, alignItems:'center' }}>
@@ -308,7 +388,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                             name={`accom-${k}`}
                             value={level}
                             checked={accommodation === level}
-                            onChange={(e) => setEdge(k, { accommodation: e.target.value })}
+                            onChange={(e2) => setEdge(k, { accommodation: e2.target.value })}
                           />
                           {level}
                         </label>
@@ -316,6 +396,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                     </div>
                   </div>
 
+                  {/* Power by type comparisons */}
                   {powersToCompare.length > 0 && (
                     <div style={{ gridColumn:'span 2', marginTop: 8 }}>
                       <strong>Power comparisons by type ({A} vs {B})</strong>
@@ -325,7 +406,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                           const opts = [
                             { key:'A', label:`${A} higher` },
                             { key:'Equal', label:'Equal' },
-                            { key:'B', label:`${B} higher` },
+                            { key:'B', label:`${A} lower` },
                             { key:'Neutral', label:'Neutral' }
                           ]
                           return (
@@ -339,9 +420,9 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                                       name={`powtype-${k}-${pt}`}
                                       value={o.key}
                                       checked={val === o.key}
-                                      onChange={(e) =>
+                                      onChange={(e2) =>
                                         setEdge(k, {
-                                          powerTypes:{ ...((state.edges[k]?.powerTypes)||{}), [pt]: e.target.value }
+                                          powerTypes:{ ...((state.edges[k]?.powerTypes)||{}), [pt]: e2.target.value }
                                         })
                                       }
                                     />
@@ -382,7 +463,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                           name={`intent-${pk}`}
                           value={level}
                           checked={val === level}
-                          onChange={(e)=>updateIntent(e.target.value)}
+                          onChange={(e2)=>updateIntent(e2.target.value)}
                         />
                         {level}
                       </label>
