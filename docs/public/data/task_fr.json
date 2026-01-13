@@ -1,215 +1,89 @@
 [
-  {
-    "data": {
-      "Social Setting": "Private interaction in a bedroom",
-      "Speakers": [
-        "Irène",
-        "Jacques"
-      ],
-      "Relationships": [
-        "Irène",
-        "partner of",
-        "Jacques"
-      ],
-      "Gender": {
-        "Irène": "Female",
-        "Jacques": "Male"
-      },
-      "Age difference": {
-        "Irène and Jacques": "Older"
-      },
-      "Power": {
-        "subject": "Jacques",
-        "relation": "Superior to",
-        "object": "Irène"
-      },
-      "Location": "Bedroom",
-      "Familiarity Level": {
-        "Irène and Jacques": "Familiar"
-      },
-      "Formality": "Informal",
-      "IRENE-Honorifics": "No",
-      "IRENE-Politeness": "Yes",
-      "LA JEUNE FEMME-Honorifics": "No",
-      "LA JEUNE FEMME-Politeness": "No",
-      "JACQUES-Honorifics": "No",
-      "JACQUES-Politeness": "Yes",
-      "profiles": [
-        {
-          "Name": "Irène",
-          "Gender": "Female",
-          "Age Group": "Young adult",
-          "Age": "NA",
-          "Occupation": "NA",
-          "Marital status": "Single",
-          "Social position": "Middle",
-          "Religion": "NA",
-          "Ethnicity": "NA",
-          "Country": "France",
-          "Fame": "No",
-          "Education": "NA",
-          "Emotional status": [
-            "Frustration",
-            "Compassion",
-            "Love",
-            "Disappointment"
-          ],
-          "Power status": [
-            "NA"
-          ]
-        },
-        {
-          "Name": "Jacques",
-          "Gender": "Male",
-          "Age Group": "Middle-aged adult",
-          "Age": "NA",
-          "Occupation": "NA",
-          "Marital status": "Single",
-          "Social position": "High",
-          "Religion": "Christianity",
-          "Ethnicity": "White",
-          "Country": "France",
-          "Fame": "No",
-          "Education": "NA",
-          "Emotional status": [
-            "Disgust",
-            "Embarrassment",
-            "Love",
-            "Guilt"
-          ],
-          "Power status": [
-            "Reward-based",
-            "Symbolic"
-          ]
+    {
+        "data": {
+            "dialogues": [
+                "JEUNE FEMME: Oui, oui ! Viens là. Alors comment c’était cette promenade ?",
+                "LE JEUNE HOMME: Très bien. On est allé vers la digue et…",
+                "JEUNE FEMME: Hein ? Comment c’était cette promenade?",
+                "LE JEUNE HOMME: Très bien. On est allé vers la digue et ensuite dans la vieille ville et…",
+                "JEUNE FEMME: Comment c’était… Hein… Comment c’était ? On a bien rigolé avec ses copains… On a été gentil… Gentil comment ? Comme ça ? Et le monsieur. Il a été gentil le monsieur ?"
+            ],
+            "overallsummary": "Le scénario du film \"Hors de Prix\" a été écrit par Pierre Salvadori et Benoît Graffin, version du 21/09/05. Le film débute avec un jeune homme en blazer peinant à contrôler une meute de chiens sur une jetée, heurtant un vacancier avant de disparaître. Parallèlement, une carte de crédit dorée est utilisée pour des achats de luxe : des boucles d'oreille dans une bijouterie, une robe dans un magasin de vêtements (où une femme caresse la main de l'homme), et deux paires de chaussures. Actuellement, le jeune homme et sa meute de chiens font irruption dans le patio d'un hôtel de luxe. Une jeune femme y prend un apéritif et s'adresse à son chihuahua ultra nerveux, lui demandant comment s'est passée sa promenade. Le jeune homme tente de répondre, mais réalise qu'elle parle au chien et s'éloigne discrètement.",
+            "scenedetails": "La scène se déroule dans le patio extérieur d'un hôtel de luxe, en plein jour. Le jeune homme, qui gère une meute de chiens, arrive dans ce patio où des clients prennent l'apéritif. Une jeune femme s'adresse à son minuscule chihuahua nerveux, lui posant des questions sur sa promenade. Le jeune homme, pensant qu'elle lui parle, tente de répondre, mais comprend rapidement qu'elle s'adresse en réalité à son chien.",
+            "question": "La jeune femme s'adresse-t-elle directement au jeune homme pour lui demander comment s'est passée la promenade ?",
+            "yesno": "No"
         }
-      ],
-      "dialogues": [
-        "IRENE: Jacques? …Chéri?",
-        "LA JEUNE FEMME: C’est pas vrai!",
-        "JACQUES: Irène?",
-        "IRENE: Lève toi, allez, viens sur le lit. Allez!",
-        "IRENE: Ca va?",
-        "JACQUES: Très bien mon ange, et toi?",
-        "IRENE: Mais t’es ivre mort!",
-        "JACQUES: Tu as mis trois heures à te préparer aussi.",
-        "IRENE: T’as vu tout ce que t’as bu!",
-        "JACQUES: T’inquiètes pas... C’est des toutes petites bouteilles…",
-        "IRENE: T’aurais pu faire un effort aujourd’hui.",
-        "JACQUES: Ne m’engueule pas ma chérie… Je ne supporte pas la sévérité.",
-        "IRENE: Bien sûr…",
-        "IRENE: Bouge pas, j’en mets un deuxième.",
-        "JACQUES: Merci… Deux minutes et je suis à toi... Tu vas voir, mon cœur, j’ai réservé dans un très bon restaurant.",
-        "IRENE: Où ça?",
-        "JACQUES: Ah… Merde… J’ai oublié.",
-        "JACQUES: C’est drôle, j’avais pas remarqué!",
-        "IRENE: Quoi?",
-        "JACQUES: T’as des cheveux blancs, là… Ca alors, ma petite poupée, je les avais même pas vu pousser!",
-        "JACQUES: Mon cœur?",
-        "IRENE: Oui?",
-        "JACQUES: Mon ange?",
-        "IRENE: Oui?",
-        "JACQUES: Bon anniversaire."
-      ],
-      "memory": "Irène, a young woman, is revealed to be in a relationship with Jacques, an older man who is wealthy but heavily intoxicated. Jacques fails to make an effort for Irène’s birthday, leaving her disappointed and alone. Despite her frustration, Irène shows moments of care and patience, hinting at a complex dynamic between them. Jacques’s comment about her hair and his drunken birthday wish further highlight the emotional disconnect in their relationship."
-    }
-  },
-  {
-    "data": {
-      "Social Setting": "Terrace conversation",
-      "Speakers": [
-        "Madeleine",
-        "Jean"
-      ],
-      "Relationships": [
-        "Jean",
-        "romantic interest of",
-        "Madeleine"
-      ],
-      "Gender": {
-        "Madeleine": "Female",
-        "Jean": "Male"
-      },
-      "Age difference": {
-        "Jean and Madeleine": "NA"
-      },
-      "Power": {
-        "subject": "Madeleine",
-        "relation": "Equal power",
-        "object": "Jean"
-      },
-      "Location": "Terrace",
-      "Familiarity Level": {
-        "Jean and Madeleine": "Familiar"
-      },
-      "Formality": "Informal",
-      "MADELEINE-Honorifics": "No",
-      "MADELEINE-Politeness": "No",
-      "JEAN-Honorifics": "No",
-      "JEAN-Politeness": "No",
-      "profiles": [
-        {
-          "Name": "Madeleine",
-          "Gender": "Female",
-          "Age Group": "Young adult",
-          "Age": "NA",
-          "Occupation": "NA",
-          "Marital status": "Single",
-          "Social position": "Unclear",
-          "Religion": "NA",
-          "Ethnicity": "NA",
-          "Country": "France",
-          "Fame": "No",
-          "Education": "NA",
-          "Emotional status": [
-            "Surprise",
-            "Disappointment",
-            "Gratitude",
-            "Love"
-          ],
-          "Power status": [
-            "Referent/Charismatic"
-          ]
-        },
-        {
-          "Name": "Jean",
-          "Gender": "Male",
-          "Age Group": "Young adult",
-          "Age": "NA",
-          "Occupation": "NA",
-          "Marital status": "Single",
-          "Social position": "Low",
-          "Religion": "NA",
-          "Ethnicity": "NA",
-          "Country": "France",
-          "Fame": "No",
-          "Education": "NA",
-          "Emotional status": [
-            "Love",
-            "Pride",
-            "Compassion"
-          ],
-          "Power status": [
-            "Referent/Charismatic"
-          ]
+    },
+    {
+        "data": {
+            "dialogues": [
+                "CLIENT: Vous pourriez allumer la télé ? Y’a un direct sur Eurosport.",
+                "JEAN: Bien sûr.",
+                "LE CLIENT: Vous avez bien fait de baisser la lumière, c’est plus agréable.",
+                "JEAN: Merci Monsieur.",
+                "CLIENT: Asseyez vous.",
+                "JEAN: Je n’ai pas le droit de quitter le comptoir, Monsieur.",
+                "CLIENT: Vraiment ?",
+                "JEAN: Vraiment. Sauf pour servir des boissons… et en cas d’incendie.",
+                "CLIENT: Ha ?",
+                "JEAN: Oui",
+                "CLIENT: Asseyez vous.",
+                "JEAN: Oui Monsieur.",
+                "CLIENT: Les feuilles poussent au milieu de champs de cacao. C’est ce qui leur donne cet arôme particulier… Vous sentez.",
+                "JEAN: Oui…",
+                "CLIENT: Avec l’embargo sur Cuba, je les ramène par avion privé. Ca me fait à peu près le cigare à 120 euros."
+            ],
+            "overallsummary": "Le scénario du film \"Hors de Prix\" a été écrit par Pierre Salvadori et Benoît Graffin. Le film a commencé avec un jeune homme en blazer, nommé Jean, peinant à contrôler des chiens sur une jetée, heurtant un vacancier. Une carte de crédit dorée a été utilisée pour des achats de luxe (boucles d'oreille, robe, chaussures). Jean, promeneur de chiens, a ramené un vieux dogue à sa propriétaire dans le jardin de l'hôtel, la rassurant sur la promenade du chien solitaire et anxieux. Le soir, dans une suite luxueuse, une jeune femme ravissante d'environ 25 ans, nommée Irène, se prépare. Elle découvre de nombreux sacs de courses et les articles de luxe achetés plus tôt (boucles d'oreilles, robe, chaussures). Elle cherche Jacques et le trouve ivre-mort sur la moquette. Elle tente de le réveiller et de le faire monter sur le lit. Ils ont une brève discussion où Jacques, visiblement très alcoolisé, oublie le nom du restaurant qu'il a réservé et fait une remarque sur les cheveux blancs d'Irène. Il lui souhaite ensuite \"Bon anniversaire\" avant de sombrer dans un profond sommeil. Irène, dépitée et seule, boit à son tour des mignonnettes de vodka. Actuellement, Jean, le jeune homme qui promenait les chiens, travaille comme barman à l'hôtel. Il est épuisé et son responsable le réprimande pour s'être endormi. Jean explique qu'il accepte trop de remplacements, y compris la promenade des chiens et les livraisons, car la cliente a l'habitude qu'il dise oui et qu'il s'ennuie chez lui. Le responsable lui rappelle de ne pas dormir au bar et le laisse seul pour la fermeture, lui suggérant de baisser la lumière pour faire partir le dernier client. Jean est maintenant seul au bar de l'hôtel la nuit avec un client ivre. Le client lui demande d'allumer la télévision pour regarder un match de golf et de s'asseoir avec lui. Jean refuse d'abord, expliquant qu'il n'a pas le droit de quitter le comptoir, mais le client insiste. Le client lui offre un cigare très cher (120 euros, ramené de Cuba par avion privé) et du cognac, tout en lui expliquant l'origine des feuilles de tabac.",
+            "scenedetails": "La scène se déroule la nuit dans le bar de l'hôtel, où la lumière a été baissée. Jean, le barman fatigué, est seul avec un client visiblement ivre. Le client, insistant, demande à Jean de s'asseoir avec lui, lui offre un cigare de luxe et du cognac, malgré les réticences initiales de Jean à quitter son poste.",
+            "question": "Jean a-t-il initialement refusé de s'asseoir avec le client?",
+            "yesno": "Yes"
         }
-      ],
-      "dialogues": [
-        "MADELEINE: Qu’est ce que vous buvez ?",
-        "JEAN: Une vodka et un porto s’il vous plaît.",
-        "MADELEINE: Ta montre ! Où est-elle ?",
-        "JEAN: Je l’ai revendue…",
-        "MADELEINE: C’est pas vrai ! Elle est dans la chambre ?",
-        "JEAN: Non, je l’ai vendue, dans la même boutique.",
-        "MADELEINE: Mais…",
-        "JEAN: Elle était à moi non ?",
-        "MADELEINE: Si…",
-        "MADELEINE: Je voulais croire que tu étais un peu différent. Pas comme les autres. En fait tu es juste plus malin qu’eux. Je sais pas ce qui m’a pris…",
-        "JEAN: Je voulais te faire un cadeau, mais j’avais pas d’argent. Alors voilà.",
-        "MADELEINE: Il est magnifique.",
-        "MADELEINE: C’est adorable, Jean ! Cette montre, c’est la seule chose que tu avais."
-      ],
-      "memory": "Jean arrives at the terrace with Madeleine, who questions him about his missing watch. Jean reveals he sold it to buy a gift for her, surprising Madeleine with a silver box containing a beautiful necklace. This exchange shifts Madeleine's perception of Jean, initially leaving her shocked and disappointed but ultimately touched by his gesture. Their relationship deepens as Jean's actions reveal his resourcefulness and affection for Madeleine."
+    },
+    {
+        "data": {
+            "dialogues": [
+                "IRENE: Vous êtes à quel étage ?",
+                "JEAN: Moi ?"
+            ],
+            "overallsummary": "Le scénario du film \"Hors de Prix\" a été écrit par Pierre Salvadori et Benoît Graffin. Le film a commencé avec un jeune homme en blazer, nommé Jean, peinant à contrôler des chiens sur une jetée, heurtant un vacancier. Une carte de crédit dorée a été utilisée pour des achats de luxe (boucles d'oreille, robe, chaussures). Jean, promeneur de chiens, a ramené un vieux dogue à sa propriétaire dans le jardin de l'hôtel, la rassurant sur la promenade du chien solitaire et anxieux. Le soir, dans une suite luxueuse, une jeune femme ravissante d'environ 25 ans, nommée Irène, se prépare. Elle découvre de nombreux sacs de courses et les articles de luxe achetés plus tôt (boucles d'oreilles, robe, chaussures). Elle cherche Jacques et le trouve ivre-mort sur la moquette. Elle tente de le réveiller et de le faire monter sur le lit. Ils ont une brève discussion où Jacques, visiblement très alcoolisé, oublie le nom du restaurant qu'il a réservé et fait une remarque sur les cheveux blancs d'Irène. Il lui souhaite ensuite \"Bon anniversaire\" avant de sombrer dans un profond sommeil. Irène, dépitée et seule, boit à son tour des mignonnettes de vodka. Jean, le jeune homme qui promenait les chiens, travaille comme barman à l'hôtel. Il est épuisé et son responsable le réprimande pour s'être endormi. Jean explique qu'il accepte trop de remplacements, y compris la promenade des chiens et les livraisons, car la cliente a l'habitude qu'il dise oui et qu'il s'ennuie chez lui. Le responsable lui rappelle de ne pas dormir au bar et le laisse seul pour la fermeture, lui suggérant de baisser la lumière pour faire partir le dernier client. Jean est maintenant seul au bar de l'hôtel la nuit avec un client ivre. Le client lui demande d'allumer la télévision pour regarder un match de golf et de s'asseoir avec lui. Jean refuse d'abord, expliquant qu'il n'a pas le droit de quitter le comptoir, mais le client insiste. Le client lui offre un cigare très cher (120 euros, ramené de Cuba par avion privé) et du cognac, tout en lui expliquant l'origine des feuilles de tabac. Irène, légèrement ivre, se regarde dans le miroir d'un ascenseur, s'arrache un cheveu et se change pour une robe provocante. Elle se dirige ensuite vers le bar de l'hôtel. Jean et Irène, tous deux visiblement ivres, se sont retrouvés dans un ascenseur, Irène ayant cinq ombrelles plantées dans son chignon. Après un silence troublant, les portes de l'ascenseur s'ouvrent sur un palier. Irène regarde Jean intensément, qui est gêné. Les portes se referment puis s'ouvrent à nouveau, et Irène embrasse fougueusement Jean, le plaquant contre la paroi. Elle lui demande ensuite à quel étage il est.",
+            "scenedetails": "Jean et Irène, tous deux visiblement ivres, sont sortis de l'ascenseur sur un palier. Irène, qui a des ombrelles dans les cheveux, regarde Jean avec intensité. Jean est mal à l'aise. Après un moment, les portes de l'ascenseur se referment et se rouvrent, et Irène embrasse passionnément Jean, le plaquant contre la paroi. Elle se détache et lui pose une question.",
+            "question": "Irène a-t-elle embrassé Jean avant de lui demander à quel étage il était ?",
+            "yesno": "Yes"
+        }
+    },
+    {
+        "data": {
+            "dialogues": [
+                "IRENE: Jacques ? …Chéri ?",
+                "LA JEUNE FEMME: C’est pas vrai !",
+                "JACQUES: Irène?",
+                "IRENE: Lève toi, allez, viens sur le lit. Allez !",
+                "IRENE: Ca va ?",
+                "JACQUES: Très bien mon ange, et toi ?",
+                "IRENE: Mais t’es ivre mort !",
+                "JACQUES: Tu as mis trois heure à te préparer aussi.",
+                "IRENE: T’as vu tout ce que t’as bu !",
+                "JACQUES: T’inquiètes pas... C’est des toutes petites bouteilles…",
+                "IRENE: T’aurais pu faire un effort aujourd’hui.",
+                "JACQUES: Ne m’engueule pas ma chérie… Je ne supporte pas la sévérité.",
+                "IRENE: Bien sûr…",
+                "IRENE: Bouge pas, j’en mets un deuxième.",
+                "JACQUES: Merci…Deux minutes et je suis à toi... Tu vas voir, mon cœur, j’ai réservé dans un très bon restaurant.",
+                "IRENE: Où ça ?",
+                "JACQUES: Ah… Merde… J’ai oublié.",
+                "JACQUES: C’est drôle, j’avais pas remarqué !",
+                "IRENE: Quoi ?",
+                "JACQUES: T’as des cheveux blancs, là… Ca alors, ma petite poupée, je les avais même pas vu pousser !",
+                "JACQUES: Mon coeur ?",
+                "IRENE: Oui ?",
+                "JACQUES: Mon ange ?",
+                "IRENE: Oui ?",
+                "JACQUES: Bon anniversaire."
+            ],
+            "overallsummary": "Le scénario du film \"Hors de Prix\" a été écrit par Pierre Salvadori et Benoît Graffin. Le film a commencé avec un jeune homme en blazer peinant à contrôler des chiens sur une jetée, heurtant un vacancier. Une carte de crédit dorée a été utilisée pour des achats de luxe (boucles d'oreille, robe, chaussures). Le jeune homme, promeneur de chiens, a ramené un vieux dogue à sa propriétaire dans le jardin de l'hôtel, la rassurant sur la promenade du chien solitaire et anxieux. Le soir, dans une suite luxueuse, une jeune femme ravissante d'environ 25 ans, nommée Irène, se prépare. Elle découvre de nombreux sacs de courses et les articles de luxe achetés plus tôt (boucles d'oreilles, robe, chaussures). Elle cherche Jacques et le trouve ivre-mort sur la moquette. Elle tente de le réveiller et de le faire monter sur le lit. Ils ont une brève discussion où Jacques, visiblement très alcoolisé, oublie le nom du restaurant qu'il a réservé et fait une remarque sur les cheveux blancs d'Irène. Il lui souhaite ensuite \"Bon anniversaire\" avant de sombrer dans un profond sommeil. Irène, dépitée et seule, boit à son tour des mignonnettes de vodka.",
+            "scenedetails": "La scène se déroule le soir dans une suite luxueuse d'hôtel. Irène, une jeune femme ravissante d'environ 25 ans, vient de finir de se préparer, vêtue d'une serviette de bain. Elle découvre Jacques, un homme d'environ soixante-dix ans, affalé sur la moquette, ivre-mort, entouré de nombreuses mignonnettes d'alcool vides. La télévision est allumée. Irène est frustrée par l'état de Jacques, qui est incapable de se souvenir de la réservation du restaurant et fait une remarque déplacée sur ses cheveux blancs avant de s'endormir profondément après lui avoir souhaité son anniversaire.",
+            "question": "Jacques a-t-il réussi à emmener Irène au restaurant qu'il avait réservé pour son anniversaire ?",
+            "yesno": "No"
+        }
     }
-  }
-
 ]

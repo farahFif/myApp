@@ -5,7 +5,7 @@ import Summary from './Summary.jsx'
 import ProfileForm from './ProfileForm.jsx'
 import SpeakersDynamics from './SpeakersDynamics.jsx'
 import DialogContext from './DialogContext.jsx'
-// import AnnotatorPerspective from './AnnotatorPerspective.jsx'   // ⬅️ kept for future use
+// import AnnotatorPerspective from './AnnotatorPerspective.jsx' // kept for future use
 import RemarksBox from './RemarksBox.jsx'
 
 import {
@@ -35,7 +35,23 @@ function toTurnsFromStrings(lines = []) {
   })
 }
 
+// supports:
+// - array of strings
+// - object with numeric keys "0","1",...
+function dialoguesToTurns(rawDialogues) {
+  if (Array.isArray(rawDialogues)) return toTurnsFromStrings(rawDialogues)
+  if (rawDialogues && typeof rawDialogues === 'object') {
+    const keys = Object.keys(rawDialogues)
+      .filter((k) => String(Number(k)) === k) // numeric keys only
+      .sort((a, b) => Number(a) - Number(b))
+    const lines = keys.map((k) => rawDialogues[k])
+    return toTurnsFromStrings(lines)
+  }
+  return []
+}
+
 function normalizeTask(raw, i) {
+  // Old shape: { data: { dialogues:[], memory:"" } }
   if (raw?.data) {
     const d = raw.data
     const dialogue =
@@ -46,10 +62,88 @@ function normalizeTask(raw, i) {
               ? toTurnsFromStrings(d.dialogue)
               : d.dialogue)
           : []
-    const summary = d.memory ?? d.summary ?? d.summ ?? d.overview ?? ''
-    return { id: raw.id ?? d.id ?? i, dialogue, summary }
+
+    const overallsummary =
+      d.overallsummary ?? d.overallSummary ?? d.memory ?? d.summary ?? d.summ ?? d.overview ?? ''
+    const scenedetails =
+      d.scenedetails ?? d.sceneDetails ?? d.scene ?? d.scenedetail ?? ''
+
+    return {
+      id: raw.id ?? d.id ?? i,
+      dialogue,
+      // keep both new fields
+      overallsummary,
+      scenedetails,
+      // legacy fallback field (some code may still use it)
+      summary: overallsummary,
+      question: d.question ?? raw.question ?? '',
+      yesno: d.yesno ?? raw.yesno ?? '',
+    }
   }
-  return { id: raw?.id ?? i, dialogue: [], summary: raw?.summary ?? '' }
+
+  // New shape (your example):
+  const dialogue =
+    raw?.Dialogues != null
+      ? dialoguesToTurns(raw.Dialogues)
+      : raw?.dialogues != null
+        ? dialoguesToTurns(raw.dialogues)
+        : []
+
+  const overallsummary =
+    raw?.overallsummary ??
+    raw?.overallSummary ??
+    raw?.overall_summary ??
+    raw?.summary ??
+    raw?.memory ??
+    ''
+
+  const scenedetails =
+    raw?.scenedetails ??
+    raw?.sceneDetails ??
+    raw?.scene_details ??
+    raw?.scenedetail ??
+    ''
+
+  return {
+    id: raw?.id ?? i,
+    dialogue,
+    overallsummary,
+    scenedetails,
+    summary: overallsummary, // legacy fallback
+    question: raw?.question ?? '',
+    yesno: raw?.yesno ?? raw?.answer ?? '',
+  }
+}
+
+function normalizeYesNo(v) {
+  const s = String(v ?? '').trim().toLowerCase()
+  if (['yes', 'y', 'true', '1'].includes(s)) return 'yes'
+  if (['no', 'n', 'false', '0'].includes(s)) return 'no'
+  return '' // unknown
+}
+
+// ---- honeypot localStorage helpers ----
+function hpKey(lang, taskId) {
+  return `hp:${lang}:${taskId}`
+}
+
+function loadHp(lang, taskId) {
+  try {
+    const raw = localStorage.getItem(hpKey(lang, taskId))
+    if (!raw) return null
+    const obj = JSON.parse(raw)
+    return obj && typeof obj === 'object' ? obj : null
+  } catch {
+    return null
+  }
+}
+
+function saveHp(lang, taskId, obj) {
+  try {
+    localStorage.setItem(hpKey(lang, taskId), JSON.stringify(obj))
+  } catch {
+    // ignore
+  }
 }
 
 export default function TaskPage() {
@@ -68,14 +162,13 @@ export default function TaskPage() {
     profiles: false,
     dynamics: false,
     context: false,
-    perspective: true, // Annotator’s Perspective disabled → always true
+    perspective: true, // annotator perspective disabled in UI
   })
   const [showErrors, setShowErrors] = useState(false)
 
   const profilesRef = useRef(null)
   const dynamicsRef = useRef(null)
   const contextRef = useRef(null)
-  // const perspectiveRef = useRef(null) // if you re-enable AnnotatorPerspective
 
   const base = import.meta.env.BASE_URL || '/'
 
@@ -182,18 +275,101 @@ export default function TaskPage() {
     return Array.from(set)
   }, [relatedProfiles])
 
-  // ---------------- VALIDATION LOGIC (centralised) ----------------
+  // ---------------- Honeypot gate ----------------
+  const [hpChoice, setHpChoice] = useState('') // 'yes' | 'no'
+  const [hpMsg, setHpMsg] = useState('')
+  const [gateUnlocked, setGateUnlocked] = useState(false)
+  const [unlockAt, setUnlockAt] = useState(null)
 
+  const correctAnswer = useMemo(() => normalizeYesNo(task?.yesno), [task?.yesno])
+  const hasHp = useMemo(() => {
+    const q = String(task?.question ?? '').trim()
+    return q.length > 0 && (correctAnswer === 'yes' || correctAnswer === 'no')
+  }, [task?.question, correctAnswer])
+
+  // Load gate state for this task
+  useEffect(() => {
+    if (!task) return
+    const saved = loadHp(lang, taskId)
+    const now = Date.now()
+
+    if (saved?.passed === true) {
+      setGateUnlocked(true)
+      setUnlockAt(null)
+      setHpMsg('')
+      return
+    }
+
+    if (saved?.unlockAt && now < saved.unlockAt) {
+      setGateUnlocked(false)
+      setUnlockAt(saved.unlockAt)
+      setHpMsg('Please carefully read the summary and try again. The rest will unlock shortly.')
+      return
+    }
+
+    // No gate lock (either never attempted, or time passed)
+    setGateUnlocked(!hasHp) // if no honeypot fields exist, unlock by default
+    setUnlockAt(null)
+    setHpMsg('')
+  }, [lang, taskId, task, hasHp])
+
+  // Auto-unlock after unlockAt
+  useEffect(() => {
+    if (!unlockAt) return
+    const t = setInterval(() => {
+      if (Date.now() >= unlockAt) {
+        setGateUnlocked(true)
+        setUnlockAt(null)
+        setHpMsg('')
+        clearInterval(t)
+      }
+    }, 500)
+    return () => clearInterval(t)
+  }, [unlockAt])
+
+  const submitHoneypot = () => {
+    if (!hasHp) {
+      setGateUnlocked(true)
+      return
+    }
+    const chosen = normalizeYesNo(hpChoice)
+    if (!chosen) {
+      setHpMsg('Please select Yes or No.')
+      return
+    }
+
+    if (chosen === correctAnswer) {
+      saveHp(lang, taskId, { passed: true })
+      setGateUnlocked(true)
+      setUnlockAt(null)
+      setHpMsg('')
+      return
+    }
+
+    const ua = Date.now() + 3 * 60 * 1000
+    saveHp(lang, taskId, { passed: false, unlockAt: ua })
+    setGateUnlocked(false)
+    setUnlockAt(ua)
+    setHpMsg('Incorrect. Please carefully read the summary. The rest of the interface will unlock after 3 minutes.')
+  }
+
+  // ---------------- Validation (centralised) ----------------
   function computeValidity() {
     const result = {
       profiles: false,
       dynamics: false,
       context: false,
-      perspective: true, // still disabled
+      perspective: true,
       all: false,
     }
 
-    // Profiles (type-safe)
+    // Gate must be unlocked first
+    if (!gateUnlocked) {
+      result.all = false
+      return result
+    }
+
+    // Profiles
     if (relatedProfiles.length > 0) {
       let good = true
       const requiredFields = [
@@ -214,14 +390,8 @@ export default function TaskPage() {
       outer: for (const p of relatedProfiles) {
         for (const field of requiredFields) {
           const value = p[field]
-          if (value === null || value === undefined) {
-            good = false
-            break outer
-          }
-          if (typeof value === 'string' && value.trim() === '') {
-            good = false
-            break outer
-          }
+          if (value === null || value === undefined) { good = false; break outer }
+          if (typeof value === 'string' && value.trim() === '') { good = false; break outer }
         }
       }
       result.profiles = good
@@ -229,17 +399,13 @@ export default function TaskPage() {
       result.profiles = false
     }
 
-    // Speakers Dynamics – require that any *touched* edge has category+relation+familiarity
+    // Speakers Dynamics: only validate touched edges
     const dynamics = loadDynamics(lang, taskId)
     if (dynamics && dynamics.edges) {
       const edges = Object.values(dynamics.edges)
-      const touched = edges.filter(
-        (e) => e && (e.category || e.relation || e.familiarity),
-      )
+      const touched = edges.filter((e) => e && (e.category || e.relation || e.familiarity))
       if (touched.length > 0) {
-        result.dynamics = touched.every(
-          (e) => e.category && e.relation && e.familiarity,
-        )
+        result.dynamics = touched.every((e) => e.category && e.relation && e.familiarity)
       } else {
         result.dynamics = false
       }
@@ -250,49 +416,26 @@ export default function TaskPage() {
     // Dialog Context
     const ctx = loadDialogContext(lang, taskId)
     if (ctx) {
-      const socialSettingFilled =
-        typeof ctx.socialSetting === 'string' && ctx.socialSetting.trim() !== ''
-
-      const domainFilled = Array.isArray(ctx.locationDomain)
-        ? ctx.locationDomain.length > 0
-        : !!ctx.locationDomain
-
-      const privacyFilled = Array.isArray(ctx.locationPrivacy)
-        ? ctx.locationPrivacy.length > 0
-        : !!ctx.locationPrivacy
-
+      const socialSettingFilled = typeof ctx.socialSetting === 'string' && ctx.socialSetting.trim() !== ''
+      const domainFilled = Array.isArray(ctx.locationDomain) ? ctx.locationDomain.length > 0 : !!ctx.locationDomain
+      const privacyFilled = Array.isArray(ctx.locationPrivacy) ? ctx.locationPrivacy.length > 0 : !!ctx.locationPrivacy
       const formalityFilled = !!ctx.formality
 
-      result.context =
-        formalityFilled &&
-        (socialSettingFilled || domainFilled || privacyFilled)
+      result.context = formalityFilled && (socialSettingFilled || domainFilled || privacyFilled)
     } else {
       result.context = false
     }
 
-    // ⬇️ Old Annotator Perspective validation kept for future use
-    /*
-    const ap = loadPerspective(lang, taskId)
-    if (ap && ap.pairs) {
-      ...
-      result.perspective = ok
-    }
-    */
-
-    result.all =
-      result.profiles &&
-      result.dynamics &&
-      result.context &&
-      result.perspective
-
+    result.all = result.profiles && result.dynamics && result.context && result.perspective
     return result
   }
 
-  // Recompute validity when profiles/lang/task change (for initial colour state)
+  // Recompute validity when profiles/lang/task change
   useEffect(() => {
     const v = computeValidity()
     setValid(v)
-  }, [relatedProfiles, lang, taskId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [relatedProfiles, lang, taskId, gateUnlocked])
 
   const handleNext = () => {
     const v = computeValidity()
@@ -303,13 +446,18 @@ export default function TaskPage() {
       return
     }
 
-    // show errors + scroll to first invalid section
     setShowErrors(true)
+
+    // If gate is still locked, scroll to top honeypot
+    if (!gateUnlocked) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
     const order = [
       { ok: v.profiles, ref: profilesRef },
       { ok: v.dynamics, ref: dynamicsRef },
       { ok: v.context, ref: contextRef },
-      // { ok: v.perspective, ref: perspectiveRef },
     ]
     const firstBad = order.find((s) => !s.ok)?.ref
     if (firstBad?.current) {
@@ -329,10 +477,7 @@ export default function TaskPage() {
       const perspective = loadPerspective(lang, thisTaskId) || {}
       const remarks = loadRemarks(lang, thisTaskId) || ''
 
-      const taskProfiles = profiles.filter(
-        (p) => p.lang === lang && p.taskId === thisTaskId,
-      )
-
+      const taskProfiles = profiles.filter((p) => p.lang === lang && p.taskId === thisTaskId)
       const timeSpentMs = loadTime(lang, thisTaskId) || 0
 
       allData.push({
@@ -346,6 +491,8 @@ export default function TaskPage() {
         task: {
           dialogue: t.dialogue ?? [],
           summary: t.summary ?? '',
+          question: t.question ?? '',
+          yesno: t.yesno ?? '',
         },
         profiles: taskProfiles,
         speakersDynamics: dynamics,
@@ -362,10 +509,7 @@ export default function TaskPage() {
       annotations: allData,
     }
 
-    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
-      type: 'application/json',
-    })
-
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const fname = `all_annotations_${lang}.json`
 
@@ -386,28 +530,20 @@ export default function TaskPage() {
     )
   }
 
-  const errorCardStyle = (flag) =>
-    showErrors && !flag ? { border: '2px solid #d9534f' } : {}
+  const errorCardStyle = (flag) => (showErrors && !flag ? { border: '2px solid #d9534f' } : {})
 
   return (
-    <section
-      className="grid"
-      style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}
-    >
+    <section className="grid" style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}>
       {/* Banner for missing fields */}
       {showErrors && !valid.all && (
         <div style={{ gridColumn: '1 / -1' }}>
-          <div
-            className="card"
-            style={{ border: '2px solid #d9534f', background: '#fff5f5' }}
-          >
-            <strong>Some required fields are missing.</strong> Please complete
-            the highlighted sections below.
+          <div className="card" style={{ border: '2px solid #d9534f', background: '#fff5f5' }}>
+            <strong>Some required fields are missing.</strong> Please complete the highlighted sections below.
           </div>
         </div>
       )}
 
-      {/* Top row: Dialogue | Summary */}
+      {/* Dialogue + Summary always visible */}
       <div className="card">
         <h2>Dialogue</h2>
         <p className="muted" style={{ marginTop: 4 }}>
@@ -418,135 +554,142 @@ export default function TaskPage() {
       <div className="card">
         <h2>Summary</h2>
         <p className="muted" style={{ marginTop: 4 }}>
-          This summary captures the overall situation. Use it to double-check your understanding.
+          Read this summary carefully before continuing.
         </p>
-        <Summary text={task.summary} />
+        <Summary
+          overallsummary={task.overallsummary}
+          scenedetails={task.scenedetails}
+          text={task.summary}   // fallback for older JSON
+        />
       </div>
 
-      {/* Profiles */}
-      <div style={{ gridColumn: '1 / -1' }}>
-        <div
-          ref={profilesRef}
-          className="card"
-          style={errorCardStyle(valid.profiles)}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <h3>Profiles for this task</h3>
-            <button className="btn" onClick={openAddForm}>
-              Add profile
-            </button>
+      {/* Honeypot question */}
+      {hasHp && (
+        <div style={{ gridColumn: '1 / -1' }}>
+          <div className="card" style={!gateUnlocked && unlockAt ? { border: '2px solid #d9534f' } : {}}>
+            <h3>Comprehension check</h3>
+            <p className="muted" style={{ marginTop: 4 }}>
+              Answer the question based on the summary. If you answer incorrectly, the rest of the interface will unlock after 3 minutes.
+            </p>
+
+            <div style={{ marginTop: 10 }}>
+              <strong>{task.question}</strong>
+              <div style={{ marginTop: 8, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                <label className="radio">
+                  <input
+                    type="radio"
+                    name="hp"
+                    value="yes"
+                    checked={hpChoice === 'yes'}
+                    onChange={() => setHpChoice('yes')}
+                    disabled={!gateUnlocked && !!unlockAt}
+                  />{' '}
+                  Yes
+                </label>
+                <label className="radio">
+                  <input
+                    type="radio"
+                    name="hp"
+                    value="no"
+                    checked={hpChoice === 'no'}
+                    onChange={() => setHpChoice('no')}
+                    disabled={!gateUnlocked && !!unlockAt}
+                  />{' '}
+                  No
+                </label>
+                <button
+                  className="btn"
+                  onClick={submitHoneypot}
+                  disabled={!gateUnlocked && !!unlockAt}
+                  style={{ marginLeft: 6 }}
+                >
+                  Submit
+                </button>
+              </div>
+
+              {hpMsg && (
+                <div className="muted" style={{ marginTop: 10, color: '#b22222' }}>
+                  {hpMsg}
+                </div>
+              )}
+
+              {!gateUnlocked && unlockAt && (
+                <div className="muted" style={{ marginTop: 8 }}>
+                  Please wait — the rest of the interface will unlock automatically.
+                </div>
+              )}
+            </div>
           </div>
-          <p className="muted" style={{ marginTop: 4 }}>
-            Define each speaker&apos;s demographic and social profile. These profiles are
-            later used in Speakers Dynamics.
-          </p>
-          {relatedProfiles.length === 0 ? (
-            <p>No profiles yet.</p>
-          ) : (
-            <ul className="profiles">
-              {relatedProfiles.map((p) => (
-                <li key={p.id}>
-                  <strong>{p.name}</strong>
-                  <div className="muted">
-                    {p.gender} · {p.ageGroup} · {p.ethnicity}
-                  </div>
-                  <div className="muted">
-                    {p.country} · {p.socialClass}/{p.socioEconomicClass}
-                  </div>
-                  <div style={{ marginTop: 8 }}>
-                    <button
-                      className="btn ghost"
-                      onClick={() => openEditForm(p)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn ghost"
-                      onClick={() => onDeleteProfile(p.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
-      </div>
+      )}
 
-      {/* Speakers Dynamics */}
-      <div style={{ gridColumn: '1 / -1' }}>
-        <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
-          <SpeakersDynamics
-            lang={lang}
-            taskId={taskId}
-            speakers={speakersFromProfiles}
-          />
-        </div>
-      </div>
+      {/* Everything below is hidden until gateUnlocked */}
+      {gateUnlocked && (
+        <>
+          {/* Profiles */}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <div ref={profilesRef} className="card" style={errorCardStyle(valid.profiles)}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h3>Profiles for this task</h3>
+                <button className="btn" onClick={openAddForm}>Add profile</button>
+              </div>
+              <p className="muted" style={{ marginTop: 4 }}>
+                Define each speaker’s demographic and social profile. These profiles are used in Speakers Dynamics.
+              </p>
 
-      {/* Dialog Context */}
-      <div style={{ gridColumn: '1 / -1' }}>
-        <div ref={contextRef} style={errorCardStyle(valid.context)}>
-          <DialogContext lang={lang} taskId={taskId} />
-        </div>
-      </div>
+              {relatedProfiles.length === 0 ? (
+                <p>No profiles yet.</p>
+              ) : (
+                <ul className="profiles">
+                  {relatedProfiles.map((p) => (
+                    <li key={p.id}>
+                      <strong>{p.name}</strong>
+                      <div className="muted">{p.gender} · {p.ageGroup} · {p.ethnicity}</div>
+                      <div className="muted">{p.country} · {p.socialClass}/{p.socioEconomicClass}</div>
+                      <div style={{ marginTop: 8 }}>
+                        <button className="btn ghost" onClick={() => openEditForm(p)}>Edit</button>
+                        <button className="btn ghost" onClick={() => onDeleteProfile(p.id)}>Delete</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
 
-      {/* Annotator Perspective — DISABLED, kept commented for later */}
-      {/*
-      <div style={{ gridColumn: '1 / -1' }}>
-        <div ref={perspectiveRef} style={errorCardStyle(valid.perspective)}>
-          <h3>Annotator’s Perspective</h3>
-          <p className="muted" style={{ margin: '0 12px 4px' }}>
-            Based on your own interpretation, indicate perceived power, status
-            differences and intentions alignment between speakers from your perspective.
-          </p>
-          <AnnotatorPerspective
-            lang={lang}
-            taskId={taskId}
-            turns={task.dialogue}
-          />
-        </div>
-      </div>
-      */}
+          {/* Speakers Dynamics */}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
+              <SpeakersDynamics lang={lang} taskId={taskId} speakers={speakersFromProfiles} />
+            </div>
+          </div>
 
-      {/* Remarks */}
-      <div style={{ gridColumn: '1 / -1' }}>
-        <RemarksBox lang={lang} taskId={taskId} />
-      </div>
+          {/* Dialog Context */}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <div ref={contextRef} style={errorCardStyle(valid.context)}>
+              <DialogContext lang={lang} taskId={taskId} />
+            </div>
+          </div>
+
+          {/* Remarks */}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <RemarksBox lang={lang} taskId={taskId} />
+          </div>
+        </>
+      )}
 
       {/* Footer */}
       <div style={{ gridColumn: '1 / -1' }}>
-        <div
-          className="card"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <button className="btn ghost" onClick={prev} disabled={i === 0}>
-            Previous
-          </button>
+        <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button className="btn ghost" onClick={prev} disabled={i === 0}>Previous</button>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn ghost" onClick={onExport}>
-              Export JSON
-            </button>
+            <button className="btn ghost" onClick={onExport}>Export JSON</button>
             <button
               className="btn"
               onClick={handleNext}
-              disabled={i >= tasks.length - 1 && valid.all}
+              disabled={(i >= tasks.length - 1 && valid.all)}
               style={!valid.all ? { opacity: 0.65 } : {}}
-              title={
-                !valid.all
-                  ? 'Please complete all required fields before continuing'
-                  : 'Next'
-              }
+              title={!valid.all ? 'Please complete all required fields before continuing' : 'Next'}
             >
               Next
             </button>
@@ -589,14 +732,7 @@ export default function TaskPage() {
                 minHeight: 0,
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 8,
-                }}
-              >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <h3 style={{ margin: 0 }}>Dialogue</h3>
                 <button
                   className="btn ghost"
@@ -613,23 +749,9 @@ export default function TaskPage() {
             </div>
 
             {/* Right: Profile form */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 0,
-                paddingLeft: 12,
-              }}
-            >
-              <h3 style={{ marginTop: 0, marginBottom: 8 }}>
-                {editingId ? 'Edit profile' : 'New profile'}
-              </h3>
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                }}
-              >
+            <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, paddingLeft: 12 }}>
+              <h3 style={{ marginTop: 0, marginBottom: 8 }}>{editingId ? 'Edit profile' : 'New profile'}</h3>
+              <div style={{ flex: 1, overflowY: 'auto' }}>
                 <ProfileForm
                   onClose={() => {
                     setShowForm(false)
@@ -638,12 +760,8 @@ export default function TaskPage() {
                   }}
                   onSave={onSaveProfile}
                   defaultValue={formDefault}
-                  speakers={Array.from(
-                    new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)),
-                  )}
-                  {...(editingId == null
-                    ? { draftLang: lang, draftTaskId: taskId }
-                    : {})}
+                  speakers={Array.from(new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)))}
+                  {...(editingId == null ? { draftLang: lang, draftTaskId: taskId } : {})}
                 />
               </div>
             </div>
