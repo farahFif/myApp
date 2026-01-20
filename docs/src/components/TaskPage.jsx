@@ -5,7 +5,7 @@ import Summary from './Summary.jsx'
 import ProfileForm from './ProfileForm.jsx'
 import SpeakersDynamics from './SpeakersDynamics.jsx'
 import DialogContext from './DialogContext.jsx'
-// import AnnotatorPerspective from './AnnotatorPerspective.jsx' // kept for future use
+// import AnnotatorPerspective from './AnnotatorPerspective.jsx' // kept commented for future use
 import RemarksBox from './RemarksBox.jsx'
 
 import {
@@ -22,6 +22,8 @@ import {
   saveTime,
 } from '../utils/storage.js'
 
+// ----- helpers -----
+
 function toTurnsFromStrings(lines = []) {
   return lines.map((line) => {
     if (typeof line !== 'string') return { speaker: 'Speaker', text: String(line ?? '') }
@@ -35,14 +37,12 @@ function toTurnsFromStrings(lines = []) {
   })
 }
 
-// supports:
-// - array of strings
-// - object with numeric keys "0","1",...
+// supports array or object with numeric keys "0","1",...
 function dialoguesToTurns(rawDialogues) {
   if (Array.isArray(rawDialogues)) return toTurnsFromStrings(rawDialogues)
   if (rawDialogues && typeof rawDialogues === 'object') {
     const keys = Object.keys(rawDialogues)
-      .filter((k) => String(Number(k)) === k) // numeric keys only
+      .filter((k) => String(Number(k)) === k)
       .sort((a, b) => Number(a) - Number(b))
     const lines = keys.map((k) => rawDialogues[k])
     return toTurnsFromStrings(lines)
@@ -50,38 +50,46 @@ function dialoguesToTurns(rawDialogues) {
   return []
 }
 
+// normalise a task from different JSON shapes
 function normalizeTask(raw, i) {
-  // Old shape: { data: { dialogues:[], memory:"" } }
+  // old shape: { data: { dialogues:[], memory:"" } }
   if (raw?.data) {
     const d = raw.data
     const dialogue =
       Array.isArray(d.dialogues)
         ? toTurnsFromStrings(d.dialogues)
         : Array.isArray(d.dialogue)
-          ? (typeof d.dialogue[0] === 'string'
-              ? toTurnsFromStrings(d.dialogue)
-              : d.dialogue)
+          ? (typeof d.dialogue[0] === 'string' ? toTurnsFromStrings(d.dialogue) : d.dialogue)
           : []
 
     const overallsummary =
-      d.overallsummary ?? d.overallSummary ?? d.memory ?? d.summary ?? d.summ ?? d.overview ?? ''
+      d.overallsummary ??
+      d.overallSummary ??
+      d.memory ??
+      d.summary ??
+      d.summ ??
+      d.overview ??
+      ''
+
     const scenedetails =
-      d.scenedetails ?? d.sceneDetails ?? d.scene ?? d.scenedetail ?? ''
+      d.scenedetails ??
+      d.sceneDetails ??
+      d.scene ??
+      d.scenedetail ??
+      ''
 
     return {
       id: raw.id ?? d.id ?? i,
       dialogue,
-      // keep both new fields
       overallsummary,
       scenedetails,
-      // legacy fallback field (some code may still use it)
-      summary: overallsummary,
+      summary: overallsummary, // legacy
       question: d.question ?? raw.question ?? '',
       yesno: d.yesno ?? raw.yesno ?? '',
     }
   }
 
-  // New shape (your example):
+  // new shape (e.g. your French example)
   const dialogue =
     raw?.Dialogues != null
       ? dialoguesToTurns(raw.Dialogues)
@@ -109,46 +117,25 @@ function normalizeTask(raw, i) {
     dialogue,
     overallsummary,
     scenedetails,
-    summary: overallsummary, // legacy fallback
+    summary: overallsummary,
     question: raw?.question ?? '',
     yesno: raw?.yesno ?? raw?.answer ?? '',
   }
 }
 
-function normalizeYesNo(v) {
-  const s = String(v ?? '').trim().toLowerCase()
-  if (['yes', 'y', 'true', '1'].includes(s)) return 'yes'
-  if (['no', 'n', 'false', '0'].includes(s)) return 'no'
-  return '' // unknown
-}
-
-// ---- honeypot localStorage helpers ----
-function hpKey(lang, taskId) {
-  return `hp:${lang}:${taskId}`
-}
-
-function loadHp(lang, taskId) {
-  try {
-    const raw = localStorage.getItem(hpKey(lang, taskId))
-    if (!raw) return null
-    const obj = JSON.parse(raw)
-    return obj && typeof obj === 'object' ? obj : null
-  } catch {
-    return null
-  }
-}
-
-function saveHp(lang, taskId, obj) {
-  try {
-    localStorage.setItem(hpKey(lang, taskId), JSON.stringify(obj))
-  } catch {
-    // ignore
-  }
-}
+// ----- component -----
 
 export default function TaskPage() {
-  const { lang, index } = useParams()
+  const { lang, movie, index } = useParams()
   const navigate = useNavigate()
+
+  const base = import.meta.env.BASE_URL || '/'
+  // composite key so annotations don’t mix across movies
+  const langKey = `${lang}__${movie}`
+
+  const [catalog, setCatalog] = useState({})
+  const [movieTitle, setMovieTitle] = useState(movie)
+  const [taskFile, setTaskFile] = useState(null)
 
   const [tasks, setTasks] = useState([])
   const [profiles, setProfiles] = useState(() => loadProfiles())
@@ -156,13 +143,13 @@ export default function TaskPage() {
   const [editingId, setEditingId] = useState(null)
   const [formDefault, setFormDefault] = useState(undefined)
 
-  // Validation state
+  // validation
   const [valid, setValid] = useState({
     all: false,
     profiles: false,
     dynamics: false,
     context: false,
-    perspective: true, // annotator perspective disabled in UI
+    perspective: true, // annotator perspective not used in UI
   })
   const [showErrors, setShowErrors] = useState(false)
 
@@ -170,42 +157,78 @@ export default function TaskPage() {
   const dynamicsRef = useRef(null)
   const contextRef = useRef(null)
 
-  const base = import.meta.env.BASE_URL || '/'
+  // local state for answer to honey-pot style question (NON-blocking)
+  const [hpChoice, setHpChoice] = useState('') // 'yes' | 'no' | ''
 
-  // Load tasks for this language
+  // ----- load catalog + resolve movie → file -----
+
   useEffect(() => {
+    let cancelled = false
+    async function loadCatalog() {
+      try {
+        const res = await fetch(`${base}data/catalog.json`, { cache: 'no-cache' })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = await res.json()
+        if (cancelled) return
+        setCatalog(data || {})
+
+        const list = Array.isArray(data?.[lang]) ? data[lang] : []
+        const found = list.find((m) => String(m.id) === String(movie))
+        setMovieTitle(found?.title || movie)
+        setTaskFile(found?.file || null)
+      } catch (e) {
+        console.error('catalog.json fetch failed:', e)
+        if (!cancelled) {
+          setCatalog({})
+          setMovieTitle(movie)
+          setTaskFile(null)
+        }
+      }
+    }
+    loadCatalog()
+    return () => { cancelled = true }
+  }, [base, lang, movie])
+
+  // ----- load tasks for this (lang,movie) -----
+
+  useEffect(() => {
+    if (!taskFile) {
+      setTasks([])
+      return
+    }
     let cancelled = false
     async function load() {
       try {
-        const res = await fetch(`${base}data/task_${lang}.json`, { cache: 'no-cache' })
+        const res = await fetch(`${base}data/${taskFile}`, { cache: 'no-cache' })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data = await res.json()
         const arr = Array.isArray(data) ? data : (Array.isArray(data?.tasks) ? data.tasks : [])
         const normalized = arr.map((t, idx) => normalizeTask(t, idx))
         if (!cancelled) setTasks(normalized)
       } catch (e) {
-        console.error(`task_${lang}.json fetch failed:`, e)
+        console.error(`${taskFile} fetch failed:`, e)
         if (!cancelled) setTasks([])
       }
     }
     load()
     return () => { cancelled = true }
-  }, [lang, base])
+  }, [base, taskFile])
 
   const i = Number.isFinite(Number(index)) ? Number(index) : 0
   const task = tasks[i]
   const taskId = task?.id ?? i
 
-  // Silent time tracking per (lang, taskId)
+  // ----- silent time tracking (per langKey, taskId) -----
+
   useEffect(() => {
-    let current = loadTime(lang, taskId) || 0
+    let current = loadTime(langKey, taskId) || 0
     let last = Date.now()
 
     function tick() {
       const now = Date.now()
       if (document.visibilityState === 'visible') {
         current += now - last
-        saveTime(lang, taskId, current)
+        saveTime(langKey, taskId, current)
       }
       last = now
     }
@@ -222,17 +245,28 @@ export default function TaskPage() {
       clearInterval(intervalId)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [lang, taskId])
+  }, [langKey, taskId])
+
+  // ----- navigation -----
 
   const next = () =>
-    navigate(`/task/${encodeURIComponent(lang)}/${Math.min(i + 1, Math.max(tasks.length - 1, 0))}`)
-  const prev = () =>
-    navigate(`/task/${encodeURIComponent(lang)}/${Math.max(i - 1, 0)}`)
+    navigate(
+      `/task/${encodeURIComponent(lang)}/${encodeURIComponent(movie)}/${Math.min(
+        i + 1,
+        Math.max(tasks.length - 1, 0),
+      )}`,
+    )
 
-  // Profiles CRUD
+  const prev = () =>
+    navigate(
+      `/task/${encodeURIComponent(lang)}/${encodeURIComponent(movie)}/${Math.max(i - 1, 0)}`,
+    )
+
+  // ----- profiles CRUD -----
+
   const openAddForm = () => {
     setEditingId(null)
-    setFormDefault(loadDraft(lang, taskId) || undefined)
+    setFormDefault(loadDraft(langKey, taskId) || undefined)
     setShowForm(true)
   }
 
@@ -245,7 +279,8 @@ export default function TaskPage() {
   const onSaveProfile = (form) => {
     const payload = editingId
       ? { ...form, id: editingId }
-      : { ...form, lang, taskId, savedAt: new Date().toISOString() }
+      : { ...form, lang: langKey, taskId, savedAt: new Date().toISOString() }
+
     const updated = editingId ? updateProfile(editingId, payload) : saveProfile(payload)
     setProfiles(updated)
     setShowForm(false)
@@ -261,8 +296,8 @@ export default function TaskPage() {
   }
 
   const relatedProfiles = useMemo(
-    () => profiles.filter((p) => p.lang === lang && p.taskId === taskId),
-    [profiles, lang, taskId],
+    () => profiles.filter((p) => p.lang === langKey && p.taskId === taskId),
+    [profiles, langKey, taskId],
   )
 
   // Speakers from profiles
@@ -275,85 +310,8 @@ export default function TaskPage() {
     return Array.from(set)
   }, [relatedProfiles])
 
-  // ---------------- Honeypot gate ----------------
-  const [hpChoice, setHpChoice] = useState('') // 'yes' | 'no'
-  const [hpMsg, setHpMsg] = useState('')
-  const [gateUnlocked, setGateUnlocked] = useState(false)
-  const [unlockAt, setUnlockAt] = useState(null)
+  // ----- validation -----
 
-  const correctAnswer = useMemo(() => normalizeYesNo(task?.yesno), [task?.yesno])
-  const hasHp = useMemo(() => {
-    const q = String(task?.question ?? '').trim()
-    return q.length > 0 && (correctAnswer === 'yes' || correctAnswer === 'no')
-  }, [task?.question, correctAnswer])
-
-  // Load gate state for this task
-  useEffect(() => {
-    if (!task) return
-    const saved = loadHp(lang, taskId)
-    const now = Date.now()
-
-    if (saved?.passed === true) {
-      setGateUnlocked(true)
-      setUnlockAt(null)
-      setHpMsg('')
-      return
-    }
-
-    if (saved?.unlockAt && now < saved.unlockAt) {
-      setGateUnlocked(false)
-      setUnlockAt(saved.unlockAt)
-      setHpMsg('Please carefully read the summary and try again. The rest will unlock shortly.')
-      return
-    }
-
-    // No gate lock (either never attempted, or time passed)
-    setGateUnlocked(!hasHp) // if no honeypot fields exist, unlock by default
-    setUnlockAt(null)
-    setHpMsg('')
-  }, [lang, taskId, task, hasHp])
-
-  // Auto-unlock after unlockAt
-  useEffect(() => {
-    if (!unlockAt) return
-    const t = setInterval(() => {
-      if (Date.now() >= unlockAt) {
-        setGateUnlocked(true)
-        setUnlockAt(null)
-        setHpMsg('')
-        clearInterval(t)
-      }
-    }, 500)
-    return () => clearInterval(t)
-  }, [unlockAt])
-
-  const submitHoneypot = () => {
-    if (!hasHp) {
-      setGateUnlocked(true)
-      return
-    }
-    const chosen = normalizeYesNo(hpChoice)
-    if (!chosen) {
-      setHpMsg('Please select Yes or No.')
-      return
-    }
-
-    if (chosen === correctAnswer) {
-      saveHp(lang, taskId, { passed: true })
-      setGateUnlocked(true)
-      setUnlockAt(null)
-      setHpMsg('')
-      return
-    }
-
-    const ua = Date.now() + 3 * 60 * 1000
-    saveHp(lang, taskId, { passed: false, unlockAt: ua })
-    setGateUnlocked(false)
-    setUnlockAt(ua)
-    setHpMsg('Incorrect. Please carefully read the summary. The rest of the interface will unlock after 3 minutes.')
-  }
-
-  // ---------------- Validation (centralised) ----------------
   function computeValidity() {
     const result = {
       profiles: false,
@@ -363,15 +321,8 @@ export default function TaskPage() {
       all: false,
     }
 
-    // Gate must be unlocked first
-    if (!gateUnlocked) {
-      result.all = false
-      return result
-    }
-
     // Profiles
     if (relatedProfiles.length > 0) {
-      let good = true
       const requiredFields = [
         'name',
         'ageGroup',
@@ -386,56 +337,51 @@ export default function TaskPage() {
         'socialClass',
         'country',
       ]
-
+      let ok = true
       outer: for (const p of relatedProfiles) {
-        for (const field of requiredFields) {
-          const value = p[field]
-          if (value === null || value === undefined) { good = false; break outer }
-          if (typeof value === 'string' && value.trim() === '') { good = false; break outer }
+        for (const f of requiredFields) {
+          const v = p[f]
+          if (v === null || v === undefined) { ok = false; break outer }
+          if (typeof v === 'string' && v.trim() === '') { ok = false; break outer }
         }
       }
-      result.profiles = good
-    } else {
-      result.profiles = false
+      result.profiles = ok
     }
 
-    // Speakers Dynamics: only validate touched edges
-    const dynamics = loadDynamics(lang, taskId)
-    if (dynamics && dynamics.edges) {
+    // Speakers Dynamics (touched edges)
+    const dynamics = loadDynamics(langKey, taskId)
+    if (dynamics?.edges) {
       const edges = Object.values(dynamics.edges)
       const touched = edges.filter((e) => e && (e.category || e.relation || e.familiarity))
       if (touched.length > 0) {
         result.dynamics = touched.every((e) => e.category && e.relation && e.familiarity)
-      } else {
-        result.dynamics = false
       }
-    } else {
-      result.dynamics = false
     }
 
     // Dialog Context
-    const ctx = loadDialogContext(lang, taskId)
+    const ctx = loadDialogContext(langKey, taskId)
     if (ctx) {
-      const socialSettingFilled = typeof ctx.socialSetting === 'string' && ctx.socialSetting.trim() !== ''
-      const domainFilled = Array.isArray(ctx.locationDomain) ? ctx.locationDomain.length > 0 : !!ctx.locationDomain
-      const privacyFilled = Array.isArray(ctx.locationPrivacy) ? ctx.locationPrivacy.length > 0 : !!ctx.locationPrivacy
+      const socialSettingFilled =
+        typeof ctx.socialSetting === 'string' && ctx.socialSetting.trim() !== ''
+      const domainFilled = Array.isArray(ctx.locationDomain)
+        ? ctx.locationDomain.length > 0
+        : !!ctx.locationDomain
+      const privacyFilled = Array.isArray(ctx.locationPrivacy)
+        ? ctx.locationPrivacy.length > 0
+        : !!ctx.locationPrivacy
       const formalityFilled = !!ctx.formality
 
       result.context = formalityFilled && (socialSettingFilled || domainFilled || privacyFilled)
-    } else {
-      result.context = false
     }
 
     result.all = result.profiles && result.dynamics && result.context && result.perspective
     return result
   }
 
-  // Recompute validity when profiles/lang/task change
   useEffect(() => {
-    const v = computeValidity()
-    setValid(v)
+    setValid(computeValidity())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relatedProfiles, lang, taskId, gateUnlocked])
+  }, [relatedProfiles, langKey, taskId])
 
   const handleNext = () => {
     const v = computeValidity()
@@ -448,12 +394,6 @@ export default function TaskPage() {
 
     setShowErrors(true)
 
-    // If gate is still locked, scroll to top honeypot
-    if (!gateUnlocked) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      return
-    }
-
     const order = [
       { ok: v.profiles, ref: profilesRef },
       { ok: v.dynamics, ref: dynamicsRef },
@@ -465,24 +405,27 @@ export default function TaskPage() {
     }
   }
 
-  // Export ALL tasks for this language, including timeSpentMs
+  // ----- export -----
+
   const onExport = () => {
     const allData = []
 
     tasks.forEach((t, taskIndex) => {
       const thisTaskId = t.id ?? taskIndex
-
-      const dynamics = loadDynamics(lang, thisTaskId) || {}
-      const dialogContext = loadDialogContext(lang, thisTaskId) || {}
-      const perspective = loadPerspective(lang, thisTaskId) || {}
-      const remarks = loadRemarks(lang, thisTaskId) || ''
-
-      const taskProfiles = profiles.filter((p) => p.lang === lang && p.taskId === thisTaskId)
-      const timeSpentMs = loadTime(lang, thisTaskId) || 0
+      const dynamics = loadDynamics(langKey, thisTaskId) || {}
+      const dialogContext = loadDialogContext(langKey, thisTaskId) || {}
+      const perspective = loadPerspective(langKey, thisTaskId) || {}
+      const remarks = loadRemarks(langKey, thisTaskId) || ''
+      const taskProfiles = profiles.filter(
+        (p) => p.lang === langKey && p.taskId === thisTaskId,
+      )
+      const timeSpentMs = loadTime(langKey, thisTaskId) || 0
 
       allData.push({
         meta: {
           lang,
+          movie,
+          movieTitle,
           taskIndex,
           taskId: thisTaskId,
           exportedAt: new Date().toISOString(),
@@ -490,9 +433,11 @@ export default function TaskPage() {
         },
         task: {
           dialogue: t.dialogue ?? [],
-          summary: t.summary ?? '',
+          overallsummary: t.overallsummary ?? '',
+          scenedetails: t.scenedetails ?? '',
           question: t.question ?? '',
           yesno: t.yesno ?? '',
+          // NOTE: hpChoice is not stored; if you want it, we could add it to storage.
         },
         profiles: taskProfiles,
         speakersDynamics: dynamics,
@@ -503,15 +448,19 @@ export default function TaskPage() {
     })
 
     const exportPayload = {
-      language: lang,
+      lang,
+      movie,
+      movieTitle,
       totalTasks: allData.length,
       exportedAt: new Date().toISOString(),
       annotations: allData,
     }
 
-    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' })
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+      type: 'application/json',
+    })
     const url = URL.createObjectURL(blob)
-    const fname = `all_annotations_${lang}.json`
+    const fname = `all_annotations_${lang}_${movie}.json`
 
     const a = document.createElement('a')
     a.href = url
@@ -522,6 +471,20 @@ export default function TaskPage() {
     URL.revokeObjectURL(url)
   }
 
+  // ----- rendering -----
+
+  if (!taskFile) {
+    return (
+      <section className="card">
+        <h2>Missing movie mapping</h2>
+        <p className="muted">
+          Could not find this movie in <strong>public/data/catalog.json</strong> for language{' '}
+          <strong>{lang}</strong>.
+        </p>
+      </section>
+    )
+  }
+
   if (!task) {
     return (
       <section className="card">
@@ -530,166 +493,186 @@ export default function TaskPage() {
     )
   }
 
-  const errorCardStyle = (flag) => (showErrors && !flag ? { border: '2px solid #d9534f' } : {})
+  const errorCardStyle = (flag) =>
+    showErrors && !flag ? { border: '2px solid #d9534f' } : {}
+
+  const hasQuestion = (task.question ?? '').trim().length > 0
 
   return (
-    <section className="grid" style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}>
-      {/* Banner for missing fields */}
-      {showErrors && !valid.all && (
-        <div style={{ gridColumn: '1 / -1' }}>
-          <div className="card" style={{ border: '2px solid #d9534f', background: '#fff5f5' }}>
-            <strong>Some required fields are missing.</strong> Please complete the highlighted sections below.
-          </div>
+    <section
+      className="grid"
+      style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}
+    >
+      {/* Optional: movie indicator */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div className="card" style={{ padding: '8px 12px' }}>
+          <strong>
+            {lang.toUpperCase()} · {movieTitle} · Task {i + 1}
+          </strong>
         </div>
-      )}
+      </div>
 
-      {/* Dialogue + Summary always visible */}
+      {/* Dialogue | Summary */}
       <div className="card">
         <h2>Dialogue</h2>
-        <p className="muted" style={{ marginTop: 4 }}>
-          Read the conversation carefully. Use it as the basis for all your annotations.
-        </p>
         <Dialogue turns={task.dialogue} />
       </div>
+
       <div className="card">
         <h2>Summary</h2>
-        <p className="muted" style={{ marginTop: 4 }}>
-          Read this summary carefully before continuing.
-        </p>
         <Summary
           overallsummary={task.overallsummary}
           scenedetails={task.scenedetails}
-          text={task.summary}   // fallback for older JSON
+          text={task.summary}
         />
       </div>
 
-      {/* Honeypot question */}
-      {hasHp && (
+      {/* Non-blocking comprehension question */}
+      {hasQuestion && (
         <div style={{ gridColumn: '1 / -1' }}>
-          <div className="card" style={!gateUnlocked && unlockAt ? { border: '2px solid #d9534f' } : {}}>
-            <h3>Comprehension check</h3>
+          <div className="card">
+            <h3>Comprehension question</h3>
             <p className="muted" style={{ marginTop: 4 }}>
-              Answer the question based on the summary. If you answer incorrectly, the rest of the interface will unlock after 3 minutes.
+              Answer based on the summary. This does not affect your ability to continue.
             </p>
-
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 8 }}>
               <strong>{task.question}</strong>
-              <div style={{ marginTop: 8, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <div
+                style={{
+                  marginTop: 8,
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 14,
+                  alignItems: 'center',
+                }}
+              >
                 <label className="radio">
                   <input
                     type="radio"
-                    name="hp"
+                    name={`hp-${taskId}`}
                     value="yes"
                     checked={hpChoice === 'yes'}
                     onChange={() => setHpChoice('yes')}
-                    disabled={!gateUnlocked && !!unlockAt}
                   />{' '}
                   Yes
                 </label>
                 <label className="radio">
                   <input
                     type="radio"
-                    name="hp"
+                    name={`hp-${taskId}`}
                     value="no"
                     checked={hpChoice === 'no'}
                     onChange={() => setHpChoice('no')}
-                    disabled={!gateUnlocked && !!unlockAt}
                   />{' '}
                   No
                 </label>
-                <button
-                  className="btn"
-                  onClick={submitHoneypot}
-                  disabled={!gateUnlocked && !!unlockAt}
-                  style={{ marginLeft: 6 }}
-                >
-                  Submit
-                </button>
               </div>
-
-              {hpMsg && (
-                <div className="muted" style={{ marginTop: 10, color: '#b22222' }}>
-                  {hpMsg}
-                </div>
-              )}
-
-              {!gateUnlocked && unlockAt && (
-                <div className="muted" style={{ marginTop: 8 }}>
-                  Please wait — the rest of the interface will unlock automatically.
-                </div>
-              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* Everything below is hidden until gateUnlocked */}
-      {gateUnlocked && (
-        <>
-          {/* Profiles */}
-          <div style={{ gridColumn: '1 / -1' }}>
-            <div ref={profilesRef} className="card" style={errorCardStyle(valid.profiles)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h3>Profiles for this task</h3>
-                <button className="btn" onClick={openAddForm}>Add profile</button>
-              </div>
-              <p className="muted" style={{ marginTop: 4 }}>
-                Define each speaker’s demographic and social profile. These profiles are used in Speakers Dynamics.
-              </p>
-
-              {relatedProfiles.length === 0 ? (
-                <p>No profiles yet.</p>
-              ) : (
-                <ul className="profiles">
-                  {relatedProfiles.map((p) => (
-                    <li key={p.id}>
-                      <strong>{p.name}</strong>
-                      <div className="muted">{p.gender} · {p.ageGroup} · {p.ethnicity}</div>
-                      <div className="muted">{p.country} · {p.socialClass}/{p.socioEconomicClass}</div>
-                      <div style={{ marginTop: 8 }}>
-                        <button className="btn ghost" onClick={() => openEditForm(p)}>Edit</button>
-                        <button className="btn ghost" onClick={() => onDeleteProfile(p.id)}>Delete</button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+      {/* Profiles */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div
+          ref={profilesRef}
+          className="card"
+          style={errorCardStyle(valid.profiles)}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3>Profiles for this task</h3>
+            <button className="btn" onClick={openAddForm}>
+              Add profile
+            </button>
           </div>
+          <p className="muted" style={{ marginTop: 4 }}>
+            Define each speaker’s demographic and social profile. These profiles are used in
+            Speakers Dynamics.
+          </p>
 
-          {/* Speakers Dynamics */}
-          <div style={{ gridColumn: '1 / -1' }}>
-            <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
-              <SpeakersDynamics lang={lang} taskId={taskId} speakers={speakersFromProfiles} />
-            </div>
-          </div>
+          {relatedProfiles.length === 0 ? (
+            <p>No profiles yet.</p>
+          ) : (
+            <ul className="profiles">
+              {relatedProfiles.map((p) => (
+                <li key={p.id}>
+                  <strong>{p.name}</strong>
+                  <div className="muted">
+                    {p.gender} · {p.ageGroup} · {p.ethnicity}
+                  </div>
+                  <div className="muted">
+                    {p.country} · {p.socialClass}/{p.socioEconomicClass}
+                  </div>
+                  <div style={{ marginTop: 8 }}>
+                    <button
+                      className="btn ghost"
+                      onClick={() => openEditForm(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn ghost"
+                      onClick={() => onDeleteProfile(p.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
 
-          {/* Dialog Context */}
-          <div style={{ gridColumn: '1 / -1' }}>
-            <div ref={contextRef} style={errorCardStyle(valid.context)}>
-              <DialogContext lang={lang} taskId={taskId} />
-            </div>
-          </div>
+      {/* Speakers Dynamics */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div ref={dynamicsRef} style={errorCardStyle(valid.dynamics)}>
+          <SpeakersDynamics
+            lang={langKey}
+            taskId={taskId}
+            speakers={speakersFromProfiles}
+          />
+        </div>
+      </div>
 
-          {/* Remarks */}
-          <div style={{ gridColumn: '1 / -1' }}>
-            <RemarksBox lang={lang} taskId={taskId} />
-          </div>
-        </>
-      )}
+      {/* Dialog Context */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div ref={contextRef} style={errorCardStyle(valid.context)}>
+          <DialogContext lang={langKey} taskId={taskId} />
+        </div>
+      </div>
+
+      {/* Remarks */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <RemarksBox lang={langKey} taskId={taskId} />
+      </div>
 
       {/* Footer */}
       <div style={{ gridColumn: '1 / -1' }}>
-        <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button className="btn ghost" onClick={prev} disabled={i === 0}>Previous</button>
+        <div
+          className="card"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <button className="btn ghost" onClick={prev} disabled={i === 0}>
+            Previous
+          </button>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn ghost" onClick={onExport}>Export JSON</button>
+            <button className="btn ghost" onClick={onExport}>
+              Export JSON
+            </button>
             <button
               className="btn"
               onClick={handleNext}
-              disabled={(i >= tasks.length - 1 && valid.all)}
               style={!valid.all ? { opacity: 0.65 } : {}}
-              title={!valid.all ? 'Please complete all required fields before continuing' : 'Next'}
+              title={
+                !valid.all
+                  ? 'Please complete all required fields before continuing'
+                  : 'Next'
+              }
             >
               Next
             </button>
@@ -697,7 +680,7 @@ export default function TaskPage() {
         </div>
       </div>
 
-      {/* Popup Profile Form with Dialogue */}
+      {/* Profile popup with Dialogue side-by-side */}
       {showForm && (
         <div
           style={{
@@ -732,7 +715,14 @@ export default function TaskPage() {
                 minHeight: 0,
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                }}
+              >
                 <h3 style={{ margin: 0 }}>Dialogue</h3>
                 <button
                   className="btn ghost"
@@ -749,9 +739,23 @@ export default function TaskPage() {
             </div>
 
             {/* Right: Profile form */}
-            <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, paddingLeft: 12 }}>
-              <h3 style={{ marginTop: 0, marginBottom: 8 }}>{editingId ? 'Edit profile' : 'New profile'}</h3>
-              <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0,
+                paddingLeft: 12,
+              }}
+            >
+              <h3 style={{ marginTop: 0, marginBottom: 8 }}>
+                {editingId ? 'Edit profile' : 'New profile'}
+              </h3>
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: 'auto',
+                }}
+              >
                 <ProfileForm
                   onClose={() => {
                     setShowForm(false)
@@ -760,8 +764,12 @@ export default function TaskPage() {
                   }}
                   onSave={onSaveProfile}
                   defaultValue={formDefault}
-                  speakers={Array.from(new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)))}
-                  {...(editingId == null ? { draftLang: lang, draftTaskId: taskId } : {})}
+                  speakers={Array.from(
+                    new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)),
+                  )}
+                  {...(editingId == null
+                    ? { draftLang: langKey, draftTaskId: taskId }
+                    : {})}
                 />
               </div>
             </div>

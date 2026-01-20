@@ -1,0 +1,27 @@
+{
+  "English": [
+    { "id": "marriage_story", "title": "Marriage Story", "file": "task_en_marriage_story.json" },
+    { "id": "other_movie", "title": "Other Movie", "file": "task_en_other_movie.json" }
+  ],
+  "French": [
+    { "id": "hors_de_prix", "title": "Hors de prix", "file": "Hors-de-prix_to_annotate.json" },
+    { "id": "la_lutte_des_classes", "title": "La lutte des classes", "file": "La-Lutte-des-classes_to_annotate.json" }
+  ],
+  "Arabic": [
+    { "id": "asmaa", "title": "اسماء", "file": "Asmaa_to_annotate.json" },
+    { "id": "zay-alnaharda", "title": "زي النهار ده", "file": "zay-alnaharda_to_annotate.json" }
+  ],
+  "Bengali": [
+    { "id": "Kolkata_holiday", "title": "Kolkata Holiday", "file": "kolkata_holiday_to_annotate.json" },
+    { "id": "park_bench", "title": "Park Bench", "file": "park_bench.json" },
+    { "id": "guys_fighting", "title": "Guys Fighting", "file": "guys_fighting.json" }
+  ],
+  "Hindi": [
+    { "id": "kapoor_sons", "title": "Kapoor & Sons", "file": "kapoor_sons_to_annotate.json" },
+    { "id": "thappad", "title": "Thappad", "file": "Thappad_to_annotate.json" }
+  ],
+  "Japanese": [
+    { "id": "our_blue_sky", "title": "Our Blue Sky", "file": "our_blue_sky_to_annotate.json" },
+    { "id": "holiday_shoppers", "title": "Holiday Shoppers", "file": "Holiday-Shoppers_to_annotate.json" }
+  ]
+}
