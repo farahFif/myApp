@@ -4,12 +4,12 @@
     { "id": "other_movie", "title": "Other Movie", "file": "task_en_other_movie.json" }
   ],
   "French": [
-    { "id": "hors_de_prix", "title": "Hors de prix", "file": "Hors-de-prix_to_annotate.json" },
-    { "id": "la_lutte_des_classes", "title": "La lutte des classes", "file": "La-Lutte-des-classes_to_annotate.json" }
+    { "id": "hors_de_prix", "title": "Hors de prix", "file": "Hors-de-prix_to_annotate_enum_merge.json" },
+    { "id": "jusqua-la-garde", "title": "Jusqu'à la garde", "file": "Jusqua-la-garde_to_annotate_enum_merge.json" }
   ],
   "Arabic": [
-    { "id": "asmaa", "title": "اسماء", "file": "Asmaa_to_annotate.json" },
-    { "id": "zay-alnaharda", "title": "زي النهار ده", "file": "zay-alnaharda_to_annotate.json" }
+    { "id": "asmaa", "title": "اسماء", "file": "Asmaa_to_annotate_enum_merge.json" },
+    { "id": "ehky-shehrazad", "title": " احكي يا شهرزاد", "file": "ehky-shehrazad_to_annotate_enum_merge.json" }
   ],
   "Bengali": [
     { "id": "Kolkata_holiday", "title": "Kolkata Holiday", "file": "kolkata_holiday_to_annotate.json" },
