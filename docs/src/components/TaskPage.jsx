@@ -5,8 +5,10 @@ import Summary from './Summary.jsx'
 import ProfileForm from './ProfileForm.jsx'
 import SpeakersDynamics from './SpeakersDynamics.jsx'
 import DialogContext from './DialogContext.jsx'
+import segmentsData from '../videoSegments.json'
 // import AnnotatorPerspective from './AnnotatorPerspective.jsx' // kept commented for future use
 import RemarksBox from './RemarksBox.jsx'
+import VideoSegments from './VideoSegments.jsx'
 
 import {
   loadProfiles,
@@ -156,6 +158,7 @@ export default function TaskPage() {
   const profilesRef = useRef(null)
   const dynamicsRef = useRef(null)
   const contextRef = useRef(null)
+  const taskOpenedAtRef = useRef(Date.now())
 
   // local state for answer to honey-pot style question (NON-blocking)
   const [hpChoice, setHpChoice] = useState('') // 'yes' | 'no' | ''
@@ -202,7 +205,21 @@ export default function TaskPage() {
         const res = await fetch(`${base}data/${taskFile}`, { cache: 'no-cache' })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data = await res.json()
-        const arr = Array.isArray(data) ? data : (Array.isArray(data?.tasks) ? data.tasks : [])
+        let arr = []
+        if (Array.isArray(data)) {
+          arr = data
+        } else if (Array.isArray(data?.tasks)) {
+          arr = data.tasks
+        } else if (data && typeof data === 'object') {
+          // support object with numeric keys: { "0": {...}, "1": {...} }
+          const numericKeys = Object.keys(data).filter((k) => String(Number(k)) === k)
+          if (numericKeys.length > 0) {
+            numericKeys.sort((a, b) => Number(a) - Number(b))
+            arr = numericKeys.map((k) => data[k])
+          } else {
+            arr = []
+          }
+        }
         const normalized = arr.map((t, idx) => normalizeTask(t, idx))
         if (!cancelled) setTasks(normalized)
       } catch (e) {
@@ -214,52 +231,48 @@ export default function TaskPage() {
     return () => { cancelled = true }
   }, [base, taskFile])
 
-  const i = Number.isFinite(Number(index)) ? Number(index) : 0
-  const task = tasks[i]
-  const taskId = task?.id ?? i
+  const segmentIndex = Number.isFinite(Number(index)) ? Number(index) : 0
+  const videoMeta = segmentsData?.[movie]
+  const segments = Array.isArray(videoMeta?.segments) ? videoMeta.segments : null
+  const hasSegments = !!(segments && segments.length > 0)
+  const seg =
+    hasSegments && segments
+      ? segments.find((s) => Number(s.taskIndex) === Number(segmentIndex)) || segments[segmentIndex]
+      : null
+  const mappedIndex = hasSegments ? Number(seg?.mapping ?? seg?.taskIndex ?? segmentIndex) : segmentIndex
 
-  // ----- silent time tracking (per langKey, taskId) -----
+  const task = tasks[mappedIndex]
+  const taskId = task?.id ?? mappedIndex
 
+  // ----- time tracking: from task open until user clicks Next or Export -----
   useEffect(() => {
-    let current = loadTime(langKey, taskId) || 0
-    let last = Date.now()
-
-    function tick() {
-      const now = Date.now()
-      if (document.visibilityState === 'visible') {
-        current += now - last
-        saveTime(langKey, taskId, current)
-      }
-      last = now
-    }
-
-    const intervalId = setInterval(tick, 1000)
-
-    function handleVisibilityChange() {
-      last = Date.now()
-    }
-
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      clearInterval(intervalId)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
+    taskOpenedAtRef.current = Date.now()
   }, [langKey, taskId])
+
+  const recordCurrentTaskTime = () => {
+    if (taskId === null || taskId === undefined) return
+    const startedAt = taskOpenedAtRef.current || Date.now()
+    const elapsedMs = Math.max(0, Date.now() - startedAt)
+    saveTime(langKey, taskId, elapsedMs)
+    // Reset anchor so repeated exports continue to reflect time since last action.
+    taskOpenedAtRef.current = Date.now()
+  }
 
   // ----- navigation -----
 
-  const next = () =>
+  const next = () => {
+    const maxIndex = hasSegments ? Math.max(segments.length - 1, 0) : Math.max(tasks.length - 1, 0)
     navigate(
       `/task/${encodeURIComponent(lang)}/${encodeURIComponent(movie)}/${Math.min(
-        i + 1,
-        Math.max(tasks.length - 1, 0),
+        segmentIndex + 1,
+        maxIndex,
       )}`,
     )
+  }
 
   const prev = () =>
     navigate(
-      `/task/${encodeURIComponent(lang)}/${encodeURIComponent(movie)}/${Math.max(i - 1, 0)}`,
+      `/task/${encodeURIComponent(lang)}/${encodeURIComponent(movie)}/${Math.max(segmentIndex - 1, 0)}`,
     )
 
   // ----- profiles CRUD -----
@@ -310,6 +323,18 @@ export default function TaskPage() {
     return Array.from(set)
   }, [relatedProfiles])
 
+  const inferEducationTier = (educationLevel) => {
+    if (!educationLevel) return ''
+    if (educationLevel === 'NA') return 'NA'
+    const low = new Set(['Elementary', 'Secondary'])
+    const medium = new Set(['High School', 'Diploma (technical or vocational)', 'High school', 'Diplomas'])
+    const high = new Set(['Bachelor’s', 'Master’s', 'Doctoral'])
+    if (low.has(educationLevel)) return 'Low Education'
+    if (medium.has(educationLevel)) return 'Medium Education'
+    if (high.has(educationLevel)) return 'Higher Education'
+    return ''
+  }
+
   // ----- validation -----
 
   function computeValidity() {
@@ -344,6 +369,8 @@ export default function TaskPage() {
           if (v === null || v === undefined) { ok = false; break outer }
           if (typeof v === 'string' && v.trim() === '') { ok = false; break outer }
         }
+        const tier = (p.educationTier || '').trim() || inferEducationTier(p.education)
+        if (!tier) { ok = false; break outer }
       }
       result.profiles = ok
     }
@@ -384,16 +411,13 @@ export default function TaskPage() {
   }, [relatedProfiles, langKey, taskId])
 
   const handleNext = () => {
+    recordCurrentTaskTime()
     const v = computeValidity()
     setValid(v)
+    // Always show validation errors when not fully valid
+    if (!v.all) setShowErrors(true)
 
-    if (v.all && i < tasks.length - 1) {
-      next()
-      return
-    }
-
-    setShowErrors(true)
-
+    // If not valid, attempt to focus the first invalid section (optional)
     const order = [
       { ok: v.profiles, ref: profilesRef },
       { ok: v.dynamics, ref: dynamicsRef },
@@ -401,16 +425,37 @@ export default function TaskPage() {
     ]
     const firstBad = order.find((s) => !s.ok)?.ref
     if (firstBad?.current) {
-      firstBad.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      try {
+        firstBad.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } catch (e) {}
+    }
+
+    // Proceed to next task regardless of validity (unless already at last task)
+    if (hasSegments) {
+      if (segmentIndex < segments.length - 1) next()
+    } else {
+      if (segmentIndex < tasks.length - 1) next()
     }
   }
 
   // ----- export -----
 
   const onExport = () => {
+    recordCurrentTaskTime()
     const allData = []
+    const exportTaskIndexes = hasSegments
+      ? Array.from(
+          new Set(
+            (segments || [])
+              .map((s) => Number(s?.mapping ?? s?.taskIndex))
+              .filter((n) => Number.isInteger(n) && n >= 0 && n < tasks.length),
+          ),
+        )
+      : tasks.map((_, idx) => idx)
 
-    tasks.forEach((t, taskIndex) => {
+    exportTaskIndexes.forEach((taskIndex) => {
+      const t = tasks[taskIndex]
+      if (!t) return
       const thisTaskId = t.id ?? taskIndex
       const dynamics = loadDynamics(langKey, thisTaskId) || {}
       const dialogContext = loadDialogContext(langKey, thisTaskId) || {}
@@ -488,7 +533,12 @@ export default function TaskPage() {
   if (!task) {
     return (
       <section className="card">
-        <h2>No task at index {i}</h2>
+        <h2>No task for segment {segmentIndex}</h2>
+        {hasSegments && (
+          <p className="muted" style={{ marginTop: 6 }}>
+            This segment maps to task index {mappedIndex}, which is missing in the tasks file.
+          </p>
+        )}
       </section>
     )
   }
@@ -503,14 +553,14 @@ export default function TaskPage() {
       className="grid"
       style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}
     >
-      {/* Optional: movie indicator */}
-      <div style={{ gridColumn: '1 / -1' }}>
-        <div className="card" style={{ padding: '8px 12px' }}>
-          <strong>
-            {lang.toUpperCase()} · {movieTitle} · Task {i + 1}
-          </strong>
-        </div>
-      </div>
+          {/* Video + Segments (if configured in `videoSegments.json`) */}
+          <VideoSegments
+            lang={lang}
+            movie={movie}
+            currentIndex={segmentIndex}
+            showSegments={false}
+            showStart={false}
+          />
 
       {/* Dialogue | Summary */}
       <div className="card">
@@ -518,14 +568,16 @@ export default function TaskPage() {
         <Dialogue turns={task.dialogue} />
       </div>
 
-      <div className="card">
-        <h2>Summary</h2>
-        <Summary
-          overallsummary={task.overallsummary}
-          scenedetails={task.scenedetails}
-          text={task.summary}
-        />
-      </div>
+      {(task.overallsummary || task.scenedetails || task.summary) && (
+        <div className="card">
+          <h2>Summary</h2>
+          <Summary
+            overallsummary={task.overallsummary}
+            scenedetails={task.scenedetails}
+            text={task.summary}
+          />
+        </div>
+      )}
 
       {/* Non-blocking comprehension question */}
       {hasQuestion && (
@@ -631,6 +683,7 @@ export default function TaskPage() {
             lang={langKey}
             taskId={taskId}
             speakers={speakersFromProfiles}
+            uiLang={lang}
           />
         </div>
       </div>
@@ -657,25 +710,29 @@ export default function TaskPage() {
             alignItems: 'center',
           }}
         >
-          <button className="btn ghost" onClick={prev} disabled={i === 0}>
+          <button className="btn ghost" onClick={prev} disabled={segmentIndex === 0}>
             Previous
           </button>
           <div style={{ display: 'flex', gap: 8 }}>
             <button className="btn ghost" onClick={onExport}>
               Export JSON
             </button>
-            <button
-              className="btn"
-              onClick={handleNext}
-              style={!valid.all ? { opacity: 0.65 } : {}}
-              title={
-                !valid.all
-                  ? 'Please complete all required fields before continuing'
-                  : 'Next'
-              }
-            >
-              Next
-            </button>
+            {(() => {
+              const atEnd = hasSegments
+                ? segmentIndex >= Math.max((segments?.length || 0) - 1, 0)
+                : segmentIndex >= Math.max(tasks.length - 1, 0)
+              return (
+                <button
+                  className="btn"
+                  onClick={handleNext}
+                  disabled={!hasSegments || atEnd}
+                  title={!hasSegments ? 'No more segments for this movie' : 'Next'}
+                  style={!hasSegments ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                >
+                  Next
+                </button>
+              )
+            })()}
           </div>
         </div>
       </div>
@@ -767,6 +824,7 @@ export default function TaskPage() {
                   speakers={Array.from(
                     new Set(task?.dialogue?.map((t) => t.speaker).filter(Boolean)),
                   )}
+                  uiLang={lang}
                   {...(editingId == null
                     ? { draftLang: langKey, draftTaskId: taskId }
                     : {})}

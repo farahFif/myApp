@@ -33,17 +33,19 @@ const MARITAL_STATUSES = [
   'NA',
 ]
 
-const EDUCATION_LEVELS = [
-  'Elementary',
-  'Secondary',
-  'High school',
-  'Diplomas',
-  'Bachelor’s',
-  'Master’s',
-  'Doctoral',
+const EDUCATION_TIER = [
+  'Low Education',
+  'Medium Education',
+  'Higher Education',
   'NA',
-  'Other',
 ]
+
+const EDUCATION_DETAILS_BY_TIER = {
+  'Low Education': ['Elementary', 'Secondary', 'NA'],
+  'Medium Education': ['High School', 'Diploma (technical or vocational)', 'NA'],
+  'Higher Education': ['Bachelor’s', 'Master’s', 'Doctoral', 'NA'],
+  'NA': ['NA'],
+}
 
 const RELIGIONS = [
   'Buddhist',
@@ -78,6 +80,7 @@ const OCCUPATION_DETAILS_EMPLOYED = [
   'Armed forces occupations',
   'Military service',
   'Other',
+  'NA',
 ]
 
 const OCCUPATION_DETAILS_NONEMP = [
@@ -86,6 +89,7 @@ const OCCUPATION_DETAILS_NONEMP = [
   'Housewife',
   'Unemployed',
   'Other',
+  'NA',
 ]
 
 // simple country list (extend if you want)
@@ -146,6 +150,27 @@ const EMOTIONS_TREE = {
   Surprise: ['Astonishment', 'Amazement'],
 }
 
+// Update these definitions when finalized by language.
+const EMOTION_DEFINITIONS = {
+English: {
+  Love: 'Affection: A warm feeling of fondness and care toward someone or something. Lust: An intense physical or sexual desire for someone. Longing: A deep, persistent desire for someone or something that is absent.',
+  Joy: 'Cheerfulness: A lighthearted and visibly happy state of mind. Zest: Energetic enthusiasm and eager enjoyment of life. Contentment: A peaceful sense of satisfaction with what one has. Pride: A feeling of pleasure or fulfillment from achievements or qualities. Optimism: Hopeful confidence that good things will happen. Enthrallment: Intense delight or captivation by something fascinating. Relief: A comforting release from worry, pain, or distress.',
+  Anger: 'Irritability: A tendency to become annoyed or frustrated easily. Disgust: A strong feeling of revulsion or deep disapproval. Rage: Explosive and overwhelming anger. Frustration: Annoyance caused by blocked goals or unmet expectations. Envy: Resentful desire for what someone else has. Torment: Severe emotional pain or anguish.',
+  Sadness: 'Suffering: The experience of emotional or physical pain. Sadness: A feeling of sorrow or unhappiness. Disappointment: Sadness caused by unmet expectations. Shame: Painful self-consciousness about perceived failure or wrongdoing. Neglect: A feeling of being ignored or uncared for. Sympathy: Compassionate sorrow for someone else’s suffering.',
+  Fear: 'Horror: Intense fear mixed with shock or revulsion. Nervousness: Uneasy worry or tension about uncertainty or possible danger.',
+  Surprise: 'Astonishment: Sudden and intense surprise caused by something unexpected. Amazement: A feeling of wonder and impressed surprise.'
+},
+
+Arabic: {
+  Love: 'Affection (مودة): شعور دافئ بالمحبة والرعاية تجاه شخص أو شيء. Lust (شهوة): رغبة جسدية أو جنسية قوية تجاه شخص ما. Longing (اشتياق): رغبة عميقة ومستمرة لشيء أو شخص غائب.',
+  Joy: 'Cheerfulness (مرح): حالة من السعادة الخفيفة الظاهرة على الشخص. Zest (حماس): طاقة وحيوية واستمتاع متحمّس بالحياة. Contentment (قناعة): شعور بالرضا والاطمئنان بما يملكه الإنسان. Pride (فخر): إحساس بالاعتزاز نتيجة إنجاز أو صفة إيجابية. Optimism (تفاؤل): توقع إيجابي وثقة بحدوث أمور جيدة. Enthrallment (انبهار): انجذاب وسرور شديد بشيء مدهش. Relief (ارتياح): شعور بالراحة بعد زوال قلق أو ألم.',
+  Anger: 'Irritability (استثارة/تهيج): قابلية سريعة للانزعاج أو الغضب. Disgust (اشمئزاز): شعور قوي بالنفور أو القرف. Rage (غضب عارم): غضب شديد ومتفجر. Frustration (إحباط): ضيق أو غضب بسبب تعطل الأهداف. Envy (حسد): رغبة ممتزجة بالاستياء لما يملكه الآخرون. Torment (عذاب): ألم نفسي شديد ومستمر.',
+  Sadness: 'Suffering (معاناة): تجربة الألم النفسي أو الجسدي. Sadness (حزن): شعور بالكآبة أو الأسى. Disappointment (خيبة أمل): حزن بسبب عدم تحقق التوقعات. Shame (خجل/عار): شعور مؤلم بالذنب أو النقص. Neglect (إهمال): إحساس بعدم الاهتمام أو التقدير. Sympathy (تعاطف): مشاركة وجدانية لحزن أو ألم الآخرين.',
+  Fear: 'Horror (رعب): خوف شديد مصحوب بصدمة أو فزع. Nervousness (توتر): قلق وانزعاج بسبب توقع خطر أو موقف غير مؤكد.',
+  Surprise: 'Astonishment (دهشة): مفاجأة قوية ومفاجئة بسبب أمر غير متوقع. Amazement (ذهول/إعجاب): دهشة ممزوجة بالإعجاب والانبهار.'
+}
+}
+
 // --- component ---
 
 export default function ProfileForm({
@@ -155,7 +180,10 @@ export default function ProfileForm({
   speakers = [],
   draftLang,
   draftTaskId,
+  uiLang,
 }) {
+  const [activeEmotionTip, setActiveEmotionTip] = useState('')
+
   const [form, setForm] = useState(() => ({
     name: '',
     ageGroup: '',
@@ -163,8 +191,8 @@ export default function ProfileForm({
     genderOther: '',
     ethnicity: '',
     maritalStatus: '',
+    educationTier: '',
     education: '',
-    educationOther: '',
     religion: '',
     occupationTier: '',
     occupationDetail: '',
@@ -182,9 +210,17 @@ export default function ProfileForm({
   // keep in sync when editing a profile
   useEffect(() => {
     if (defaultValue) {
+      const incoming = {
+        ...defaultValue,
+      }
+      if (!incoming.educationTier && incoming.education) {
+        incoming.educationTier = Object.entries(EDUCATION_DETAILS_BY_TIER).find(([, levels]) =>
+          levels.includes(incoming.education),
+        )?.[0] || ''
+      }
       setForm((prev) => ({
         ...prev,
-        ...defaultValue,
+        ...incoming,
       }))
     }
   }, [defaultValue])
@@ -223,6 +259,7 @@ export default function ProfileForm({
       'gender',
       'ethnicity',
       'maritalStatus',
+      'educationTier',
       'education',
       'religion',
       'occupationTier',
@@ -248,7 +285,23 @@ export default function ProfileForm({
       ? OCCUPATION_DETAILS_EMPLOYED
       : form.occupationTier === 'No or unpaid employment'
       ? OCCUPATION_DETAILS_NONEMP
+      : form.occupationTier === 'NA'
+      ? ['NA']
       : []
+
+  const educationDetailsOptions = EDUCATION_DETAILS_BY_TIER[form.educationTier] || []
+
+  const isArabicUi = String(uiLang || '').toLowerCase() === 'arabic'
+  const defsByUiLang = isArabicUi ? EMOTION_DEFINITIONS.Arabic : EMOTION_DEFINITIONS.English
+  const missingDefText = isArabicUi ? 'لم يتم إضافة تعريف بعد' : 'Definition not added yet'
+  const getDefinitionBullets = (emotion) => {
+    const raw = defsByUiLang?.[emotion] || missingDefText
+    return String(raw)
+      .replace(/\r/g, '')
+      .split(/(?<=[.!?۔])\s+|\n|,/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
 
   // render helpers
   const renderEmotionCheckboxes = () => {
@@ -256,7 +309,68 @@ export default function ProfileForm({
       <div style={{ display: 'grid', gap: 8 }}>
         {Object.entries(EMOTIONS_TREE).map(([cat, subs]) => (
           <div key={cat} style={{ padding: 6, borderRadius: 6, background: '#f5f5f5' }}>
-            <strong>{cat}</strong>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <strong>{cat}</strong>
+              <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  aria-label={`${cat} definition`}
+                  onMouseEnter={() => setActiveEmotionTip(cat)}
+                  onMouseLeave={() => setActiveEmotionTip('')}
+                  onFocus={() => setActiveEmotionTip(cat)}
+                  onBlur={() => setActiveEmotionTip('')}
+                  onClick={() => setActiveEmotionTip((prev) => (prev === cat ? '' : cat))}
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: '50%',
+                    border: '1px solid #7a7a7a',
+                    color: '#4f4f4f',
+                    fontSize: 11,
+                    lineHeight: '14px',
+                    textAlign: 'center',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'help',
+                    userSelect: 'none',
+                    padding: 0,
+                    background: '#fff',
+                    minWidth: 16,
+                  }}
+                >
+                  ?
+                </button>
+                {activeEmotionTip === cat && (
+                  <span
+                    role="tooltip"
+                    style={{
+                      position: 'absolute',
+                      left: 20,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: '#111',
+                      color: '#fff',
+                      fontSize: 14,
+                      lineHeight: 1.5,
+                      borderRadius: 6,
+                      padding: '10px 12px',
+                      whiteSpace: 'normal',
+                      width: 360,
+                      zIndex: 20,
+                      textAlign: 'left',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                    }}
+                  >
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {getDefinitionBullets(cat).map((item, i) => (
+                        <li key={`${cat}-tip-${i}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </span>
+                )}
+              </span>
+            </span>
             <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {subs.map((sub) => {
                 const key = `${cat}: ${sub}`
@@ -410,31 +524,47 @@ export default function ProfileForm({
 
         {/* Education */}
         <label>
-          <strong>Education level *</strong>
+          <strong>Education level (tier) *</strong>
           <select
-            value={form.education || ''}
-            onChange={(e) => updateField('education', e.target.value)}
+            value={form.educationTier || ''}
+            onChange={(e) => {
+              const newTier = e.target.value
+              setForm((prev) => ({
+                ...prev,
+                educationTier: newTier,
+                education: '', // reset detail when tier changes
+              }))
+            }}
             required
           >
             <option value="" disabled>
               Select…
             </option>
-            {EDUCATION_LEVELS.map((ed) => (
+            {EDUCATION_TIER.map((tier) => (
+              <option key={tier} value={tier}>
+                {tier}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <strong>Education level (detail) *</strong>
+          <select
+            value={form.education || ''}
+            onChange={(e) => updateField('education', e.target.value)}
+            required
+            disabled={educationDetailsOptions.length === 0}
+          >
+            <option value="" disabled>
+              {educationDetailsOptions.length === 0 ? 'Select tier first' : 'Select…'}
+            </option>
+            {educationDetailsOptions.map((ed) => (
               <option key={ed} value={ed}>
                 {ed}
               </option>
             ))}
           </select>
-          {form.education === 'Other' && (
-            <div style={{ marginTop: 6 }}>
-              <input
-                type="text"
-                placeholder="Specify education"
-                value={form.educationOther || ''}
-                onChange={(e) => updateField('educationOther', e.target.value)}
-              />
-            </div>
-          )}
         </label>
 
         {/* Religion */}
@@ -524,7 +654,7 @@ export default function ProfileForm({
               setForm((prev) => ({
                 ...prev,
                 occupationTier: newTier,
-                occupationDetail: '', // reset detail when tier changes
+                occupationDetail: newTier === 'NA' ? 'NA' : '', // keep NA as valid complete response
               }))
             }}
             required
@@ -558,7 +688,6 @@ export default function ProfileForm({
                 {o}
               </option>
             ))}
-            <option value="NA">NA</option>
           </select>
           {form.occupationDetail === 'Other' && (
             <div style={{ marginTop: 6 }}>

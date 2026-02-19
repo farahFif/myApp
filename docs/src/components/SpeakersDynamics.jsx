@@ -38,8 +38,38 @@ const POWER_DIFF = ['High power', 'Equal power', 'Less power', 'Neutral']
 const SOCIAL_DIFF = ['Higher status', 'Equal status', 'Lower status', 'Neutral']
 const ACCOM_LEVELS = ['Divergent', 'Neutral', 'Convergent']
 
+const POWER_TYPE_DEFINITIONS = {
+  English: {
+    'Coercive': 'Coercive power relies on the ability to punish or enforce consequences for disobedience. E.g: a manager threatening to fire an employee',
+    'Reward-based': 'Reward power comes from the ability toprovide positive incentives or benefits. E.g: a manger offering bonus',
+    'Legitimate/Legal': 'Legitimate power is based on a person’s formal position or authority. E.g: a police officer enforcing the law, a mother making rules for her children',
+    'Expert': 'Expert power comes from possessing specialized knowledge, skills, or experience that others respect. E.g: a doctor, a teacher explaining a concept',
+    'Referent/Charismatic': 'is based on personal qualities that make others admire or trust. E.g: a charismatic, a celebrity, a charismatic person',
+    'Informational': 'Informational power arises from controlling access to important data or insights. E.g: a journalist with exclusive information, a person with insider knowledge',
+    'Ideological': 'Ideological power is rooted in shared beliefs or values that inspire others to act. E.g: a political leader rallying supporters, a religious leader guiding followers',
+    'NA': 'hard to dermine or the dialogue does not exhibit any type of power for a speaker.',
+  },
+  Arabic: {
+  'Coercive': 'القوة القسرية تعتمد على القدرة على معاقبة الآخرين أو فرض عواقب عند عدم الطاعة. مثال: مدير يهدد بفصل موظف.',
+  'Reward-based': 'قوة المكافأة تنبع من القدرة على تقديم حوافز أو مزايا إيجابية. مثال: مدير يعرض مكافأة مالية.',
+  'Legitimate/Legal': 'القوة الشرعية/القانونية تستند إلى المنصب الرسمي أو السلطة المعترف بها للشخص. مثال: شرطي يطبق القانون، أم تضع قواعد لأطفالها.',
+  'Expert': 'قوة الخبرة تأتي من امتلاك معرفة أو مهارات أو خبرة متخصصة يحترمها الآخرون. مثال: طبيب، معلم يشرح مفهوماً.',
+  'Referent/Charismatic': 'القوة المرجعية/الكاريزمية تعتمد على الصفات الشخصية التي تجعل الآخرين يعجبون بالشخص أو يثقون به. مثال: شخصية كاريزمية، مشهور مؤثر.',
+  'Informational': 'القوة المعلوماتية تنشأ من التحكم في الوصول إلى معلومات أو بيانات مهمة. مثال: صحفي يمتلك معلومات حصرية، شخص لديه معرفة داخلية.',
+  'Ideological': 'القوة الأيديولوجية ترتكز على معتقدات أو قيم مشتركة تلهم الآخرين للتصرف. مثال: قائد سياسي يحشد أنصاره، قائد ديني يوجه أتباعه.',
+  'NA': 'يصعب التحديد أو أن الحوار لا يُظهر أي نوع من أنواع القوة من جانب المتحدث.'
+},
+
+}
+
 function edgeKey(a, b) {
   return `${a}→${b}`
+}
+
+function parseDirectedEdgeKey(k) {
+  if (typeof k !== 'string' || !k.includes('→')) return ['', '']
+  const idx = k.indexOf('→')
+  return [k.slice(0, idx), k.slice(idx + 1)]
 }
 
 function pairKey(a, b) {
@@ -51,13 +81,47 @@ function isLegacySymmetricKey(k) {
   return k.includes('|') && !k.includes('→')
 }
 
-export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
+function normalizePowerTypeValue(value) {
+  if (value === 'A') return 'Higher'
+  if (value === 'B') return 'Lower'
+  if (value === 'Neutral') return 'Neutral'
+  if (value === 'Higher' || value === 'Equal' || value === 'Lower' || value === 'Neutral') return value
+  return ''
+}
+
+function normalizeEdgePayload(edge = {}) {
+  const powerTypes = edge?.powerTypes || {}
+  const normalizedPowerTypes = {}
+  for (const [pt, v] of Object.entries(powerTypes)) {
+    const nv = normalizePowerTypeValue(v)
+    if (nv) normalizedPowerTypes[pt] = nv
+  }
+  return {
+    ...edge,
+    powerTypes: normalizedPowerTypes,
+  }
+}
+
+export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }) {
+  const [activePowerTip, setActivePowerTip] = useState('')
   const [state, setState] = useState(() => ({
     speakers,
     edges: {},   // directed A→B data
     powers: {},  // per-speaker selected power types
     intents: {}, // symmetric intentions alignment
   }))
+
+  const isArabicUi = String(uiLang || '').toLowerCase() === 'arabic'
+  const defsByUiLang = isArabicUi ? POWER_TYPE_DEFINITIONS.Arabic : POWER_TYPE_DEFINITIONS.English
+  const missingDefText = isArabicUi ? 'لم يتم إضافة تعريف بعد' : 'Definition not added yet'
+  const getPowerDefinitionBullets = (powerType) => {
+    const raw = defsByUiLang?.[powerType] || missingDefText
+    return String(raw)
+      .replace(/\r/g, '')
+      .split(/(?<=[.!?۔])\s+|\n|,/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
 
   // Load and migrate saved state
   useEffect(() => {
@@ -71,14 +135,25 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
         if (isLegacySymmetricKey(k)) {
           const [A, B] = k.split('|')
           const payload = {
+            sourceSpeaker: A,
+            targetSpeaker: B,
             category: v.category || '',
             relation: v.relation || '',
             familiarity: v.familiarity || '',
           }
-          migratedEdges[edgeKey(A, B)] = { ...payload }
-          migratedEdges[edgeKey(B, A)] = { ...payload }
+          migratedEdges[edgeKey(A, B)] = normalizeEdgePayload({ ...payload })
+          migratedEdges[edgeKey(B, A)] = normalizeEdgePayload({
+            ...payload,
+            sourceSpeaker: B,
+            targetSpeaker: A,
+          })
         } else {
-          migratedEdges[k] = v
+          const [A, B] = parseDirectedEdgeKey(k)
+          migratedEdges[k] = normalizeEdgePayload({
+            ...v,
+            sourceSpeaker: v?.sourceSpeaker || A,
+            targetSpeaker: v?.targetSpeaker || B,
+          })
         }
       }
 
@@ -151,11 +226,17 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
   }, [state.speakers])
 
   const setEdge = (k, patch) => {
+    const [A, B] = parseDirectedEdgeKey(k)
     setState((s) => ({
       ...s,
       edges: {
         ...s.edges,
-        [k]: { ...(s.edges[k] || {}), ...patch },
+        [k]: {
+          sourceSpeaker: A,
+          targetSpeaker: B,
+          ...(s.edges[k] || {}),
+          ...patch,
+        },
       },
     }))
   }
@@ -191,6 +272,12 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
     clearDynamics(lang, taskId)
     setState({ speakers, edges: {}, powers: {}, intents: {} })
   }
+
+  const renderDirectedPair = (A, B) => (
+    <span dir="ltr" style={{ unicodeBidi: 'isolate' }}>
+      <bdi>{A}</bdi> {'→'} <bdi>{B}</bdi>
+    </span>
+  )
 
   return (
     <div className="card" style={{ width: '100%' }}>
@@ -233,6 +320,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                       {POWER_TYPES.map((pt) => {
                         const checked = (po.selected || []).includes(pt)
                         const id = `${openId}-${pt}`
+                        const tipKey = `${sp}::${pt}::select`
                         return (
                           <label key={id} className="radio" style={{ marginRight: 8 }}>
                             <input
@@ -240,7 +328,68 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                               checked={checked}
                               onChange={(e) => toggleSpeakerPower(sp, pt, e.target.checked)}
                             />{' '}
-                            {pt}
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                              {pt}
+                              <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                                <button
+                                  type="button"
+                                  aria-label={`${pt} definition`}
+                                  onMouseEnter={() => setActivePowerTip(tipKey)}
+                                  onMouseLeave={() => setActivePowerTip('')}
+                                  onFocus={() => setActivePowerTip(tipKey)}
+                                  onBlur={() => setActivePowerTip('')}
+                                  onClick={() => setActivePowerTip((prev) => (prev === tipKey ? '' : tipKey))}
+                                  style={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: '50%',
+                                    border: '1px solid #7a7a7a',
+                                    color: '#4f4f4f',
+                                    fontSize: 11,
+                                    lineHeight: '14px',
+                                    textAlign: 'center',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'help',
+                                    userSelect: 'none',
+                                    padding: 0,
+                                    background: '#fff',
+                                    minWidth: 16,
+                                  }}
+                                >
+                                  ?
+                                </button>
+                                {activePowerTip === tipKey && (
+                                  <span
+                                    role="tooltip"
+                                    style={{
+                                      position: 'absolute',
+                                      left: 20,
+                                      top: '50%',
+                                      transform: 'translateY(-50%)',
+                                      background: '#111',
+                                      color: '#fff',
+                                      fontSize: 14,
+                                      lineHeight: 1.5,
+                                      borderRadius: 6,
+                                      padding: '10px 12px',
+                                      whiteSpace: 'normal',
+                                      width: 360,
+                                      zIndex: 20,
+                                      textAlign: 'left',
+                                      boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                                    }}
+                                  >
+                                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                                      {getPowerDefinitionBullets(pt).map((item, i) => (
+                                        <li key={`${tipKey}-${i}`}>{item}</li>
+                                      ))}
+                                    </ul>
+                                  </span>
+                                )}
+                              </span>
+                            </span>
                           </label>
                         )
                       })}
@@ -284,7 +433,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
             return (
               <div key={k} className="card" style={{ borderRadius: 12 }}>
                 <strong>
-                  {A} → {B}
+                  {renderDirectedPair(A, B)}
                 </strong>
                 <p className="muted">Annotate from the perspective of {A}</p>
                 <div className="form-grid" style={{ marginTop: 10 }}>
@@ -491,7 +640,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
 
                   {/* 6. Communication accommodation (A → B) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>Communication accommodation ({A} → {B})</strong>
+                    <strong>Communication accommodation ({renderDirectedPair(A, B)})</strong>
                     <div
                       style={{
                         display: 'flex',
@@ -521,11 +670,12 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                       <strong>Power comparisons by type ({A} vs {B})</strong>
                       <div style={{ display: 'grid', gap: 8 }}>
                         {powersToCompare.map((pt) => {
-                          const val = (state.edges[k]?.powerTypes || {})[pt] || ''
+                          const val = normalizePowerTypeValue((state.edges[k]?.powerTypes || {})[pt])
+                          const tipKey = `${k}::${pt}::compare`
                           const opts = [
-                            { key: 'A', label: `${A} higher` },
+                            { key: 'Higher', label: 'Higher' },
                             { key: 'Equal', label: 'Equal' },
-                            { key: 'B', label: `${A} lower` },
+                            { key: 'Lower', label: 'Lower' },
                             { key: 'Neutral', label: 'Neutral' },
                           ]
                           return (
@@ -539,7 +689,68 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [] }) {
                               }}
                             >
                               <span style={{ minWidth: 180 }}>
-                                <strong>{pt}</strong>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                                  <strong>{pt}</strong>
+                                  <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                                    <button
+                                      type="button"
+                                      aria-label={`${pt} definition`}
+                                      onMouseEnter={() => setActivePowerTip(tipKey)}
+                                      onMouseLeave={() => setActivePowerTip('')}
+                                      onFocus={() => setActivePowerTip(tipKey)}
+                                      onBlur={() => setActivePowerTip('')}
+                                      onClick={() => setActivePowerTip((prev) => (prev === tipKey ? '' : tipKey))}
+                                      style={{
+                                        width: 16,
+                                        height: 16,
+                                        borderRadius: '50%',
+                                        border: '1px solid #7a7a7a',
+                                        color: '#4f4f4f',
+                                        fontSize: 11,
+                                        lineHeight: '14px',
+                                        textAlign: 'center',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'help',
+                                        userSelect: 'none',
+                                        padding: 0,
+                                        background: '#fff',
+                                        minWidth: 16,
+                                      }}
+                                    >
+                                      ?
+                                    </button>
+                                    {activePowerTip === tipKey && (
+                                      <span
+                                        role="tooltip"
+                                        style={{
+                                          position: 'absolute',
+                                          left: 20,
+                                          top: '50%',
+                                          transform: 'translateY(-50%)',
+                                          background: '#111',
+                                          color: '#fff',
+                                          fontSize: 14,
+                                          lineHeight: 1.5,
+                                          borderRadius: 6,
+                                          padding: '10px 12px',
+                                          whiteSpace: 'normal',
+                                          width: 360,
+                                          zIndex: 20,
+                                          textAlign: 'left',
+                                          boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                                        }}
+                                      >
+                                        <ul style={{ margin: 0, paddingLeft: 18 }}>
+                                          {getPowerDefinitionBullets(pt).map((item, i) => (
+                                            <li key={`${tipKey}-${i}`}>{item}</li>
+                                          ))}
+                                        </ul>
+                                      </span>
+                                    )}
+                                  </span>
+                                </span>
                               </span>
                               <div
                                 style={{

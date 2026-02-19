@@ -1,0 +1,1049 @@
+{
+  "kapoor_sons": {
+    "videoId": "https://www.youtube.com/watch?v=qQ3sPMWRqrc",
+    "segments": [
+      {
+        "start": 120,
+        "end": 232,
+        "taskIndex": 0,
+        "label": "Scene 1",
+        "color": "#f97316",
+        "mapping": 0
+      },
+      {
+        "start": 263,
+        "end": 294,
+        "taskIndex": 1,
+        "label": "Scene 2",
+        "color": "#06b6d4",
+        "mapping": 1
+      },
+      {
+        "start": 465,
+        "end": 490,
+        "taskIndex": 2,
+        "label": "Scene 3",
+        "color": "#60a5fa",
+        "mapping": 2
+      }
+    ],
+    "skipSegments": [
+      {
+        "start": "00:00:10",
+        "end": "00:00:40",
+        "taskIndex": 0,
+        "label": "Scene 1",
+        "color": "#f97316"
+      },
+      {
+        "start": "00:03:10",
+        "end": "00:03:50",
+        "taskIndex": 1,
+        "label": "Scene 2",
+        "color": "#06b6d4"
+      },
+      {
+        "start": 465,
+        "end": 490,
+        "taskIndex": 2,
+        "label": "Scene 3",
+        "color": "#60a5fa"
+      }
+    ]
+  },
+  "kolkata_holiday": {
+    "videoId": "https://www.youtube.com/watch?v=PpwIXPTKxwY&t=1310s",
+    "segments": [
+      {
+        "start": "0:12",
+        "end": "0:45",
+        "taskIndex": 0,
+        "label": "Intro",
+        "color": "#34d399",
+        "mapping": 0
+      },
+      {
+        "start": "0:46",
+        "end": "1:55",
+        "taskIndex": 1,
+        "label": "Exchange",
+        "color": "#f472b6",
+        "mapping": 1
+      }
+    ],
+    "skipSegments": [
+      {
+        "start": 120,
+        "end": 232,
+        "taskIndex": 0,
+        "label": "Scene 1",
+        "color": "#f97316"
+      },
+      {
+        "start": 263,
+        "end": 294,
+        "taskIndex": 1,
+        "label": "Scene 2",
+        "color": "#06b6d4"
+      },
+      {
+        "start": 465,
+        "end": 490,
+        "taskIndex": 2,
+        "label": "Scene 3",
+        "color": "#60a5fa"
+      }
+    ]
+  },
+  "hors_de_prix": {
+    "videoId": "https://www.youtube.com/watch?v=AfuJ0kmYFLg&t=1221s",
+    "segments": [
+      {
+        "start": "2:42",
+        "end": "3:05",
+        "taskIndex": 0,
+        "label": "Segment 1",
+        "color": "#34d399",
+        "mapping": 0
+      },
+      {
+        "start": "3:35",
+        "end": "4:25",
+        "taskIndex": 1,
+        "label": "Segment 2",
+        "color": "#34d399",
+        "mapping": 1
+      },
+      {
+        "start": "4:44",
+        "end": "5:50",
+        "taskIndex": 2,
+        "label": "Segment 3",
+        "color": "#34d399",
+        "mapping": 2
+      },
+      {
+        "start": "6:00",
+        "end": "6:40",
+        "taskIndex": 3,
+        "label": "Segment 4",
+        "color": "#34d399",
+        "mapping": 3
+      },
+      {
+        "start": "6:42",
+        "end": "8:00",
+        "taskIndex": 4,
+        "label": "Segment 5",
+        "color": "#34d399",
+        "mapping": 4
+      },
+      {
+        "start": "9:10",
+        "end": "13:35",
+        "taskIndex": 5,
+        "label": "Segment 6",
+        "color": "#34d399",
+        "mapping": 5
+      },
+      {
+        "start": "18:40",
+        "end": "19:17",
+        "taskIndex": 6,
+        "label": "Segment 7",
+        "color": "#34d399",
+        "mapping": 10
+      },
+      {
+        "start": "19:55",
+        "end": "20:20",
+        "taskIndex": 7,
+        "label": "Segment 8",
+        "color": "#34d399",
+        "mapping": 12
+      },
+      {
+        "start": "21:13",
+        "end": "22:26",
+        "taskIndex": 8,
+        "label": "Segment 9",
+        "color": "#34d399",
+        "mapping": 14
+      },
+      {
+        "start": "23:40",
+        "end": "24:00",
+        "taskIndex": 9,
+        "label": "Segment 10",
+        "color": "#34d399",
+        "mapping": 15
+      },
+      {
+        "start": "28:50",
+        "end": "30:26",
+        "taskIndex": 10,
+        "label": "Segment 11",
+        "color": "#34d399",
+        "mapping": 17
+      },
+      {
+        "start": "32:05",
+        "end": "32:55",
+        "taskIndex": 11,
+        "label": "Segment 12",
+        "color": "#34d399",
+        "mapping": 19
+      },
+      {
+        "start": "33:44",
+        "end": "35:33",
+        "taskIndex": 12,
+        "label": "Segment 13",
+        "color": "#34d399",
+        "mapping": 21
+      },
+      {
+        "start": "35:54",
+        "end": "36:25",
+        "taskIndex": 13,
+        "label": "Segment 14",
+        "color": "#34d399",
+        "mapping": 22
+      },
+      {
+        "start": "43:30",
+        "end": "43:55",
+        "taskIndex": 14,
+        "label": "Segment 16",
+        "color": "#34d399",
+        "mapping": 30
+      },
+      {
+        "start": "47:56",
+        "end": "48:22",
+        "taskIndex": 15,
+        "label": "Segment 17",
+        "color": "#34d399",
+        "mapping": 33
+      },
+      {
+        "start": "48:32",
+        "end": "49:13",
+        "taskIndex": 16,
+        "label": "Segment 18",
+        "color": "#34d399",
+        "mapping": 34
+      },
+      {
+        "start": "53:32",
+        "end": "55:43",
+        "taskIndex": 17,
+        "label": "Segment 19",
+        "color": "#34d399",
+        "mapping": 37
+      },
+      {
+        "start": "55:00",
+        "end": "56:05",
+        "taskIndex": 18,
+        "label": "Segment 20",
+        "color": "#34d399",
+        "mapping": 38
+      },
+      {
+        "start": "1:01:27",
+        "end": "1:02:46",
+        "taskIndex": 19,
+        "label": "Segment 21",
+        "color": "#34d399",
+        "mapping": 43
+      },
+      {
+        "start": "1:23:50",
+        "end": "1:25:12",
+        "taskIndex": 20,
+        "label": "Segment 22",
+        "color": "#34d399",
+        "mapping": 58
+      },
+      {
+        "start": "1:31:40",
+        "end": "1:32:56",
+        "taskIndex": 21,
+        "label": "Segment 23",
+        "color": "#34d399",
+        "mapping": 62
+      },
+      {
+        "start": "1:32:57",
+        "end": "1:35:05",
+        "taskIndex": 22,
+        "label": "Segment 24",
+        "color": "#34d399",
+        "mapping": 62
+      },
+      {
+        "start": "1:36:00",
+        "end": "1:37:55",
+        "taskIndex": 23,
+        "label": "Segment 25",
+        "color": "#34d399",
+        "mapping": 64
+      }
+    ],
+    "skipSegments": [
+      {
+        "start": "13:35",
+        "end": "16:34",
+        "taskIndex": 0,
+        "label": "Deleted 1",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:11:31",
+        "end": "1:14:43",
+        "taskIndex": 1,
+        "label": "Deleted 2",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:17:00",
+        "end": "1:17:40",
+        "taskIndex": 2,
+        "label": "Deleted 3",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:38:25",
+        "end": "1:40:07",
+        "taskIndex": 3,
+        "label": "Deleted 4",
+        "color": "#f97316"
+      }
+    ]
+  },
+  "jusqua-la-garde": {
+    "videoId": "https://www.youtube.com/watch?v=VHrA0uc4_P4&t=5226s",
+    "segments": [
+      {
+        "start": "2:32",
+        "end": "15:48",
+        "taskIndex": 0,
+        "label": "Segment 1",
+        "color": "#34d399",
+        "mapping": 1
+      },
+      {
+        "start": "16:54",
+        "end": "17:35",
+        "taskIndex": 1,
+        "label": "Segment 3",
+        "color": "#34d399",
+        "mapping": 5
+      },
+      {
+        "start": "17:50",
+        "end": "20:06",
+        "taskIndex": 2,
+        "label": "Segment 4",
+        "color": "#34d399",
+        "mapping": 6
+      },
+      {
+        "start": "20:06",
+        "end": "21:23",
+        "taskIndex": 3,
+        "label": "Segment 4",
+        "color": "#34d399",
+        "mapping": 7
+      },
+      {
+        "start": "26:18",
+        "end": "31:13",
+        "taskIndex": 4,
+        "label": "Segment 5",
+        "color": "#34d399",
+        "mapping": 10
+      },
+      {
+        "start": "31:13",
+        "end": "31:50",
+        "taskIndex": 5,
+        "label": "Segment 6",
+        "color": "#34d399",
+        "mapping": 5
+      },
+      {
+        "start": "35:44",
+        "end": "37:10",
+        "taskIndex": 6,
+        "label": "Segment 7",
+        "color": "#34d399",
+        "mapping": 13
+      },
+      {
+        "start": "37:46",
+        "end": "40:20",
+        "taskIndex": 7,
+        "label": "Segment 8",
+        "color": "#34d399",
+        "mapping": 15
+      },
+      {
+        "start": "40:36",
+        "end": "44:50",
+        "taskIndex": 8,
+        "label": "Segment 9",
+        "color": "#34d399",
+        "mapping": 17
+      },
+      {
+        "start": "47:36",
+        "end": "49:54",
+        "taskIndex": 9,
+        "label": "Segment 10",
+        "color": "#34d399",
+        "mapping": 19
+      },
+      {
+        "start": "50:36",
+        "end": "55:58",
+        "taskIndex": 10,
+        "label": "Segment 11",
+        "color": "#34d399",
+        "mapping": 20
+      },
+      {
+        "start": "56:28",
+        "end": "57:44",
+        "taskIndex": 11,
+        "label": "Segment 12",
+        "color": "#34d399",
+        "mapping": 23
+      },
+      {
+        "start": "57:49",
+        "end": "58:49",
+        "taskIndex": 12,
+        "label": "Segment 13",
+        "color": "#34d399",
+        "mapping": 24
+      },
+      {
+        "start": "1:04:56",
+        "end": "1:08:50",
+        "taskIndex": 13,
+        "label": "Segment 14",
+        "color": "#34d399",
+        "mapping": 27
+      },
+      {
+        "start": "1:08:55",
+        "end": "1:09:37",
+        "taskIndex": 14,
+        "label": "Segment 15",
+        "color": "#34d399",
+        "mapping": 31
+      },
+      {
+        "start": "1:10:22",
+        "end": "1:11:00",
+        "taskIndex": 15,
+        "label": "Segment 16",
+        "color": "#34d399",
+        "mapping": 32
+      }
+    ],
+    "skipSegments": [
+      {
+        "start": "16:29",
+        "end": "16:54",
+        "taskIndex": 0,
+        "label": "Deleted 1",
+        "color": "#f97316"
+      }
+    ]
+  },
+  "ehky-shehrazad": {
+    "videoId": "https://www.youtube.com/watch?v=7Ci2Fw3PGPE&t=7722s",
+    "segments": [
+      {
+        "start": "7:45",
+        "end": "9:13",
+        "taskIndex": 0,
+        "label": "Segment 1",
+        "color": "#34d399",
+        "mapping": 2
+      },
+      {
+        "start": "9:50",
+        "end": "10:25",
+        "taskIndex": 1,
+        "label": "Segment 2",
+        "color": "#34d399",
+        "mapping": 5
+      },
+      {
+        "start": "10:56",
+        "end": "11:58",
+        "taskIndex": 2,
+        "label": "Segment 3",
+        "color": "#34d399",
+        "mapping": 6
+      },
+      {
+        "start": "11:58",
+        "end": "15:05",
+        "taskIndex": 3,
+        "label": "Segment 3",
+        "color": "#34d399",
+        "mapping": 7
+      },
+      {
+        "start": "15:11",
+        "end": "15:54",
+        "taskIndex": 4,
+        "label": "Segment 5",
+        "color": "#34d399",
+        "mapping": 10
+      },
+      {
+        "start": "16:40",
+        "end": "17:59",
+        "taskIndex": 5,
+        "label": "Segment 6",
+        "color": "#34d399",
+        "mapping": 12
+      },
+      {
+        "start": "22:07",
+        "end": "23:55",
+        "taskIndex": 6,
+        "label": "Segment 7",
+        "color": "#34d399",
+        "mapping": 17
+      },
+      {
+        "start": "24:56",
+        "end": "26:44",
+        "taskIndex": 7,
+        "label": "Segment 8",
+        "color": "#34d399",
+        "mapping": 19
+      },
+      {
+        "start": "27:55",
+        "end": "30:17",
+        "taskIndex": 8,
+        "label": "Segment 9",
+        "color": "#34d399",
+        "mapping": 20
+      },
+      {
+        "start": "35:29",
+        "end": "39:17",
+        "taskIndex": 9,
+        "label": "Segment 11",
+        "color": "#34d399",
+        "mapping": 23
+      },
+      {
+        "start": "38:19",
+        "end": "38:51",
+        "taskIndex": 10,
+        "label": "Segment 13",
+        "color": "#34d399",
+        "mapping": 26
+      },
+      {
+        "start": "38:55",
+        "end": "39:44",
+        "taskIndex": 11,
+        "label": "Segment 14",
+        "color": "#34d399",
+        "mapping": 27
+      },
+      {
+        "start": "40:55",
+        "end": "48:15",
+        "taskIndex": 12,
+        "label": "Segment 15",
+        "color": "#34d399",
+        "mapping": 29
+      },
+      {
+        "start": "50:58",
+        "end": "52:35",
+        "taskIndex": 13,
+        "label": "Segment 16",
+        "color": "#34d399",
+        "mapping": 38
+      },
+      {
+        "start": "55:33",
+        "end": "57:28",
+        "taskIndex": 14,
+        "label": "Segment 17",
+        "color": "#34d399",
+        "mapping": 41
+      },
+      {
+        "start": "58:01",
+        "end": "1:00:37",
+        "taskIndex": 15,
+        "label": "Segment 18",
+        "color": "#34d399",
+        "mapping": 42
+      },
+      {
+        "start": "1:12:11",
+        "end": "1:15:17",
+        "taskIndex": 16,
+        "label": "Segment 26",
+        "color": "#34d399",
+        "mapping": 45
+      },
+      {
+        "start": "1:15:18",
+        "end": "1:16:57",
+        "taskIndex": 17,
+        "label": "Segment 27",
+        "color": "#34d399",
+        "mapping": 46
+      },
+      {
+        "start": "1:20:13",
+        "end": "1:20:37",
+        "taskIndex": 18,
+        "label": "Segment 28",
+        "color": "#34d399",
+        "mapping": 48
+      },
+      {
+        "start": "1:24:47",
+        "end": "1:25:43",
+        "taskIndex": 19,
+        "label": "Segment 30",
+        "color": "#34d399",
+        "mapping": 49
+      },
+      {
+        "start": "1:26:00",
+        "end": "1:26:45",
+        "taskIndex": 20,
+        "label": "Segment 31",
+        "color": "#34d399",
+        "mapping": 49
+      },
+      {
+        "start": "1:26:46",
+        "end": "1:29:58",
+        "taskIndex": 21,
+        "label": "Segment 32",
+        "color": "#34d399",
+        "mapping": 50
+      },
+      {
+        "start": "1:33:03",
+        "end": "1:34:07",
+        "taskIndex": 22,
+        "label": "Segment 33",
+        "color": "#34d399",
+        "mapping": 52
+      },
+      {
+        "start": "1:34:11",
+        "end": "1:36:43",
+        "taskIndex": 23,
+        "label": "Segment 34",
+        "color": "#34d399",
+        "mapping": 53
+      },
+      {
+        "start": "1:37:32",
+        "end": "1:42:03",
+        "taskIndex": 24,
+        "label": "Segment 35",
+        "color": "#34d399",
+        "mapping": 55
+      },
+      {
+        "start": "1:50:42",
+        "end": "1:51:32",
+        "taskIndex": 25,
+        "label": "Segment 38",
+        "color": "#34d399",
+        "mapping": 59
+      },
+      {
+        "start": "1:51:49",
+        "end": "1:53:59",
+        "taskIndex": 26,
+        "label": "Segment 39",
+        "color": "#34d399",
+        "mapping": 60
+      },
+      {
+        "start": "2:02:10",
+        "end": "2:03:00",
+        "taskIndex": 27,
+        "label": "Segment 42",
+        "color": "#34d399",
+        "mapping": 61
+      },
+      {
+        "start": "2:04:14",
+        "end": "2:05:18",
+        "taskIndex": 28,
+        "label": "Segment 43",
+        "color": "#34d399",
+        "mapping": 61
+      }
+    ],
+    "skipSegments": [
+      {
+        "start": "5:56",
+        "end": "7:45",
+        "taskIndex": 0,
+        "label": "Deleted 1",
+        "color": "#f97316"
+      },
+      {
+        "start": "19:12",
+        "end": "20:30",
+        "taskIndex": 1,
+        "label": "Deleted 2",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:16:59",
+        "end": "1:18:51",
+        "taskIndex": 2,
+        "label": "Deleted 3",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:23:14",
+        "end": "1:24:46",
+        "taskIndex": 3,
+        "label": "Deleted 4",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:45:41",
+        "end": "1:48:22",
+        "taskIndex": 4,
+        "label": "Deleted 5",
+        "color": "#f97316"
+      },
+      {
+        "start": "1:49:06",
+        "end": "1:49:42",
+        "taskIndex": 5,
+        "label": "Deleted 6",
+        "color": "#f97316"
+      }
+    ]
+  },
+  "asmaa": {
+    "videoId": "https://www.youtube.com/watch?v=KUHVgLEBmCE",
+    "segments": [
+      {
+        "start": "5:39",
+        "end": "6:41",
+        "taskIndex": 0,
+        "label": "Segment 1",
+        "color": "#34d399",
+        "mapping": 7
+      },
+      {
+        "start": "7:05",
+        "end": "7:41",
+        "taskIndex": 1,
+        "label": "Segment 2",
+        "color": "#34d399",
+        "mapping": 8
+      },
+      {
+        "start": "9:55",
+        "end": "12:30",
+        "taskIndex": 2,
+        "label": "Segment 3",
+        "color": "#34d399",
+        "mapping": 13
+      },
+      {
+        "start": "12:33",
+        "end": "12:59",
+        "taskIndex": 3,
+        "label": "Segment 4",
+        "color": "#34d399",
+        "mapping": 15
+      },
+      {
+        "start": "13:30",
+        "end": "14:10",
+        "taskIndex": 4,
+        "label": "Segment 5",
+        "color": "#34d399",
+        "mapping": 16
+      },
+      {
+        "start": "14:33",
+        "end": "15:13",
+        "taskIndex": 5,
+        "label": "Segment 6",
+        "color": "#34d399",
+        "mapping": 18
+      },
+      {
+        "start": "16:54",
+        "end": "17:16",
+        "taskIndex": 6,
+        "label": "Segment 8",
+        "color": "#34d399",
+        "mapping": 19
+      },
+      {
+        "start": "19:54",
+        "end": "20:39",
+        "taskIndex": 7,
+        "label": "Segment 9",
+        "color": "#34d399",
+        "mapping": 23
+      },
+      {
+        "start": "23:47",
+        "end": "27:39",
+        "taskIndex": 8,
+        "label": "Segment 12",
+        "color": "#34d399",
+        "mapping": 25
+      },
+      {
+        "start": "27:53",
+        "end": "29:11",
+        "taskIndex": 9,
+        "label": "Segment 13",
+        "color": "#34d399",
+        "mapping": 27
+      },
+      {
+        "start": "29:24",
+        "end": "30:47",
+        "taskIndex": 10,
+        "label": "Segment 14",
+        "color": "#34d399",
+        "mapping": 28
+      },
+      {
+        "start": "30:53",
+        "end": "31:56",
+        "taskIndex": 11,
+        "label": "Segment 15",
+        "color": "#34d399",
+        "mapping": 29
+      },
+      {
+        "start": "32:01",
+        "end": "33:16",
+        "taskIndex": 12,
+        "label": "Segment 16",
+        "color": "#34d399",
+        "mapping": 30
+      },
+      {
+        "start": "35:20",
+        "end": "36:00",
+        "taskIndex": 13,
+        "label": "Segment 17",
+        "color": "#34d399",
+        "mapping": 33
+      },
+      {
+        "start": "38:10",
+        "end": "39:17",
+        "taskIndex": 14,
+        "label": "Segment 19",
+        "color": "#34d399",
+        "mapping": 40
+      },
+      {
+        "start": "40:02",
+        "end": "41:20",
+        "taskIndex": 15,
+        "label": "Segment 20",
+        "color": "#34d399",
+        "mapping": 42
+      },
+      {
+        "start": "41:21",
+        "end": "43:14",
+        "taskIndex": 16,
+        "label": "Segment 21",
+        "color": "#34d399",
+        "mapping": 44
+      },
+      {
+        "start": "43:21",
+        "end": "43:42",
+        "taskIndex": 17,
+        "label": "Segment 22",
+        "color": "#34d399",
+        "mapping": 45
+      },
+      {
+        "start": "43:44",
+        "end": "43:59",
+        "taskIndex": 18,
+        "label": "Segment 23",
+        "color": "#34d399",
+        "mapping": 47
+      },
+      {
+        "start": "45:54",
+        "end": "46:46",
+        "taskIndex": 19,
+        "label": "Segment 24",
+        "color": "#34d399",
+        "mapping": 48
+      },
+      {
+        "start": "47:38",
+        "end": "48:22",
+        "taskIndex": 20,
+        "label": "Segment 27",
+        "color": "#34d399",
+        "mapping": 50
+      },
+      {
+        "start": "53:21",
+        "end": "55:20",
+        "taskIndex": 21,
+        "label": "Segment 28",
+        "color": "#34d399",
+        "mapping": 57
+      },
+      {
+        "start": "55:27",
+        "end": "56:32",
+        "taskIndex": 22,
+        "label": "Segment 29",
+        "color": "#34d399",
+        "mapping": 58
+      },
+      {
+        "start": "56:45",
+        "end": "57:35",
+        "taskIndex": 23,
+        "label": "Segment 30",
+        "color": "#34d399",
+        "mapping": 59
+      },
+      {
+        "start": "58:06",
+        "end": "59:38",
+        "taskIndex": 24,
+        "label": "Segment 31",
+        "color": "#34d399",
+        "mapping": 60
+      },
+      {
+        "start": "59:41",
+        "end": "1:01:33",
+        "taskIndex": 25,
+        "label": "Segment 32",
+        "color": "#34d399",
+        "mapping": 61
+      },
+      {
+        "start": "1:01:47",
+        "end": "1:03:52",
+        "taskIndex": 26,
+        "label": "Segment 33",
+        "color": "#34d399",
+        "mapping": 63
+      },
+      {
+        "start": "1:03:54",
+        "end": "1:05:33",
+        "taskIndex": 27,
+        "label": "Segment 34",
+        "color": "#34d399",
+        "mapping": 65
+      },
+      {
+        "start": "1:05:35",
+        "end": "1:07:21",
+        "taskIndex": 28,
+        "label": "Segment 35",
+        "color": "#34d399",
+        "mapping": 66
+      },
+      {
+        "start": "1:07:22",
+        "end": "1:08:15",
+        "taskIndex": 29,
+        "label": "Segment 36",
+        "color": "#34d399",
+        "mapping": 67
+      },
+      {
+        "start": "1:09:01",
+        "end": "1:10:22",
+        "taskIndex": 30,
+        "label": "Segment 37",
+        "color": "#34d399",
+        "mapping": 70
+      },
+      {
+        "start": "1:13:51",
+        "end": "1:14:20",
+        "taskIndex": 31,
+        "label": "Segment 38",
+        "color": "#34d399",
+        "mapping": 74
+      },
+      {
+        "start": "1:14:30",
+        "end": "1:16:16",
+        "taskIndex": 32,
+        "label": "Segment 39",
+        "color": "#34d399",
+        "mapping": 75
+      },
+      {
+        "start": "1:16:50",
+        "end": "1:18:21",
+        "taskIndex": 33,
+        "label": "Segment 40",
+        "color": "#34d399",
+        "mapping": 83
+      },
+      {
+        "start": "1:19:00",
+        "end": "1:19:35",
+        "taskIndex": 34,
+        "label": "Segment 42",
+        "color": "#34d399",
+        "mapping": 89
+      },
+      {
+        "start": "1:22:17",
+        "end": "1:22:53",
+        "taskIndex": 35,
+        "label": "Segment 45",
+        "color": "#34d399",
+        "mapping": 97
+      },
+      {
+        "start": "1:24:09",
+        "end": "1:24:32",
+        "taskIndex": 36,
+        "label": "Segment 46",
+        "color": "#34d399",
+        "mapping": 98
+      }
+    ]
+  }
+}

@@ -33,7 +33,7 @@ export default function LanguageSelect() {
   }, [catalog, selectedLang])
 
   const startMovie = (lang, movieId) => {
-    navigate(`/task/${encodeURIComponent(lang)}/${encodeURIComponent(movieId)}/0`)
+    navigate(`/video/${encodeURIComponent(lang)}/${encodeURIComponent(movieId)}`)
   }
 
   return (
