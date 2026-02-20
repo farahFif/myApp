@@ -278,6 +278,16 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
       <bdi>{A}</bdi> {'→'} <bdi>{B}</bdi>
     </span>
   )
+  const questionTitleStyle = { color: '#0f3a7f' }
+  const perspectiveFocusStyle = {
+    color: '#9a3412',
+    background: '#fff7ed',
+    border: '1px solid #fed7aa',
+    borderRadius: 6,
+    padding: '0 6px',
+    marginInline: 2,
+    display: 'inline-block',
+  }
 
   return (
     <div className="card" style={{ width: '100%' }}>
@@ -438,7 +448,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
                 <p className="muted">Annotate from the perspective of {A}</p>
                 <div className="form-grid" style={{ marginTop: 10 }}>
                   <label>
-                    <strong>Relationship Category</strong>
+                    <strong style={questionTitleStyle}>Relationship Category</strong>
                     <select
                       value={category}
                       onChange={(ev) => setEdge(k, { category: ev.target.value, relation: '' })}
@@ -455,7 +465,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
                   </label>
 
                   <label>
-                    <strong>Relationship</strong>
+                    <strong style={questionTitleStyle}>Relationship</strong>
                     {category === 'Other' ? (
                       <input
                         type="text"
@@ -483,7 +493,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
                   </label>
 
                   <label>
-                    <strong>Familiarity (A → B)</strong>
+                    <strong style={questionTitleStyle}>Familiarity (A → B)</strong>
                     <select
                       value={familiarity}
                       onChange={(ev) => setEdge(k, { familiarity: ev.target.value })}
@@ -501,7 +511,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 1. Intentions alignment (from A's perspective) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>Intentions alignment (from {A}'s perspective)</strong>
+                    <strong style={questionTitleStyle}>Intentions alignment (from {A}'s perspective)</strong>
                     <div
                       style={{
                         display: 'flex',
@@ -528,7 +538,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 2. Overall power difference (dialogue-based) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>Overall power difference. Does {A} compared to {B} have:</strong>
+                    <strong style={questionTitleStyle}>Overall power difference. Does {A} compared to {B} have:</strong>
                     <div
                       style={{
                         display: 'flex',
@@ -555,8 +565,10 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 3. Overall power difference (from your perspective) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>
-                      Overall power difference (from your perspective). Does {A} compared to {B} have:
+                    <strong style={questionTitleStyle}>
+                      Overall power difference
+                      <span style={perspectiveFocusStyle}>(from your perspective)</span>
+                      . Does {A} compared to {B} have:
                     </strong>
                     <div
                       style={{
@@ -584,7 +596,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 4. Overall social status difference (dialogue-based) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>Overall social status difference. Does {A} compared to {B} have:</strong>
+                    <strong style={questionTitleStyle}>Overall social status difference. Does {A} compared to {B} have:</strong>
                     <div
                       style={{
                         display: 'flex',
@@ -611,8 +623,10 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 5. Overall social status difference (from your perspective) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>
-                      Overall social status difference (from your perspective). Does {A} compared to {B} have:
+                    <strong style={questionTitleStyle}>
+                      Overall social status difference
+                      <span style={perspectiveFocusStyle}>(from your perspective)</span>
+                      . Does {A} compared to {B} have:
                     </strong>
                     <div
                       style={{
@@ -640,7 +654,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
 
                   {/* 6. Communication accommodation (A → B) */}
                   <div style={{ gridColumn: 'span 2' }}>
-                    <strong>Communication accommodation ({renderDirectedPair(A, B)})</strong>
+                    <strong style={questionTitleStyle}>Communication accommodation ({renderDirectedPair(A, B)})</strong>
                     <div
                       style={{
                         display: 'flex',
@@ -667,7 +681,7 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
                   {/* Power by type comparisons (unchanged) */}
                   {powersToCompare.length > 0 && (
                     <div style={{ gridColumn: 'span 2', marginTop: 8 }}>
-                      <strong>Power comparisons by type ({A} vs {B})</strong>
+                      <strong style={questionTitleStyle}>Power comparisons by type ({A} vs {B})</strong>
                       <div style={{ display: 'grid', gap: 8 }}>
                         {powersToCompare.map((pt) => {
                           const val = normalizePowerTypeValue((state.edges[k]?.powerTypes || {})[pt])
@@ -799,7 +813,9 @@ export default function SpeakersDynamics({ lang, taskId, speakers = [], uiLang }
       {unorderedPairs.length > 0 && (
         <div className="card" style={{ marginTop: 12 }}>
           <h4>
-            <strong>Intentions alignment (Your Perspective)</strong>
+            <strong style={questionTitleStyle}>
+              Intentions alignment <span style={perspectiveFocusStyle}>(Your Perspective)</span>
+            </strong>
           </h4>
           <div
             style={{

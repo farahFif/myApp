@@ -439,6 +439,54 @@ export default function TaskPage() {
   }
 
   // ----- export -----
+  const isTaskFilledForExport = (taskProfiles, dynamics, dialogContext) => {
+    const requiredFields = [
+      'name',
+      'ageGroup',
+      'gender',
+      'ethnicity',
+      'maritalStatus',
+      'education',
+      'religion',
+      'occupationTier',
+      'occupationDetail',
+      'socioEconomicClass',
+      'socialClass',
+      'country',
+    ]
+
+    // Profiles must exist and be complete
+    if (!Array.isArray(taskProfiles) || taskProfiles.length === 0) return false
+    for (const p of taskProfiles) {
+      for (const f of requiredFields) {
+        const v = p?.[f]
+        if (v === null || v === undefined) return false
+        if (typeof v === 'string' && v.trim() === '') return false
+      }
+      const tier = (p?.educationTier || '').trim() || inferEducationTier(p?.education)
+      if (!tier) return false
+    }
+
+    // Dynamics must have at least one touched edge and all touched edges complete
+    const edges = Object.values(dynamics?.edges || {})
+    const touched = edges.filter((e) => e && (e.category || e.relation || e.familiarity))
+    if (touched.length === 0) return false
+    if (!touched.every((e) => e.category && e.relation && e.familiarity)) return false
+
+    // Dialog context must be complete
+    const socialSettingFilled =
+      typeof dialogContext?.socialSetting === 'string' && dialogContext.socialSetting.trim() !== ''
+    const domainFilled = Array.isArray(dialogContext?.locationDomain)
+      ? dialogContext.locationDomain.length > 0
+      : !!dialogContext?.locationDomain
+    const privacyFilled = Array.isArray(dialogContext?.locationPrivacy)
+      ? dialogContext.locationPrivacy.length > 0
+      : !!dialogContext?.locationPrivacy
+    const formalityFilled = !!dialogContext?.formality
+    if (!(formalityFilled && (socialSettingFilled || domainFilled || privacyFilled))) return false
+
+    return true
+  }
 
   const onExport = () => {
     recordCurrentTaskTime()
@@ -465,6 +513,8 @@ export default function TaskPage() {
         (p) => p.lang === langKey && p.taskId === thisTaskId,
       )
       const timeSpentMs = loadTime(langKey, thisTaskId) || 0
+      const taskFilled = isTaskFilledForExport(taskProfiles, dynamics, dialogContext)
+      if (!taskFilled) return
 
       allData.push({
         meta: {
